@@ -65,7 +65,7 @@ C) CREAR LA APP A PARTIR DE ESTE ARCHIVO (rápido; NO programes la app desde cer
 1. La plantilla es el archivo adjunto en este chat. Léelo desde el archivo adjunto. Si no lo ves, pide que lo adjunte y espera.
 2. Lee el bloque <script id="exercise-catalog" type="text/plain"> de ese archivo: trae el formato exacto de cada tipo de ejercicio y la escalera de etapas. Usa SOLO los tipos y formatos del catálogo. Si necesitas una idea nueva, usa el tipo "task".
 3. Haz una copia de trabajo llamada index.html. No reescribas el código. Cambia lo mínimo con un script de Python (no línea por línea):
-   - Reemplaza el JSON de <script id="lesson-data" type="application/json"> por su PRIMERA lección real (ver D). Con Python: re.sub(r'(<script id="lesson-data" type="application/json">)(.*?)(<\/script>)', lambda m: m.group(1)+json_de_la_leccion+m.group(3), html, count=1, flags=re.S)
+   - Reemplaza el JSON de <script id="lesson-data" type="application/json"> por su PRIMERA lección real (ver D). Con Python (OJO: este mismo texto menciona esa etiqueta, así que NO uses re.sub con count=1 desde el inicio del archivo: reemplazarías este texto; reemplaza solo la ÚLTIMA aparición): i=html.rfind('<script id="lesson-data" type="application/json">'); a=html.index(">",i)+1; b=html.index("<"+"/script>",a); html=html[:a]+"\n"+json_de_la_leccion+"\n"+html[b:]
    - En la lección pon: lang (código del idioma meta: en-US, fr-FR, pt-BR, de-DE…), targetLanguage, nativeLanguage, profession, student (su nombre) y stage (1 al inicio).
    - Cambia el <title> con su nombre. Si su idioma nativo no es español, traduce los textos de interfaz con reemplazos puntuales.
    - Deja intactos los bloques exercise-catalog y agent-instructions (los necesitarás los días siguientes).
@@ -80,6 +80,7 @@ D) PRIMERA LECCIÓN
 - Incluye al menos un ejercicio de habla y refuerza los errores que detectaste en la entrevista. Cada ejercicio con hint útil y específico, nunca genérico.
 - Tono de coach: abre con una frase que conecte con su meta y cierra con un reconocimiento concreto. El personaje de los role-plays conversa de forma amable y natural, no como examinador.
 - Cada 3–4 días introduce un tema nuevo del mapa y un tipo de ejercicio nuevo; si dice que un tema le aburre, retíralo.
+- SIGUIENTE PASO: toda lección lleva "nextStep":{"type":"lesson" o "voice","text":"…"}; la app lo muestra al terminar. Por defecto "lesson": que escriba «listo» o «dame otra lección» en el chat con Claude. Cuando el plan lo pida (cada 3–4 lecciones, al cerrar una semana del plan o si ya domina la etapa), usa "voice": una conversación de 5–10 min con Claude en modo voz sobre un tema de su mapa, con el escenario y su meta (p. ej. hacer de consultora con un cliente), y que al volver al texto escriba «listo».
 
 E) RESPUESTA FINAL (máximo 7 líneas)
 Con calidez: 1) lo que más destacó de ella en la entrevista; 2) el enlace a su app; 3) qué trabajará en la primera lección; 4) cómo seguir cada día, con este texto exacto que debe pegar en un chat nuevo: "Sigue las instrucciones del bloque agent-instructions de mi artefacto «Mi entrenador de [idioma] — [su nombre]» y dame la lección de hoy". No repitas el expediente completo.
@@ -206,7 +207,7 @@ pre.rep{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:1
 CATÁLOGO DE EJERCICIOS Y ESCALERA DE PROGRESIÓN (lo lee el agente que arma las lecciones)
 
 == FORMATO DE LA LECCIÓN ==
-{"title":"","date":"AAAA-MM-DD","lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"","student":"nombre","stage":1-5,"focus":"","speakTip":"consejo de pronunciación/gramática corto (opcional)","exercises":[...]}
+{"title":"","date":"AAAA-MM-DD","lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"","student":"nombre","stage":1-5,"focus":"","speakTip":"consejo de pronunciación/gramática corto (opcional)","nextStep":{"type":"lesson|voice","text":"qué hacer después, según el plan"},"exercises":[...]}
 Todo ejercicio acepta "block" (etiqueta de sección), "hint" (pista útil y específica), "noRetry":true (sin segunda oportunidad) y "boss":true (jefe: triple de puntos).
 Con "audio", la app lo reproduce una sola vez y bloquea las respuestas hasta que se escucha; si la persona falla, se le ofrece una segunda oportunidad.
 
@@ -333,6 +334,9 @@ let L=null,queue=[],i=0,results=[],sst={},xp=0,activeTA=null;
 let mode=LS("et_mode")==="exam"?"exam":"train";
 let round=1,histSaved=false;
 let started=false,sessionId=null,dbApi=null,dbVer=null,pendingLesson=null;
+const SIGUE=()=>"No pude conectarme a tu base de datos. Abre un chat con Claude y escribe: «Sigue las instrucciones del bloque agent-instructions de mi artefacto «"+document.title+"» y dame la lección de hoy».";
+const SIGUE_NEXT=()=>{const n=L&&L.nextStep;return (n&&n.text)?n.text:"Pídele a Claude en el chat: «dame otra lección»."};
+const nsBox=()=>{const n=(L&&L.nextStep&&L.nextStep.text)?L.nextStep:null;return el("div",{style:n?"background:var(--soft);border:2px solid var(--blue);border-radius:14px;padding:12px 14px;margin:10px 0":"display:none"},el("b",{},n?(n.type==="voice"?"🎙️ Siguiente paso: conversa con Claude en modo voz":"➡️ Siguiente paso"):""),el("p",{style:"margin:6px 0 0"},n?n.text:""))};
 let LANG="en-US";let streak=0,bestStreak=0,tick=null;function stopTick(){if(tick){clearInterval(tick);tick=null}}
 const PASS=0.8;
 let ttsApi=null,dic=null,listening=false;
@@ -1076,7 +1080,7 @@ function summary(){
       .then(()=>{statusEl.textContent="✓ Reporte guardado: Claude ya puede leerlo, no necesitas copiarlo."})
       .catch(e=>{statusEl.textContent="No pude guardar el reporte ("+((e&&e.code)||"error")+"). Cópialo con el botón de abajo."});
   }
-  card.append(el("h1",{},"¡Lección completada!"),el("p",{class:"coach"},celebrate(graded.length?good/graded.length:1)),
+  card.append(el("h1",{},"¡Lección completada!"),el("p",{class:"coach"},celebrate(graded.length?good/graded.length:1)),nsBox(),
     el("p",{},"⭐ "+xp+" puntos · "+good+" de "+graded.length+" correctas al primer intento ("+(graded.length?Math.round(100*good/graded.length):0)+"%)"+(retried?" · "+rescued+" rescatadas tras repetición":"")+(rv.length?" · repaso: "+rvGood+"/"+rv.length:"")),
     el("table",{},el("tr",{},el("th",{},"Tipo de comprensión"),el("th",{},"Correctas")),
       ...LEVELS.map(l=>el("tr",{},el("td",{},l),el("td",{},byLevel[l].n?byLevel[l].ok+"/"+byLevel[l].n:"—")))),
@@ -1091,7 +1095,7 @@ function summary(){
       missed.length?el("button",{class:"ghost",type:"button",onclick:()=>startReview(missed)},"🔁 Repetir fallos"):null,
       pendingLesson?el("button",{class:"ghost",type:"button",onclick:()=>{L=pendingLesson;pendingLesson=null;LS("et_lesson",L);start()}},"📥 Cargar la lección nueva de Claude"):null,
       el("button",{class:"ghost",type:"button",onclick:()=>start()},"↺ Empezar de nuevo")));
-  const b=$("#main");b.disabled=false;b.className="btn";b.textContent=pendingLesson?"📥 Cargar la lección nueva":"📥 Buscar lección nueva";b.onclick=async()=>{if(pendingLesson){L=pendingLesson;pendingLesson=null;LS("et_lesson",L);start();return}try{if(dbApi){const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();if(d&&d.lesson&&Array.isArray(d.lesson.exercises)&&d.lesson.exercises.length&&d.lesson.title!==(L&&L.title)){L=d.lesson;dbVer=String(d.updatedAt||d.lesson.title||"");LS("et_lesson",L);start();return}}}catch(e){setFB("bad","No pude buscar la lección nueva. Usa el menú ☰ para pegarla a mano.",[]);return}setFB("ok","Aún no hay lección nueva: escríbele a Claude «dame otra lección».",[])};
+  const b=$("#main");b.disabled=false;b.className="btn";b.textContent=pendingLesson?"📥 Cargar la lección nueva":"📥 Buscar lección nueva";b.onclick=async()=>{if(pendingLesson){L=pendingLesson;pendingLesson=null;LS("et_lesson",L);start();return}try{if(dbApi){const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();if(d&&d.lesson&&Array.isArray(d.lesson.exercises)&&d.lesson.exercises.length&&d.lesson.title!==(L&&L.title)){L=d.lesson;dbVer=String(d.updatedAt||d.lesson.title||"");LS("et_lesson",L);start();return}}}catch(e){setFB("bad",SIGUE(),[]);return}setFB("ok","Aún no hay lección nueva. "+SIGUE_NEXT(),[])};
 }
 
 /* ---------- start / load ---------- */
@@ -1143,7 +1147,7 @@ function setLesson(obj){
 }
 function demo(){return JSON.parse($("#lesson-data").textContent)}
 
-$("#menu").onclick=async()=>{if(!dbApi){$("#modal").classList.add("on");return}try{let nuevo=!!pendingLesson;if(!nuevo){const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();nuevo=!!(d&&d.lesson&&Array.isArray(d.lesson.exercises)&&d.lesson.exercises.length&&d.lesson.title!==(L&&L.title))}setFB("ok",nuevo?"Hay una lección nueva: termina esta y pulsa el botón verde del final.":"Estás al día: no hay lección nueva todavía. Pídesela a Claude.",[])}catch(e){$("#modal").classList.add("on")}};
+$("#menu").onclick=async()=>{if(!dbApi){setFB("bad",SIGUE(),[]);return}try{let nuevo=!!pendingLesson;if(!nuevo){const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();nuevo=!!(d&&d.lesson&&Array.isArray(d.lesson.exercises)&&d.lesson.exercises.length&&d.lesson.title!==(L&&L.title))}setFB("ok",nuevo?"Hay una lección nueva: termina esta y pulsa el botón verde del final.":"Estás al día. "+SIGUE_NEXT(),[])}catch(e){setFB("bad",SIGUE(),[])}};
 $("#closemodal").onclick=()=>$("#modal").classList.remove("on");
 $("#loadjson").onclick=()=>{
   try{
