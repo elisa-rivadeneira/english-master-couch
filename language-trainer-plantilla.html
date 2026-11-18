@@ -1091,7 +1091,7 @@ function summary(){
       missed.length?el("button",{class:"ghost",type:"button",onclick:()=>startReview(missed)},"🔁 Repetir fallos"):null,
       pendingLesson?el("button",{class:"ghost",type:"button",onclick:()=>{L=pendingLesson;pendingLesson=null;LS("et_lesson",L);start()}},"📥 Cargar la lección nueva de Claude"):null,
       el("button",{class:"ghost",type:"button",onclick:()=>start()},"↺ Empezar de nuevo")));
-  const b=$("#main");b.disabled=false;b.className="btn";b.textContent="Cargar lección de otro día";b.onclick=()=>$("#modal").classList.add("on");
+  const b=$("#main");b.disabled=false;b.className="btn";b.textContent=pendingLesson?"📥 Cargar la lección nueva":"Cargar lección de otro día";b.onclick=async()=>{if(pendingLesson){L=pendingLesson;pendingLesson=null;LS("et_lesson",L);start();return}try{if(dbApi){const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();if(d&&d.lesson&&Array.isArray(d.lesson.exercises)&&d.lesson.exercises.length&&d.lesson.title!==(L&&L.title)){L=d.lesson;dbVer=String(d.updatedAt||d.lesson.title||"");LS("et_lesson",L);start();return}}}catch(e){}$("#modal").classList.add("on")};
 }
 
 /* ---------- start / load ---------- */
@@ -1172,7 +1172,7 @@ $("#copyprompt").onclick=async()=>{
       if(ver===dbVer)return;
       dbVer=ver;
       if(!started){L=d.lesson;LS("et_lesson",d.lesson);start()}
-      else pendingLesson=d.lesson;
+      else{pendingLesson=d.lesson;const m=$("#main");if(m&&m.textContent==="Cargar lección de otro día")m.textContent="📥 Cargar la lección nueva"}
     },()=>{});
   }catch(e){}
 })();
