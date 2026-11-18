@@ -14,7 +14,9 @@ Entrenador de idiomas tipo Duolingo, hiperpersonalizado, que funciona **dentro d
 
 ## Cómo usarla (solo claude.ai en la web)
 
-1. Descarga `language-trainer-plantilla.html` de este repositorio.
+1. Descarga `language-trainer-plantilla.html` de este repositorio. Tienes dos formas:
+   - **Code → Download ZIP** (botón verde en la página principal). Descomprime y usa el archivo `language-trainer-plantilla.html`.
+   - O abre el archivo y pulsa el **icono de flecha hacia abajo** (descargar) de la barra superior del archivo.
 2. Abre un chat nuevo en claude.ai y **adjunta el archivo**.
 3. Escribe: `Sigue las instrucciones del bloque agent-instructions de este archivo y empecemos.`
 4. Claude te da un bloque de entrevista para pegar en el **modo voz**. Hazla y vuelve al chat de texto a escribir `terminé la entrevista`.
