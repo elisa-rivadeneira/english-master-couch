@@ -1,0 +1,35 @@
+# English Master Couch · Language Trainer
+
+Entrenador de idiomas tipo Duolingo, hiperpersonalizado, que funciona **dentro de Claude (claude.ai)**: voz (TTS + micrófono), 16 tipos de ejercicio, coach con IA, racha, niveles y jefes semanales. Cada día Claude genera la lección nueva a partir del avance real de la persona.
+
+## Archivo principal
+
+`language-trainer-plantilla.html` — la plantilla. Es una sola página con tres bloques importantes:
+
+| Bloque | Qué contiene |
+|---|---|
+| `agent-instructions` | Instrucciones completas para Claude: entrevista por voz, creación de la app, bucle diario |
+| `exercise-catalog` | Formato exacto de cada tipo de ejercicio y escalera de etapas (1–5) |
+| `lesson-data` | Lección de ejemplo con todos los tipos |
+
+## Cómo usarla (solo claude.ai en la web)
+
+1. Descarga `language-trainer-plantilla.html` de este repositorio.
+2. Abre un chat nuevo en claude.ai y **adjunta el archivo**.
+3. Escribe: `Sigue las instrucciones del bloque agent-instructions de este archivo y empecemos.`
+4. Claude te da un bloque de entrevista para pegar en el **modo voz**. Hazla y vuelve al chat de texto a escribir `terminé la entrevista`.
+5. Claude crea tu app personalizada. Cada día, en un chat nuevo, pega la frase que te dé al final.
+
+Requisitos: artefactos activados en claude.ai. El micrófono (dictado) funciona en navegadores Chromium de escritorio.
+
+## Tipos de ejercicio
+
+choice · minimal_pair · listen_multi · true_false · fill_blank · word_order · find_error · match · dictation · chunks · shadow · speak · roleplay · scene · task · cards
+
+Para ideas nuevas se usa el tipo genérico `task` (Claude evalúa la respuesta); detalles en el bloque `exercise-catalog`.
+
+## Versiones
+
+- **v3** — instrucciones de Claude incluidas en el archivo.
+- **v2** — 16 tipos de ejercicio, racha/XP/jefe, catálogo y escalera de progresión.
+- **v1** — 9 tipos, voz, segunda oportunidad, repaso, guardado automático de reportes.

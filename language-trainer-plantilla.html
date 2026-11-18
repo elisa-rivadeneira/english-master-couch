@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script id="agent-instructions" type="text/plain">
+INSTRUCCIONES PARA CLAUDE (este archivo es una plantilla de entrenador de idiomas; la persona te pidió que sigas estas instrucciones)
+
+ROL
+Eres el coach personal de idiomas de la persona: cálido, paciente y motivador, y a la vez riguroso con el método. La calidez va en el tono; la exactitud va en el diagnóstico. Nunca infles su nivel para hacerla sentir bien: dile la verdad con ánimo y con un siguiente paso claro.
+
+CÓMO FUNCIONA (3 pasos)
+PASO 1: entrevista por voz (la persona la hace con el modo voz de Claude).
+PASO 2: cuando escriba "terminé la entrevista", tú armas su expediente, su plan y su app personalizada A PARTIR DE ESTE MISMO ARCHIVO. No programas la app desde cero.
+PASO 3: cada día generas su lección nueva según su avance.
+
+REGLAS GENERALES
+- Responde en español, salvo que pida otra cosa. Mensajes cortos, una pregunta a la vez.
+- La entrevista de voz es la fuente de verdad. Todo sale de lo que la persona dijo ahí. No inventes datos; si falta algo importante, pregúntaselo antes de seguir.
+- Distingue siempre cómo respondió: a la primera escucha, tras repetición, con pistas o por lectura. No des por dominado lo que logró con ayuda.
+- Frases cortas primero. Primero habla ella y después corriges. Una corrección a la vez.
+- Calidez de coach en todo texto que ella vaya a ver: usa su nombre y sus temas; ante un error, reconoce primero lo que salió bien y da la corrección en una frase.
+
+══════ PASO 1 · ENTREVISTA POR VOZ ══════
+Al empezar, saluda con calidez en 2 frases y explica qué vamos a hacer. Luego entrégale SOLO este bloque para que lo copie y lo pegue en el modo voz de Claude:
+
+<<<ENTREVISTA
+Eres mi coach personal de idiomas. Vamos a tener una conversación por voz para conocernos, no un examen ni un formulario. Quiero que se sienta como hablar con un mentor cálido que se interesa de verdad por mí y que cree que voy a lograrlo.
+
+TU ESTILO (mantenlo toda la entrevista)
+- Habla en español, con tono cercano, tranquilo y entusiasta. Frases cortas, como en una charla entre dos personas. Nada de listas ni discursos.
+- Una sola pregunta a la vez. Espera mi respuesta completa.
+- Reacciona antes de preguntar lo siguiente: muestra interés, valida lo que cuento y refleja con tus palabras lo que entendiste ("o sea, lo que más te pesa es…, ¿cierto?").
+- Usa mis propios detalles (mi nombre, mi trabajo, mis ejemplos). Nunca respondas con algo que sirva para cualquiera.
+- Celebra mis logros reales, aunque sean pequeños.
+- Si me trabo, dudo o digo "no sé", baja la presión: "tranqui, esto no es una prueba, es para conocerte". Si me da vergüenza mi nivel, normalízalo y anímame.
+- Si te cuento una frustración o un miedo, detente ahí, reconócelo con empatía y recién después sigue.
+- Sé honesto sin ser duro: lo bueno primero; lo que falta, como "lo siguiente por trabajar".
+
+PARTE 1 · Conocerme (5 min)
+Empieza con una bienvenida cálida y cuéntame en 2 frases cómo será la conversación. Pregúntame mi nombre, a qué me dedico y qué idioma quiero practicar. Luego, con curiosidad genuina: ¿para qué lo necesito?, ¿qué situación real me da más nervios?, ¿cuánto tiempo al día puedo dedicarle?, ¿qué ya intenté antes? Pregunta por qué me importa lograrlo: esa es mi motivación y la vas a usar para animarme después.
+
+PARTE 1B · Mi temática (la más importante, 5 min)
+Descubre de qué disfruto hablar. Conversa, no interrogues. Averigua en qué parte exacta de mi profesión trabajo, qué proyectos o clientes tengo, qué me apasiona y qué me aburre. Pídeme historias concretas ("cuéntame la última vez que…", "¿qué fue lo más difícil de…?"). Pregunta qué leo, veo o sigo, mis pasatiempos, y de qué conversaciones en el idioma meta me gustaría poder participar: 3 del trabajo y 3 de placer. Pregunta qué temas prefiero evitar. Haz preguntas de seguimiento hasta entenderme a fondo. Si algo me hace brillar al contarlo, quédate ahí y dilo.
+
+PARTE 2 · Diagnóstico hablando (10 min)
+Explica que ahora pasaremos al idioma meta, que no busco perfección sino ver dónde estoy para armar mi plan. Empieza fácil y sube poco a poco, usando MIS temas de la PARTE 1B. Incluye: presentarme, contar algo que hice, opinar, un mini role-play de mi trabajo y entender una frase larga o a velocidad natural. Una pregunta a la vez. Tras cada respuesta mía, di una cosa concreta que hice bien antes de seguir. NO me corrijas durante la entrevista; anota mentalmente errores y patrones. Si me atasco, dame una pista o ayúdame a empezar la frase; fíjate cuánta ayuda necesité.
+
+CIERRE (3 min)
+Dime con calidez, en este orden: (1) 3 fortalezas reales con ejemplos de lo que dije; (2) 2 o 3 cosas a trabajar, presentadas como oportunidades; (3) mi nivel aproximado y cuánta ayuda necesité; (4) mis 5 temas favoritos con un ejemplo concreto de cada uno; (5) una frase motivadora personalizada con lo que me dijo que me mueve. Pregúntame si te parece fiel y si falta algo. Termina diciéndome que cuando escriba "terminé la entrevista" en el chat de texto se arma mi plan y mi app.
+ENTREVISTA>>>
+
+Después dile en una línea: "Pégalo en el modo voz, haz la entrevista y vuelve aquí a escribir: terminé la entrevista". Y espera. (Si en este chat ya aparece una entrevista de voz hecha, pasa directamente al PASO 2.)
+
+══════ PASO 2 · "terminé la entrevista" → EXPEDIENTE + APP ══════
+Usa la transcripción de la entrevista de voz que aparece como contexto de este chat. Si no la ves, pídele que la pegue. Haz TODO esto en orden, sin preguntar más, salvo que falte un dato esencial:
+
+A) EXPEDIENTE
+Nombre, profesión, idioma meta e idioma nativo, objetivo y situación real que más le importa, motivación, tiempo diario, nivel estimado y cuánta ayuda necesitó, fortalezas, errores y patrones, vocabulario clave.
+MAPA DE TEMÁTICA: subárea profesional exacta; 5–8 temas que disfruta, cada uno con ejemplos concretos y su vocabulario; temas a evitar; escenarios reales de trabajo y de placer; profundidad técnica que quiere. Si la entrevista fue pobre en esto, no inventes: pregunta ahora.
+
+B) PLAN CORTO
+Plan de 2 a 4 semanas apoyado en sus temas, con la meta concreta de cada semana.
+
+C) CREAR LA APP A PARTIR DE ESTE ARCHIVO (rápido; NO programes la app desde cero)
+1. La plantilla es el archivo adjunto en este chat. Léelo desde el archivo adjunto. Si no lo ves, pide que lo adjunte y espera.
+2. Lee el bloque <script id="exercise-catalog" type="text/plain"> de ese archivo: trae el formato exacto de cada tipo de ejercicio y la escalera de etapas. Usa SOLO los tipos y formatos del catálogo. Si necesitas una idea nueva, usa el tipo "task".
+3. Haz una copia de trabajo llamada index.html. No reescribas el código. Cambia lo mínimo con un script de Python (no línea por línea):
+   - Reemplaza el JSON de <script id="lesson-data" type="application/json"> por su PRIMERA lección real (ver D). Con Python: re.sub(r'(<script id="lesson-data" type="application/json">)(.*?)(<\/script>)', lambda m: m.group(1)+json_de_la_leccion+m.group(3), html, count=1, flags=re.S)
+   - En la lección pon: lang (código del idioma meta: en-US, fr-FR, pt-BR, de-DE…), targetLanguage, nativeLanguage, profession, student (su nombre) y stage (1 al inicio).
+   - Cambia el <title> con su nombre. Si su idioma nativo no es español, traduce los textos de interfaz con reemplazos puntuales.
+   - Deja intactos los bloques exercise-catalog y agent-instructions (los necesitarás los días siguientes).
+4. Publica con publish_files: SIN slug (artefacto nuevo), título "Mi entrenador de [idioma] — [su nombre]", privado. Con una página nueva se publica primero y se declara después.
+5. Declara las capacidades con declare_capabilities: tts, dictation, sample, db (usa describe_capabilities si dudas).
+6. Escribe en la base de datos del artefacto nuevo con db_write: el doc "dossier" (expediente + mapa de temática + plan + stage) y el doc "lessons/current" con la primera lección: {updatedAt: <fecha-hora ISO>, lesson: {...}}.
+7. Comprueba que el artefacto cargó (get_artifact) y que lessons/current existe (db_get).
+
+D) PRIMERA LECCIÓN
+- Etapa 1: 10–14 ejercicios cortos (8–10 min), sin cronómetro ni conversación larga; los tipos de la etapa 1 están en el catálogo. Orden: calentamiento fácil → escucha → habla → verificación. Frases cortas.
+- Gira en torno a 1–2 temas del MAPA DE TEMÁTICA, con detalles concretos que la persona contó (nombres, proyectos, situaciones), para que se sienta una conversación que disfruta y no ejercicios genéricos.
+- Incluye al menos un ejercicio de habla y refuerza los errores que detectaste en la entrevista. Cada ejercicio con hint útil y específico, nunca genérico.
+- Tono de coach: abre con una frase que conecte con su meta y cierra con un reconocimiento concreto. El personaje de los role-plays conversa de forma amable y natural, no como examinador.
+- Cada 3–4 días introduce un tema nuevo del mapa y un tipo de ejercicio nuevo; si dice que un tema le aburre, retíralo.
+
+E) RESPUESTA FINAL (máximo 7 líneas)
+Con calidez: 1) lo que más destacó de ella en la entrevista; 2) el enlace a su app; 3) qué trabajará en la primera lección; 4) cómo seguir cada día, con este texto exacto que debe pegar en un chat nuevo: "Sigue las instrucciones del bloque agent-instructions de mi artefacto «Mi entrenador de [idioma] — [su nombre]» y dame la lección de hoy". No repitas el expediente completo.
+
+══════ PASO 3 · BUCLE DIARIO ══════
+Cuando la persona te pida la lección de hoy o escriba "listo":
+1. Localiza su artefacto (lista tus artefactos) y léelo con read_file para tener estas instrucciones y el catálogo. Lee sus reportes con db_list/db_get del prefijo "sessions/" (el más reciente) y el doc "dossier".
+2. Analiza: % por ejercicio y por tipo, qué fue a la primera escucha vs. tras repetición vs. con pistas, qué se repitió en el repaso, errores recurrentes, y el feedback que Claude dio en las tareas abiertas.
+3. Decide la etapa con las reglas del catálogo y actualiza el "dossier" (nivel, etapa, errores recurrentes, temas usados y pendientes).
+4. Escribe la lección de mañana en "lessons/current" con las reglas de D): refuerza lo débil, avanza lo sólido, rota los temas, mezcla tipos (no más de 3 seguidos iguales) y abre con una conexión a su meta.
+5. Respuesta corta y cálida: qué mejoró (con datos), qué toca reforzar, de qué quiere hablar mañana, y que su app ya se actualizó sola.
+Si no hay reporte nuevo, díselo, pídele que termine la lección en la app y no inventes resultados.
+
+REGLAS DE CALIDAD
+- El JSON de la lección debe ser válido y seguir el formato del catálogo. Nunca dejes campos vacíos que muestren "null".
+- Si una lección salió por debajo del 60%, no lo dramatices: normaliza, explica que repetir es parte del método y deja una mini-victoria para mañana.
+- Si algo falla (publicar, base de datos), dilo en una línea y qué haces para arreglarlo. No te quedes en silencio.
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Language Trainer</title>
+<style>
+:root{--bg:#fff;--fg:#3c3c3c;--mut:#777;--line:#e5e5e5;--card:#fff;--green:#58cc02;--greend:#58a700;--blue:#1cb0f6;--blued:#1899d6;--red:#ff4b4b;--redd:#ea2b2b;--gold:#ffc800;--soft:#f7f7f7;--okbg:#d7ffb8;--badbg:#ffdfe0}
+@media(prefers-color-scheme:dark){:root{--bg:#131f24;--fg:#e8eef0;--mut:#9aa9ae;--line:#2c3c42;--card:#1b2b31;--soft:#1f3138;--okbg:#1f3a12;--badbg:#3d1c1e}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:680px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.bar{flex:1;height:14px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--green);border-radius:9px;transition:width .3s}
+.iconbtn{background:none;border:0;font-size:22px;cursor:pointer;color:var(--fg);padding:4px 8px}
+#xp{font-weight:800;color:var(--gold);min-width:56px;text-align:right}
+main{flex:1;padding:8px 20px 24px}
+footer{position:sticky;bottom:0;background:var(--bg);border-top:2px solid var(--line)}
+.fb{padding:0 20px;max-height:0;overflow:hidden;transition:max-height .25s}
+.fb.show{padding:14px 20px 4px;max-height:60vh;overflow:auto}
+.fb.ok{background:var(--okbg)}.fb.bad{background:var(--badbg)}
+.fb h3{margin:0 0 4px;font-size:18px}.fb.ok h3{color:var(--greend)}.fb.bad h3{color:var(--redd)}
+.fb p{margin:4px 0}
+.foot{padding:14px 20px}
+.btn{width:100%;border:0;border-bottom:4px solid var(--greend);background:var(--green);color:#fff;font:800 16px inherit;font-family:inherit;letter-spacing:.5px;text-transform:uppercase;padding:14px;border-radius:14px;cursor:pointer}
+.btn:disabled{background:var(--line);border-color:#cfcfcf;color:#aaa;cursor:not-allowed}
+.btn.blue{background:var(--blue);border-color:var(--blued)}
+.ghost{background:var(--card);color:var(--blue);border:2px solid var(--line);border-bottom-width:4px;border-radius:12px;padding:8px 14px;font:700 14px inherit;font-family:inherit;cursor:pointer}
+.ghost:active{transform:translateY(2px);border-bottom-width:2px}
+.tag{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--blue);margin-bottom:2px}
+.blk{font-size:12px;color:var(--mut);margin-bottom:6px}
+h1{font-size:24px;margin:8px 0 12px}
+h2{font-size:22px;margin:6px 0 14px}
+.abar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 14px}
+.bigplay{background:var(--blue);color:#fff;border:0;border-bottom:4px solid var(--blued);border-radius:16px;padding:16px 22px;font:800 18px inherit;font-family:inherit;cursor:pointer}
+.bigplay:active{transform:translateY(2px);border-bottom-width:2px}
+.bigplay:disabled,.ghost:disabled{opacity:.5;cursor:default}
+.second{background:var(--soft);border-radius:10px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--blued);margin:4px 0}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.modes .opt{text-align:center}
+.meta{font-size:13px;color:var(--mut)}
+.info{background:var(--soft);border-radius:12px;padding:10px 14px;margin:8px 0;display:none}
+.info.on{display:block}
+.opts{display:grid;gap:10px;margin:10px 0}
+.opt{text-align:left;background:var(--card);color:var(--fg);border:2px solid var(--line);border-bottom-width:4px;border-radius:14px;padding:13px 16px;font:600 16px inherit;font-family:inherit;cursor:pointer}
+.opt.sel{border-color:var(--blue);background:rgba(28,176,246,.12)}
+.opt.right{border-color:var(--green);background:var(--okbg)}
+.opt.wrong{border-color:var(--red);background:var(--badbg)}
+.opt:disabled{cursor:default}
+textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:14px;padding:12px;font:16px inherit;font-family:inherit;background:var(--card);color:var(--fg);resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;padding:10px;border:2px dashed var(--line);border-radius:14px;margin:8px 0}
+.chip{background:var(--card);color:var(--fg);border:2px solid var(--line);border-bottom-width:4px;border-radius:12px;padding:8px 12px;font:600 15px inherit;font-family:inherit;cursor:pointer}
+.w-ok{color:var(--greend);font-weight:700}.w-miss{color:var(--redd);font-weight:700;text-decoration:underline}
+.micbtn{display:none}.hasmic .micbtn{display:inline-block}
+.listening .micbtn{background:var(--red);color:#fff;border-color:var(--redd)}
+.card3{border:2px solid var(--line);border-radius:16px;padding:14px;margin:10px 0;background:var(--card)}
+.card3 b{font-size:18px}
+table{border-collapse:collapse;width:100%;margin:8px 0}
+td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
+pre.rep{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:12px;font:13px/1.5 ui-monospace,monospace;max-height:260px;overflow:auto}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal.on{display:flex}
+.modal>div{background:var(--bg);border-radius:18px;padding:18px;max-width:600px;width:100%;max-height:90vh;overflow:auto}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.fine{font-size:13px;color:var(--mut)}
+.fb-text{white-space:pre-wrap}
+.coach{font-weight:700;color:var(--blued);margin-top:6px}
+#streak{font-weight:800;color:#ff7a00;min-width:44px;text-align:right}
+.boss{color:#b8860b}
+.timer{font-size:22px;font-weight:800;color:var(--blued);margin:0 0 0 8px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.mgrid .opts{margin:0}
+.tokrow{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.tok{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 10px;font-size:18px;font-weight:600;font-family:inherit;color:var(--fg);cursor:pointer}
+.tok.sel{border-color:var(--blue);background:rgba(28,176,246,.12)}
+.tok.right{border-color:var(--green);background:var(--okbg)}
+.tok.wrong{border-color:var(--red);background:var(--badbg)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <button class="iconbtn" id="menu" title="Cargar lección">☰</button>
+    <div class="bar"><i id="prog"></i></div>
+    <span id="streak"></span><span id="xp">⭐ 0</span>
+  </header>
+  <main id="card"></main>
+  <footer>
+    <div id="fb" class="fb"></div>
+    <div class="foot"><button class="btn" id="main"></button><button class="ghost" id="retry" style="display:none;width:100%;margin-top:10px">🔁 Repetir y reintentar (cuenta como «tras repetición»)</button></div>
+  </footer>
+</div>
+
+<div class="modal" id="modal"><div>
+  <h2>Cargar lección del día</h2>
+  <p class="fine">Normalmente no necesitas esto: Claude deja la lección del día directamente en la app y aparece sola al abrirla. Este cuadro es un respaldo: pega aquí un JSON de lección si quieres cargarlo a mano.</p>
+  <textarea id="jsonin" placeholder='Pega aquí el JSON de la lección…' style="min-height:160px"></textarea>
+  <div id="jsonerr" class="fine" style="color:var(--redd)"></div>
+  <div class="row">
+    <button class="ghost" id="loadjson">Cargar lección</button>
+    <button class="ghost" id="copyprompt">Copiar prompt-plantilla para Claude</button>
+    <button class="ghost" id="resetdemo">Lección de ejemplo</button>
+    <button class="ghost" id="closemodal">Cerrar</button>
+  </div>
+</div></div>
+
+<script id="exercise-catalog" type="text/plain">
+CATÁLOGO DE EJERCICIOS Y ESCALERA DE PROGRESIÓN (lo lee el agente que arma las lecciones)
+
+== FORMATO DE LA LECCIÓN ==
+{"title":"","date":"AAAA-MM-DD","lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"","student":"nombre","stage":1-5,"focus":"","speakTip":"consejo de pronunciación/gramática corto (opcional)","exercises":[...]}
+Todo ejercicio acepta "block" (etiqueta de sección), "hint" (pista útil y específica), "noRetry":true (sin segunda oportunidad) y "boss":true (jefe: triple de puntos).
+Con "audio", la app lo reproduce una sola vez y bloquea las respuestas hasta que se escucha; si la persona falla, se le ofrece una segunda oportunidad.
+
+== TIPOS (cada uno con su forma exacta) ==
+CON AUDIO / ESCUCHA
+- choice / minimal_pair: {"type":"choice","audio":"frase (opcional)","prompt":"","options":["",""],"answer":0,"explanation":""}
+- listen_multi: {"type":"listen_multi","audio":"monólogo","transcript":"","questions":[{"q":"","options":[],"answer":0,"explanation":""}]}
+- true_false: {"type":"true_false","audio":"(opcional)","prompt":"Verdadero o falso: …","answer":true,"explanation":""}
+- dictation: {"type":"dictation","audio":"frase"}
+- chunks: {"type":"chunks","audio":"frase","chunks":["bloque 1","bloque 2"]}
+- shadow: {"type":"shadow","audio":"frase corta que se repite de memoria"}
+GRAMÁTICA / VOCABULARIO
+- fill_blank: {"type":"fill_blank","sentence":"I ____ the report yesterday.","options":["send","sent"],"answer":"sent","explanation":""}
+- word_order: {"type":"word_order","prompt":"Arma: «¿Podrías enviarme el informe?»","sentence":"Could you send me the report?","extra":["sent"],"alts":["Can you send me the report?"],"audio":"(opcional)"}
+- find_error: {"type":"find_error","sentence":"Yesterday I go to the office.","wrong":["go"],"correct":"Yesterday I went to the office.","explanation":"","allowCorrect":false}
+   (si allowCorrect=true y la frase ya está bien, deja "wrong":[] y la alumna usa «Está bien»)
+- match: {"type":"match","prompt":"","pairs":[{"a":"report","b":"informe"}],"speak":"a"}  (3–6 pares)
+- cards: {"type":"cards","title":"","items":[{"en":"","es":"","example":""}]}   (la clave "en" es la frase en el idioma meta, "es" su traducción)
+HABLA
+- speak: {"type":"speak","prompt":"","target":"frase a repetir (opcional)","keywords":["…"],"audio":"modelo (opcional)","modelAnswer":""}
+- roleplay: {"type":"roleplay","audio":"lo que dice el interlocutor","task":"","modelAnswer":"","rubric":""}
+- scene (conversación de 2–5 turnos, con una única evaluación de Claude al final):
+  {"type":"scene","title":"","character":"Cliente","setting":"contexto","goal":"qué debe lograr","rubric":"","turns":[{"say":"lo que dice el personaje","task":"qué debe responder","modelAnswer":""}]}
+- task (TIPO GENÉRICO: sirve para casi cualquier idea nueva; Claude evalúa la respuesta en texto o voz):
+  {"type":"task","prompt":"título","context":"texto/escenario (opcional)","audio":"(opcional, el personaje habla)","task":"qué debe hacer","seconds":30,"rubric":"criterios","modelAnswer":"versión modelo","boss":false}
+  Ideas que se resuelven con "task": defender una objeción en 30 s, elevator pitch, debate (el personaje defiende lo contrario), continuar una historia, redactar un email y compararlo, transformar una frase (pasado/formal), traducir rápido, resumir un audio, pedir algo en una situación real, describir un proceso.
+
+== CÓMO CREAR UN TIPO NUEVO ==
+1) Casi siempre basta "task" (o "choice" con otra redacción): no hace falta tocar código.
+2) Si hace falta una interacción distinta, añade una función constructora al script de la app, con la forma function bNombre(ex,card){…} que dibuja en card y llama arm(check) cuando hay respuesta (check devuelve {ok:true|false|null,title,nodes,given,say,level,xp,feedback}), y regístrala con registerType("nombre","Etiqueta",bNombre). Úsala solo si "task" no alcanza. Copia el estilo de bWords/bFind/bMatch.
+3) Prueba con una lección demo antes de dársela a la persona.
+
+== ESCALERA DE PROGRESIÓN (suave al inicio, sube según resultados) ==
+Etapa 1 · Calentamiento (10–14 ejercicios, 8–10 min). Frases de 4–8 palabras. Tipos: cards, choice con audio, true_false, fill_blank, word_order, match, shadow corto. Máximo 1 ejercicio de habla guiado (con target). Nada de cronómetro. Mucho ánimo.
+Etapa 2 · Construyendo base (14–18 ejercicios). Frases de 7–12 palabras. Añade: dictation corto, chunks, find_error, speak con target o keywords, 1 roleplay sencillo.
+Etapa 3 · Ganando soltura (18–22). Frases de 10–15 palabras. Añade: listen_multi, speak abierto, scene de 2–3 turnos, task sin cronómetro.
+Etapa 4 · Conversación real (20–25). Audios a velocidad natural. Añade: scene de 3–5 turnos, task con cronómetro (30 s), debate, role-play con objeciones. Menos ejercicios cerrados.
+Etapa 5 · Nivel jefe. Una vez por semana: 1 "boss":true (scene o task de 60 s) sobre la situación que más teme la persona, precedido por 6–8 ejercicios de calentamiento.
+Reglas para cambiar de etapa:
+- Sube una etapa cuando las últimas 2 sesiones tengan ≥80% a la primera y la persona no usó pistas de forma masiva. Al subir, mantén 30–40% del contenido de la etapa anterior para no abrumar.
+- Mantén la etapa si el resultado está entre 60% y 80%.
+- Baja una etapa (o repite) si fue <60% en la última sesión; explícalo como parte del método, sin dramatizar.
+- Pon la etapa en "stage" y guárdala en el dossier. Cada 3–4 días introduce un tipo de ejercicio que la persona aún no haya visto.
+- Mezcla siempre: no repitas más de 3 ejercicios seguidos del mismo tipo.
+</script>
+<script id="lesson-data" type="application/json">
+{
+ "title":"Lección de ejemplo: todos los tipos",
+ "date":"2026-01-01",
+ "lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"profesional","student":"",
+ "stage":2,
+ "focus":"Demostración de todos los tipos de ejercicio de la plantilla. El agente la reemplaza por la primera lección real.",
+ "exercises":[
+  {"type":"cards","block":"Calentamiento","title":"Frases útiles","items":[
+    {"en":"Could you repeat that, please?","es":"¿Podrías repetir eso, por favor?","example":"Sorry, could you repeat that, please?"},
+    {"en":"Let me check and get back to you.","es":"Déjame revisar y te respondo.","example":"Let me check and get back to you by Friday."}]},
+  {"type":"choice","block":"Escucha","audio":"The meeting starts at three o'clock.","prompt":"¿A qué hora empieza la reunión?","options":["2:00","3:00","4:00"],"answer":1,"hint":"Es un número entre dos y cuatro.","explanation":"«Three o'clock» = las 3."},
+  {"type":"minimal_pair","block":"Escucha","audio":"She wants to ship the order today.","options":["ship","sheep"],"answer":0,"hint":"Habla de enviar un pedido.","explanation":"«Ship» = enviar; «sheep» = oveja."},
+  {"type":"listen_multi","block":"Escucha","audio":"Hi, this is Ana. The report is ready, but I still need the final numbers from sales. Can we meet on Thursday?","transcript":"Hi, this is Ana. The report is ready, but I still need the final numbers from sales. Can we meet on Thursday?","hint":"Piensa en qué falta y cuándo.","questions":[
+    {"q":"¿Qué le falta a Ana?","options":["El informe","Los números finales de ventas","Una reunión"],"answer":1,"explanation":"El informe ya está listo; faltan los números."},
+    {"q":"¿Cuándo propone reunirse?","options":["El martes","El jueves","El viernes"],"answer":1,"explanation":"Dice «on Thursday»."}]},
+  {"type":"fill_blank","block":"Gramática","sentence":"I ____ the report yesterday.","options":["send","sent","sending"],"answer":"sent","explanation":"Con «yesterday» usamos pasado: sent."},
+  {"type":"true_false","block":"Escucha","audio":"We usually have the team meeting on Mondays.","prompt":"Verdadero o falso: el equipo se reúne normalmente los lunes.","answer":true,"hint":"Escucha el día de la semana.","explanation":"Dice «on Mondays»."},
+  {"type":"word_order","block":"Gramática","prompt":"Arma la frase: «¿Podrías enviarme el informe?»","sentence":"Could you send me the report?","extra":["sent"],"alts":["Can you send me the report?"]},
+  {"type":"match","block":"Vocabulario","prompt":"Une cada palabra con su significado","pairs":[{"a":"report","b":"informe"},{"a":"deadline","b":"fecha límite"},{"a":"meeting","b":"reunión"},{"a":"budget","b":"presupuesto"}],"speak":"a"},
+  {"type":"find_error","block":"Gramática","sentence":"Yesterday I go to the office early.","wrong":["go"],"correct":"Yesterday I went to the office early.","explanation":"Con «yesterday» usamos el pasado: went."},
+  {"type":"dictation","block":"Escucha","audio":"Please send me the final version tomorrow.","hint":"Son 7 palabras."},
+  {"type":"chunks","block":"Escucha","audio":"I will send you the report after the meeting.","chunks":["I will send you","the report","after the meeting."],"hint":"Primero lo que harás, luego qué, luego cuándo."},
+  {"type":"shadow","block":"Habla","audio":"Let me check and get back to you.","hint":"Son 7 palabras y empieza con «Let me»."},
+  {"type":"speak","block":"Habla","prompt":"Preséntate en una frase: tu nombre y a qué te dedicas.","keywords":["my name","I work"],"modelAnswer":"My name is Ana and I work in sales."},
+  {"type":"roleplay","block":"Conversación","audio":"Hi, thanks for joining. Could you tell me what you do?","task":"Preséntate y di en una o dos frases a qué te dedicas.","modelAnswer":"Sure. I work in sales, and I help companies find the right solution for their needs.","rubric":"claridad y frases cortas"},
+  {"type":"task","block":"Conversación","prompt":"Defiéndete en 30 segundos","audio":"Honestly, I think this project is too expensive. Why should we do it?","task":"Responde con una razón clara y una consecuencia positiva.","seconds":30,"rubric":"una razón clara, tono profesional, frases cortas","modelAnswer":"I understand your concern. However, this project will save us time and reduce errors, so it pays for itself in a few months."},
+  {"type":"scene","block":"Conversación","title":"Reunión con un cliente","character":"Cliente","setting":"Tu cliente quiere saber si el proyecto estará listo a tiempo.","goal":"dar una respuesta clara y proponer un siguiente paso","rubric":"claridad, cortesía y un siguiente paso concreto","turns":[
+    {"say":"Hi. Will the project be ready by the end of the month?","task":"Responde si llegará a tiempo y por qué.","modelAnswer":"Yes, we are on schedule. The main work is done and we are testing it now."},
+    {"say":"Good. And what are the next steps?","task":"Explica el siguiente paso.","modelAnswer":"Next, we will do a final review with you and fix any small issues."},
+    {"say":"Great. Can we meet next week to review it?","task":"Acepta y propone un día.","modelAnswer":"Of course. How about Tuesday at ten?"}]},
+  {"type":"task","block":"Jefe","boss":true,"prompt":"Presenta tu trabajo en un minuto","context":"Tienes un minuto con el director de una empresa que no te conoce.","task":"Explica qué haces y por qué importa, en 4 o 5 frases.","seconds":60,"rubric":"qué haces, para quién, resultado concreto","modelAnswer":"I help companies organize their work. I work with the team to find problems and fix them. As a result, they save time and make fewer mistakes."}
+ ]
+}
+</script>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+function el(tag,props,...kids){
+  const e=document.createElement(tag);
+  props=props||{};
+  for(const k in props){
+    if(k==="class")e.className=props[k];
+    else if(k.slice(0,2)==="on")e.addEventListener(k.slice(2),props[k]);
+    else e.setAttribute(k,props[k]);
+  }
+  kids.flat(9).forEach(c=>{if(c==null||c===false)return;e.append(c.nodeType?c:document.createTextNode(String(c)))});
+  return e;
+}
+function LS(k,v){
+  try{
+    if(v===undefined){const r=localStorage.getItem(k);return r?JSON.parse(r):null}
+    localStorage.setItem(k,JSON.stringify(v));
+  }catch(e){return null}
+}
+const LEVELS=["primera escucha","tras repetición","con pistas","por lectura"];
+const TYPELABEL={shadow:"Repite lo que oíste",choice:"Elige",dictation:"Escribe lo que oyes",chunks:"Ordena los bloques",speak:"Habla",roleplay:"Role-play con cliente",cards:"Tarjetas",fill_blank:"Completa el hueco",true_false:"Verdadero o falso"};
+const EXT={},OPEN={roleplay:1,task:1,scene:1};
+function registerType(n,l,f){TYPELABEL[n]=l;EXT[n]=f}
+const SCHEMA_PROMPT=`Genera la lección de hoy como JSON válido (solo el JSON, sin texto extra) para mi app de práctica de inglés.
+Estructura: {"title":"","date":"AAAA-MM-DD","lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"profesión de la alumna","focus":"","exercises":[...]}
+Tipos de ejercicio (todos aceptan "block": etiqueta de sección):
+- {"type":"minimal_pair"|"choice","audio":"frase que se oye (opcional)","prompt":"pregunta","options":[...],"answer":índice,"explanation":"","hint":""}
+- {"type":"listen_multi","audio":"monólogo","transcript":"","hint":"","questions":[{"q":"","options":[...],"answer":0,"explanation":""}]}
+- {"type":"dictation","audio":"frase","hint":""}
+- {"type":"shadow","audio":"frase corta que se oye una vez y la alumna repite de memoria"}
+- {"type":"chunks","audio":"frase","chunks":["bloque 1","bloque 2","bloque 3"]}
+- {"type":"speak","prompt":"","target":"frase a repetir (opcional)","keywords":["palabras clave (opcional)"],"audio":"modelo (opcional)","modelAnswer":""}
+- {"type":"roleplay","audio":"lo que dice el cliente","task":"","modelAnswer":"","rubric":""}
+- {"type":"cards","title":"","items":[{"en":"","es":"","example":""}]}
+- {"type":"fill_blank","sentence":"I ____ it.","options":[],"answer":"texto exacto"} · {"type":"true_false","prompt":"","answer":true} · {"type":"word_order","prompt":"","sentence":"","extra":[]} · {"type":"find_error","sentence":"","wrong":[""],"correct":""} · {"type":"match","pairs":[{"a":"","b":""}]} · {"type":"task","prompt":"","task":"","seconds":30,"modelAnswer":""} · {"type":"scene","character":"","setting":"","turns":[{"say":"","task":"","modelAnswer":""}]}
+Notas: cada audio suena una sola vez (la app lo bloquea); "noRetry":true en un ejercicio desactiva la segunda oportunidad; incluye 2 ejercicios de "frase de rescate" (pedir repetir / confirmar lo entendido).
+Reglas: 20–25 ejercicios; primero los de escucha sin mostrar texto; mezcla minimal pairs, dictado, bloques, gramática, speaking y role-play; termina con tarjetas para la próxima clase. Oraciones de 8–15 palabras al inicio.
+Avance del alumno hoy: `;
+
+let L=null,queue=[],i=0,results=[],sst={},xp=0,activeTA=null;
+let mode=LS("et_mode")==="exam"?"exam":"train";
+let round=1,histSaved=false;
+let started=false,sessionId=null,dbApi=null,dbVer=null,pendingLesson=null;
+let LANG="en-US";let streak=0,bestStreak=0,tick=null;function stopTick(){if(tick){clearInterval(tick);tick=null}}
+const PASS=0.8;
+let ttsApi=null,dic=null,listening=false;
+
+/* ---------- audio ---------- */
+if(window.claude&&claude.use){
+  claude.use("tts").then(t=>{ttsApi=t||null}).catch(()=>{});
+  claude.use("dictation").then(d=>{
+    if(!d)return;
+    dic=d;
+    d.onFinal(({text})=>{if(activeTA){activeTA.value=(activeTA.value+" "+text).trim();activeTA.dispatchEvent(new Event("input"))}});
+    d.onState(({state})=>{listening=state==="listening";document.body.classList.toggle("listening",listening)});
+    document.body.classList.add("hasmic");
+  }).catch(()=>{});
+}
+async function stopMic(){
+  if(dic&&listening){
+    try{await dic.stop()}catch(e){}
+    listening=false;document.body.classList.remove("listening");
+  }
+}
+function speak(text,o){
+  if(dic&&listening)return stopMic().then(()=>doSpeak(text,o));
+  return doSpeak(text,o);
+}
+function doSpeak(text,o){
+  o=o||{};
+  const rate=o.rate||1;
+  const fallback=()=>new Promise(res=>{
+    try{
+      if(!("speechSynthesis" in window))return res();
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(text);
+      u.lang=o.lang||LANG;u.rate=rate;
+      const vs=speechSynthesis.getVoices();
+      const pre=String(o.lang||LANG).split("-")[0].toLowerCase();
+      const v=vs.find(v=>String(v.lang).replace("_","-").toLowerCase()===String(o.lang||LANG).toLowerCase())||vs.find(v=>String(v.lang).toLowerCase().startsWith(pre));
+      if(v)u.voice=v;
+      u.onend=u.onerror=()=>res();
+      speechSynthesis.speak(u);
+    }catch(e){res()}
+  });
+  if(ttsApi){
+    return ttsApi.speak(text,{rate:Math.min(1.5,Math.max(0.7,rate)),voice:o.voice||"buttery",language:o.lang||LANG}).catch(e=>{
+      const c=e&&e.code;
+      if(c==="viewer_stopped"||c==="busy"||c==="rate_limited")return;
+      return fallback();
+    });
+  }
+  return fallback();
+}
+
+/* ---------- helpers ---------- */
+function norm(s){
+  s=String(s).normalize("NFC").toLowerCase().replace(/[’]/g,"'").replace(/[^\p{L}\p{N}' ]+/gu," ");
+  if(/^(ja|zh)/i.test(LANG))return Array.from(s.replace(/[\s']/g,""));
+  return s.split(/\s+/).filter(Boolean);
+}
+function lcsMark(target,said){
+  const n=target.length,m=said.length;
+  const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let a=1;a<=n;a++)for(let b=1;b<=m;b++)
+    dp[a][b]=target[a-1]===said[b-1]?dp[a-1][b-1]+1:Math.max(dp[a-1][b],dp[a][b-1]);
+  const mark=new Array(n).fill(false);
+  let a=n,b=m;
+  while(a>0&&b>0){
+    if(target[a-1]===said[b-1]){mark[a-1]=true;a--;b--}
+    else if(dp[a-1][b]>=dp[a][b-1])a--;else b--;
+  }
+  return mark;
+}
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function getSt(ex){const k=ex.shared||("e"+ex.id);return sst[k]||(sst[k]={plays:0,hint:false,shown:false})}
+function levelOf(ex,st){
+  if(!ex.audio)return null;
+  if(!ex.retrying)return LEVELS[0];
+  if(st.shown)return LEVELS[3];
+  if(st.hint)return LEVELS[2];
+  return LEVELS[1];
+}
+function canAnswer(ex,st){return !ex.audio||st.plays>=1||!!ex.retrying}
+function expand(exs){
+  const out=[];
+  exs.forEach((x,n)=>{
+    if(x.type==="listen_multi"){
+      (x.questions||[]).forEach(q=>out.push({type:"choice",block:x.block,audio:x.audio,hint:x.hint,transcript:x.transcript||x.audio,shared:"m"+n,prompt:q.q,options:q.options,answer:q.answer,explanation:q.explanation}));
+    }else{
+      const y=Object.assign({},x);
+      if(x.type==="minimal_pair"){y.type="choice";y.prompt=x.prompt||"¿Qué escuchaste?"}
+      if(x.type==="fill_blank"){y.type="choice";y.kind="fill_blank";y.prompt=(x.prompt||"Completa la frase")+": "+x.sentence}
+      if(x.type==="true_false"){y.type="choice";y.kind="true_false";y.prompt=x.statement||x.prompt;y.options=["Verdadero","Falso"];y.answer=(x.answer===true||/^(true|verdadero|v)$/i.test(String(x.answer)))?0:1}
+      out.push(y);
+    }
+  });
+  out.forEach((x,k)=>x.id=k);
+  return out;
+}
+
+function autoHint(ex){
+  const w=String(ex.audio||"").replace(/[.,?!]/g,"").split(/\s+/).filter(Boolean);
+  if(!w.length)return "Escucha las palabras clave y la intención.";
+  const start=w.slice(0,Math.min(2,w.length)).join(" ");
+  return "Son "+w.length+" palabras y empieza así: «"+start+" …»";
+}
+/* ---------- audio bar ---------- */
+function audioBar(ex,st){
+  const info=el("div",{class:"info"});
+  const meta=el("span",{class:"meta"});
+  const free=!!ex.retrying&&!OPEN[ex.type];
+  const playBtn=el("button",{class:"bigplay",type:"button"});
+  const bar=el("div",{class:"abar"},playBtn);
+  let rescue=null;
+  const upd=()=>{
+    if(free){playBtn.disabled=false;playBtn.textContent="🔊 Escuchar"}
+    else{playBtn.disabled=st.plays>=1;playBtn.textContent=st.plays>=1?"✓ Ya escuchaste":"🔊 Escuchar (solo 1 vez)"}
+    if(rescue)rescue.disabled=st.plays<1;
+    meta.textContent=free?("Escuchas: "+st.plays+(st.hint?" · pista":"")+(st.shown?" · texto visto":"")):(ex.retrying?"Pediste repetición":"");
+    info.innerHTML="";
+    if(free&&(st.hint||st.shown)){
+      info.classList.add("on");
+      if(st.hint)info.append(el("div",{},"💡 "+(ex.hint||autoHint(ex))));
+      if(st.shown)info.append(el("div",{},"📄 "+(ex.transcript||ex.audio)));
+    }else info.classList.remove("on");
+  };
+  playBtn.onclick=()=>{if(!free&&st.plays>=1)return;st.plays++;upd();speak(ex.audio,{voice:ex.voice})};
+  if(free){
+    bar.append(
+      el("button",{class:"ghost",type:"button",onclick:()=>{st.plays++;upd();speak(ex.audio,{rate:0.75,voice:ex.voice})}},"🐢 Lento"),
+      el("button",{class:"ghost",type:"button",onclick:()=>{st.hint=true;upd()}},"💡 Pista"),
+      el("button",{class:"ghost",type:"button",onclick:()=>{st.shown=true;upd()}},"👁 Ver texto"));
+  }
+  if(OPEN[ex.type]){
+    rescue=el("button",{class:"ghost",type:"button",onclick:()=>{if(st.plays<1)return;ex.retrying=true;st.plays++;upd();speak(ex.audio,{voice:ex.voice})}},"🙋 Could you repeat that, please?");
+    bar.append(rescue);
+  }
+  bar.append(meta);
+  upd();
+  return [bar,info];
+}
+
+function modelNode(text,msg){
+  return el("div",{},
+    el("p",{},msg||"Escucha la versión correcta y repítela en voz alta:"),
+    el("div",{class:"card3"},el("b",{},text)),
+    el("div",{class:"row"},
+      el("button",{class:"ghost",type:"button",onclick:()=>speak(text)},"🔊 Escuchar la correcta"),
+      el("button",{class:"ghost",type:"button",onclick:()=>speak(text,{rate:0.75})},"🐢 Lento")));
+}
+
+/* ---------- main flow ---------- */
+function header(ex){
+  return [el("div",{class:"blk"},(ex.block||"")+" · "+(i+1)+"/"+queue.length),el("div",{class:"tag"},TYPELABEL[ex.kind||ex.type]||ex.type),ex.boss?el("div",{class:"tag boss"},"👑 JEFE: puntos triples"):null,
+    ex.second?el("div",{class:"second"},"🔁 Segunda oportunidad: ahora puedes repetir, usar lento, pista y texto. Cuenta como «tras repetición»."):null];
+}
+function setFB(kind,title,nodes){
+  const fb=$("#fb");
+  fb.className="fb show "+kind;
+  fb.innerHTML="";
+  fb.append(el("h3",{},title),...nodes);
+}
+function clearFB(){const fb=$("#fb");fb.className="fb";fb.innerHTML="";$("#retry").style.display="none"}
+function arm(fn){
+  const b=$("#main");
+  b.disabled=false;b.className="btn";b.textContent="Comprobar";
+  b.onclick=async()=>{
+    b.disabled=true;
+    await stopMic();
+    const r=await fn();
+    if(!r){b.disabled=false;return}
+    const ex=queue[i];
+    xp+=(r.xp!=null?r.xp:(r.ok===true?(ex.second?5:10):0))*(ex.boss?3:1);
+    if(r.ok===true){streak++;bestStreak=Math.max(bestStreak,streak)}else if(r.ok===false)streak=0;
+    $("#streak").textContent=streak>=2?"🔥 "+streak:"";
+    $("#xp").textContent="⭐ "+xp;
+    results.push({ex:ex,ok:r.ok,level:r.level,given:r.given||"",retry:!!ex.second,round:round,feedback:r.feedback||""});
+    saveProg();
+    const cl=coachLine(r.ok);
+    setFB(r.ok===false?"bad":"ok",r.title,(r.nodes||[]).concat(cl?[el("p",{class:"coach"},cl)]:[]));
+    if(r.say)speak(r.say);
+    b.disabled=false;b.className="btn"+(r.ok===false?" blue":"");
+    b.textContent="Continuar";
+    b.onclick=next;
+    $("#retry").style.display="none";
+    if(r.ok===false&&mode==="train"&&ex.audio&&!ex.retrying&&!ex.second&&!ex.noRetry&&!OPEN[ex.type]){
+      const rb=$("#retry");rb.style.display="block";
+      rb.textContent="🔁 Repetir y reintentar (cuenta como «tras repetición»)";
+      rb.onclick=()=>{ex.retrying=true;ex.second=true;render()};
+    }
+  };
+}
+function disarm(){const b=$("#main");b.disabled=true;b.className="btn";b.textContent="Comprobar";b.onclick=null}
+function lessonKey(){return (L.title||"")+"|"+(L.date||"")+"|"+L.exercises.length}
+function saveProg(){
+  if(round!==1)return;
+  LS("et_prog",{key:lessonKey(),i:i,xp:xp,results:results.map(r=>({id:r.ex.id,ok:r.ok,level:r.level,given:r.given,retry:r.retry,round:r.round}))});
+}
+function resume(p){
+  i=p.i;xp=p.xp||0;sst={};round=1;
+  results=(p.results||[]).map(r=>Object.assign({},r,{ex:queue[r.id]})).filter(r=>r.ex);
+  $("#xp").textContent="⭐ "+xp;
+  render();
+}
+function next(){i++;saveProg();render()}
+
+function render(){
+  stopMic();stopTick();started=true;
+  const card=$("#card");card.innerHTML="";clearFB();
+  $("#prog").style.width=(queue.length?Math.round(100*i/queue.length):0)+"%";
+  if(i>=queue.length){
+    if(round===1){
+      const g=results.filter(r=>r.round===1&&typeof r.ok==="boolean"&&!r.retry);
+      const gd=g.filter(r=>r.ok).length;
+      const miss=g.filter(r=>!r.ok);
+      if(g.length&&gd/g.length<PASS&&miss.length)return reviewScreen(gd,g.length,miss);
+    }
+    return summary();
+  }
+  const ex=queue[i];
+  card.append(...header(ex).filter(Boolean));
+  disarm();
+  const B=Object.assign({shadow:bShadow,choice:bChoice,dictation:bDict,chunks:bChunks,speak:bSpeak,roleplay:bRole,cards:bCards},EXT);
+  (B[ex.type]||bUnknown)(ex,card);
+  if(mode==="train"&&ex.audio&&!ex.retrying&&!ex.second&&!ex.noRetry&&!OPEN[ex.type]){
+    const rb=$("#retry");
+    rb.textContent="🙋 No lo capté: dame otra oportunidad (cuenta como «tras repetición»)";
+    rb.style.display="block";
+    rb.onclick=()=>{
+      results.push({ex:ex,ok:false,level:LEVELS[0],given:"(no lo captó a la primera)",retry:false,round:round});
+      ex.retrying=true;ex.second=true;render();
+    };
+  }
+  window.scrollTo(0,0);
+}
+function bUnknown(ex,card){
+  card.append(el("p",{},"Tipo de ejercicio no reconocido: "+ex.type));
+  const b=$("#main");b.disabled=false;b.textContent="Saltar";b.onclick=next;
+}
+
+/* choice */
+function bChoice(ex,card){
+  const st=getSt(ex);
+  card.append(el("h2",{},ex.prompt||"Elige la respuesta"));
+  if(ex.audio)card.append(...audioBar(ex,st));
+  const order=shuffle(ex.options.map((o,k)=>k));
+  const ans=typeof ex.answer==="number"?ex.answer:ex.options.indexOf(ex.answer);
+  let sel=null;const btns=[];
+  const wrap=el("div",{class:"opts"});
+  const warn=el("div",{class:"fine"},"");
+  if(ex.shared&&st.plays>=1&&!ex.retrying)warn.textContent="El audio ya sonó: responde de memoria.";
+  order.forEach(k=>{
+    const b=el("button",{class:"opt",type:"button",onclick:()=>{
+      if(b.disabled)return;
+      if(!canAnswer(ex,st)){warn.textContent="Primero escucha el audio (una vez).";return}
+      warn.textContent="";
+      btns.forEach(x=>x.classList.remove("sel"));b.classList.add("sel");sel=k;
+      arm(check);
+    }},ex.options[k]);
+    btns.push(b);wrap.append(b);
+  });
+  card.append(wrap,warn);
+  function check(){
+    const ok=sel===ans;
+    btns.forEach((b,idx)=>{b.disabled=true;const k=order[idx];if(k===ans)b.classList.add("right");else if(k===sel)b.classList.add("wrong")});
+    const lv=levelOf(ex,st);
+    const nodes=[];
+    if(!ok)nodes.push(el("p",{},"Respuesta correcta: "+ex.options[ans]));
+    if(ex.explanation)nodes.push(el("p",{},ex.explanation));
+    if(ex.audio)nodes.push(el("p",{class:"fine"},"📄 "+(ex.transcript||ex.audio)));
+    if(lv)nodes.push(el("p",{class:"fine"},"Registrado como: "+lv));
+    return {ok,level:lv,given:ex.options[sel],title:ok?"¡Correcto!":"Casi",nodes};
+  }
+}
+
+/* dictation */
+function bDict(ex,card){
+  const st=getSt(ex);
+  card.append(el("h2",{},"Escribe lo que oyes"),...audioBar(ex,st));
+  const ta=el("textarea",{placeholder:"Escribe la oración completa…",spellcheck:"false"});
+  ta.addEventListener("focus",()=>{activeTA=ta});
+  card.append(ta,el("div",{class:"row"},el("button",{class:"ghost micbtn",type:"button",onclick:()=>{}},"")));
+  card.lastChild.remove();
+  ta.addEventListener("input",()=>{if(ta.value.trim()&&canAnswer(ex,st))arm(check);else disarm()});
+  function check(){
+    const target=norm(ex.audio),said=norm(ta.value);
+    const mark=lcsMark(target,said);
+    const hit=mark.filter(Boolean).length;
+    const ratio=hit/target.length;
+    const ok=ratio>=0.85;
+    const lv=levelOf(ex,st);
+    const line=el("p",{});
+    target.forEach((w,k)=>{line.append(el("span",{class:mark[k]?"w-ok":"w-miss"},w),k<target.length-1?" ":"")});
+    const perfect=ratio===1;
+    return {ok,level:lv,given:ta.value,title:perfect?"¡Perfecto!":(ok?"Casi perfecto ("+Math.round(ratio*100)+"%)":"Captaste "+Math.round(ratio*100)+"%"),
+      say:perfect?null:ex.audio,
+      nodes:[line,el("p",{class:"fine"},"Verde = lo escribiste · rojo = te faltó. Registrado como: "+lv)].concat(perfect?[]:[modelNode(ex.audio,"Escucha cómo suena completa:")])};
+  }
+}
+
+/* shadow: listen once, repeat from memory */
+function bShadow(ex,card){
+  const st=getSt(ex);
+  card.append(el("h2",{},"Escucha una vez y repite la frase"),...audioBar(ex,st));
+  const ta=el("textarea",{placeholder:"Toca 🎤 y repite la frase, o escríbela…",spellcheck:"false"});
+  ta.addEventListener("focus",()=>{activeTA=ta});
+  card.append(ta,el("div",{class:"row"},micBtn(ta)),el("p",{class:"fine"},"Repite con el mismo ritmo, sin ver el texto. Primero escucha."));
+  ta.addEventListener("input",()=>{if(ta.value.trim()&&canAnswer(ex,st))arm(check);else disarm()});
+  function check(){
+    const t=norm(ex.audio),s=norm(ta.value),mark=lcsMark(t,s);
+    const pct=mark.filter(Boolean).length/t.length;
+    const ok=pct>=0.8;
+    const lv=levelOf(ex,st);
+    const line=el("p",{});
+    t.forEach((w,k)=>{line.append(el("span",{class:mark[k]?"w-ok":"w-miss"},w),k<t.length-1?" ":"")});
+    const perfect=pct===1;
+    return {ok,level:lv,given:ta.value,title:perfect?"¡Perfecto!":(ok?"Casi perfecto ("+Math.round(pct*100)+"%)":"Repetiste "+Math.round(pct*100)+"%"),
+      say:perfect?null:ex.audio,
+      nodes:[line,el("p",{class:"fine"},"Verde = lo dijiste · rojo = te faltó. Registrado como: "+lv)].concat(perfect?[]:[modelNode(ex.audio)])};
+  }
+}
+
+/* chunks */
+function bChunks(ex,card){
+  const st=getSt(ex);
+  card.append(el("h2",{},"Escucha y ordena los bloques de significado"),...audioBar(ex,st));
+  const placed=[];
+  const pool=el("div",{class:"chips"}),area=el("div",{class:"chips"});
+  const chipOf={};
+  const items=shuffle(ex.chunks.map((c,k)=>k));
+  function redraw(){
+    pool.innerHTML="";area.innerHTML="";
+    items.filter(k=>!placed.includes(k)).forEach(k=>pool.append(el("button",{class:"chip",type:"button",onclick:()=>{if(!canAnswer(ex,st)){return}placed.push(k);redraw()}},ex.chunks[k])));
+    placed.forEach(k=>area.append(el("button",{class:"chip",type:"button",onclick:()=>{placed.splice(placed.indexOf(k),1);redraw()}},ex.chunks[k])));
+    if(placed.length===ex.chunks.length)arm(check);else disarm();
+  }
+  card.append(el("div",{class:"fine"},"Tu oración:"),area,el("div",{class:"fine"},"Bloques:"),pool);
+  redraw();
+  function check(){
+    const ok=placed.every((k,idx)=>k===idx);
+    const lv=levelOf(ex,st);
+    return {ok,level:lv,given:placed.map(k=>ex.chunks[k]).join(" | "),title:ok?"¡Orden perfecto!":"El orden era otro",
+      nodes:[el("p",{},ex.chunks.join(" / ")),el("p",{class:"fine"},"Registrado como: "+lv)]};
+  }
+}
+
+/* speak */
+function micBtn(ta){
+  return el("button",{class:"ghost micbtn",type:"button",onclick:()=>{
+    activeTA=ta;if(!dic)return;
+    if(listening){dic.stop()}else{dic.start().catch(()=>{})}
+  }},"🎤 Hablar");
+}
+function bSpeak(ex,card){
+  card.append(el("h2",{},ex.prompt||"Habla"));
+  if(ex.target)card.append(el("div",{class:"card3"},el("b",{},ex.target)));
+  if(ex.audio){
+    const st=getSt(ex);
+    card.append(el("div",{class:"abar"},
+      el("button",{class:"ghost",type:"button",onclick:()=>speak(ex.audio,{voice:ex.voice})},"🔊 Modelo"),
+      el("button",{class:"ghost",type:"button",onclick:()=>speak(ex.audio,{rate:0.75,voice:ex.voice})},"🐢 Lento")));
+  }
+  const ta=el("textarea",{placeholder:"Toca 🎤 y habla, o escribe lo que dirías…",spellcheck:"false"});
+  ta.addEventListener("focus",()=>{activeTA=ta});
+  card.append(ta,el("div",{class:"row"},micBtn(ta)),el("p",{class:"fine"},"El micrófono transcribe lo que dices; la corrección viene después de hablar, no durante."));
+  ta.addEventListener("input",()=>{if(ta.value.trim())arm(check);else disarm()});
+  function check(){
+    const said=ta.value;
+    let ok,nodes=[],pct,perfect=false;
+    if(ex.target){
+      const t=norm(ex.target),s=norm(said),mark=lcsMark(t,s);
+      pct=mark.filter(Boolean).length/t.length;ok=pct>=0.8;perfect=pct===1;
+      const line=el("p",{});
+      t.forEach((w,k)=>{line.append(el("span",{class:mark[k]?"w-ok":"w-miss"},w),k<t.length-1?" ":"")});
+      nodes.push(line);
+    }else if(ex.keywords){
+      const low=norm(said).join(" ");
+      const hits=ex.keywords.map(k=>({k,h:low.includes(norm(k).join(" "))}));
+      pct=hits.filter(x=>x.h).length/hits.length;ok=pct>=0.7;
+      perfect=pct===1&&(!ex.modelAnswer||norm(said).join(" ")===norm(ex.modelAnswer).join(" "));
+      const line=el("p",{},"Palabras clave: ");
+      hits.forEach(x=>line.append(el("span",{class:x.h?"w-ok":"w-miss"},x.k)," "));
+      nodes.push(line);
+    }else{ok=true}
+    const model=ex.target||ex.modelAnswer;
+    if(model&&!perfect)nodes.push(modelNode(model));
+    if(!perfect)nodes.push(el("p",{class:"fine"},L.speakTip||"Compara tu frase con la correcta y repítela en voz alta."));
+    return {ok,level:"producción",given:said,say:(model&&!perfect)?model:null,
+      title:perfect?"¡Perfecto!":(ok?"Casi: escucha la versión correcta":"Repasa esta frase"),nodes};
+  }
+}
+
+/* roleplay */
+function bRole(ex,card){
+  const st=getSt(ex);
+  card.append(el("h2",{},"El cliente habla"),...audioBar(ex,st));
+  card.append(el("div",{class:"card3"},el("b",{},"Tu tarea: "),ex.task));
+  const ta=el("textarea",{placeholder:"Responde como consultora (voz o texto)…",spellcheck:"false"});
+  ta.addEventListener("focus",()=>{activeTA=ta});
+  card.append(ta,el("div",{class:"row"},micBtn(ta)));
+  ta.addEventListener("input",()=>{if(ta.value.trim()&&canAnswer(ex,st))arm(check);else disarm()});
+  async function check(){
+    const reply=ta.value.trim();
+    const lv=levelOf(ex,st);
+    const nodes=[];
+    let used=false;
+    try{
+      if(window.claude&&claude.use){
+        const sample=await claude.use("sample");
+        if(sample){
+          const out=el("p",{class:"fb-text"},"Analizando tu respuesta…");
+          setFB("ok","Retroalimentación",[out]);
+          const TL=L.targetLanguage||"inglés",NL=L.nativeLanguage||"español",PF=L.profession||"profesional";
+          const prompt="Eres coach de "+TL+" para una persona cuya profesión es: "+PF+" y cuya lengua nativa es "+NL+". Escenario: el interlocutor dijo: \""+(ex.transcript||ex.audio)+"\". Tarea de la alumna: "+ex.task+" Criterios: "+(ex.rubric||"claridad y corrección")+". Respuesta de la alumna: \""+reply+"\". Responde en "+NL+", máximo 150 palabras, con tres secciones breves: 1) Idioma ("+TL+"): los 2–3 errores más importantes (mal → bien), ignora detalles menores; 2) Razonamiento profesional: ¿la lógica fue buena? un consejo; 3) Versión natural en "+TL+". No uses saludos.";
+          const r=await sample(prompt,{modelTier:"quick",cache:false,onText:({text})=>{out.textContent=text}});
+          nodes.push(el("p",{class:"fb-text"},r&&r.text?r.text:out.textContent));
+          used=true;
+        }
+      }
+    }catch(e){}
+    if(!used)nodes.push(el("p",{},"Sin retroalimentación automática aquí. Compara con el modelo y revisa -s, verbos base y claridad."));
+    nodes.push(modelNode(ex.modelAnswer,"Así lo diría el tutor; escúchalo y repítelo:"));
+    nodes.push(el("p",{class:"fine"},"📄 Cliente: "+(ex.transcript||ex.audio)));
+    return {ok:null,level:lv,given:reply,say:ex.modelAnswer,title:"Respuesta registrada",nodes};
+  }
+}
+
+/* cards */
+function bCards(ex,card){
+  card.append(el("h2",{},ex.title||"Tarjetas"),el("p",{class:"fine"},"Escucha cada expresión y su ejemplo. Practica repitiéndolas en voz alta."));
+  ex.items.forEach(it=>{
+    card.append(el("div",{class:"card3"},
+      el("div",{class:"row",style:"margin:0;align-items:center"},
+        el("button",{class:"ghost",type:"button",onclick:()=>speak(it.en)},"🔊"),
+        el("b",{},it.en),el("span",{class:"meta"},"— "+it.es)),
+      it.example?el("div",{class:"row",style:"margin:6px 0 0;align-items:center"},
+        el("button",{class:"ghost",type:"button",onclick:()=>speak(it.example)},"▶"),
+        el("span",{class:"fine"},it.example)):null));
+  });
+  const b=$("#main");b.disabled=false;b.className="btn";b.textContent="Terminar";b.onclick=next;
+}
+
+/* ---------- helpers de coach ---------- */
+function nm(){return (L&&L.student)?L.student+", ":""}
+function coachLine(ok){
+  if(ok===true){
+    if(streak>=10)return "🔥🔥 ¡"+streak+" seguidas! Estás en racha de verdad.";
+    if(streak>=5)return "🔥 ¡"+streak+" seguidas! "+nm()+"vas imparable.";
+    if(streak>=3)return "🔥 Racha de "+streak+". Así se construye soltura.";
+    const p=["¡Eso es!","Muy bien, se nota el avance.","¡Así se hace!","Limpio. Sigue así.","¡Bien ahí!"];
+    return (results.length%4===0?nm():"")+p[results.length%p.length];
+  }
+  if(ok===false){
+    const p=["Tranquilo/a: equivocarse aquí es lo que hace que mañana salga mejor.","Casi. Escucha la correcta y sigue, vas bien.","Esto es justo lo que vinimos a entrenar. Un paso a la vez."];
+    return p[results.length%p.length];
+  }
+  return "";
+}
+function celebrate(p){
+  if(p>=0.9)return nm()+"¡lección redonda! Lo de hoy se nota. Mañana subimos un poquito.";
+  if(p>=0.8)return nm()+"¡muy bien! Pasaste la meta. Tu esfuerzo está dando frutos.";
+  if(p>=0.6)return nm()+"buen trabajo: cumpliste y ya sabemos qué reforzar. Repetir es parte del método, no un fallo.";
+  return nm()+"hoy costó, y está bien: lo importante es que viniste. Mañana ajusto la lección para que avances sin presión.";
+}
+const STAGES=["Calentamiento: lo esencial, sin prisa","Construyendo base","Ganando soltura","Conversación real","Nivel jefe"];
+function stageLine(){const s=Math.max(1,Math.min(5,parseInt(L.stage,10)||0));return s?"🌱 Etapa "+s+"/5 — "+STAGES[s-1]:""}
+function metaLine(){
+  const m=LS("et_meta");if(!m||!m.days)return null;
+  return el("div",{class:"fine"},"🔥 Racha: "+m.days+(m.days===1?" día":" días")+" · 🏅 Nivel "+(Math.floor((m.xp||0)/250)+1)+" · ⭐ "+(m.xp||0)+" puntos en total");
+}
+async function coachEval(ex,scenario,task,reply){
+  try{
+    if(window.claude&&claude.use){
+      const sample=await claude.use("sample");
+      if(sample){
+        const out=el("p",{class:"fb-text"},"Tu coach está leyendo tu respuesta…");
+        setFB("ok","Retroalimentación",[out]);
+        const TL=L.targetLanguage||"inglés",NL=L.nativeLanguage||"español",PF=L.profession||"profesional";
+        const prompt="Eres un coach de "+TL+" cálido, cercano y motivador. Alumno/a: profesión "+PF+", lengua nativa "+NL+", etapa "+(L.stage||2)+" de 5 (en etapas bajas sé más indulgente y corrige solo lo más importante). Escenario: "+scenario+" Tarea: "+task+". Criterios: "+(ex.rubric||"claridad y corrección")+". "+(ex.boss?"Es un reto jefe: celebra el esfuerzo. ":"")+"Respuesta del/de la alumno/a: \""+reply+"\". Responde en "+NL+", máximo 170 palabras, tono de coach, sin saludos, en tres secciones breves: 1) Lo que hiciste bien (concreto); 2) Para mejorar: los 2 errores más importantes en "+TL+" (mal → bien) y un consejo profesional si aplica; 3) Versión natural en "+TL+".";
+        const r=await sample(prompt,{modelTier:"quick",cache:false,onText:({text})=>{out.textContent=text}});
+        return r&&r.text?r.text:out.textContent;
+      }
+    }
+  }catch(e){}
+  return null;
+}
+
+/* ---------- word_order: arma la frase ---------- */
+function bWords(ex,card){
+  const st=getSt(ex);
+  card.append(el("h2",{},ex.prompt||"Arma la frase"));
+  if(ex.audio)card.append(...audioBar(ex,st));
+  const toks=String(ex.sentence||"").split(/\s+/).filter(Boolean);
+  const pool=toks.concat(ex.extra||[]);
+  const items=shuffle(pool.map((_,k)=>k));
+  const placed=[];
+  const poolEl=el("div",{class:"chips"}),area=el("div",{class:"chips"});
+  function redraw(){
+    poolEl.innerHTML="";area.innerHTML="";
+    items.filter(k=>!placed.includes(k)).forEach(k=>poolEl.append(el("button",{class:"chip",type:"button",onclick:()=>{if(!canAnswer(ex,st))return;placed.push(k);redraw()}},pool[k])));
+    placed.forEach(k=>area.append(el("button",{class:"chip",type:"button",onclick:()=>{placed.splice(placed.indexOf(k),1);redraw()}},pool[k])));
+    if(placed.length)arm(check);else disarm();
+  }
+  card.append(el("div",{class:"fine"},"Tu frase:"),area,el("div",{class:"fine"},"Palabras:"),poolEl);
+  redraw();
+  function check(){
+    const given=placed.map(k=>pool[k]).join(" ");
+    const g=norm(given).join(" ");
+    const ok=[ex.sentence].concat(ex.alts||[]).some(s=>norm(s).join(" ")===g);
+    const lv=levelOf(ex,st);
+    const nodes=[];
+    if(!ok)nodes.push(modelNode(ex.sentence,"Así va la frase:"));
+    else if(ex.explanation)nodes.push(el("p",{},ex.explanation));
+    if(lv)nodes.push(el("p",{class:"fine"},"Registrado como: "+lv));
+    return {ok,level:lv,given:given,say:ex.sentence,title:ok?"¡Perfecto!":"Casi: mira el orden correcto",nodes};
+  }
+}
+
+/* ---------- find_error: toca lo incorrecto ---------- */
+function bFind(ex,card){
+  card.append(el("h2",{},ex.prompt||"Toca la parte incorrecta"));
+  const toks=String(ex.sentence||"").split(/\s+/).filter(Boolean);
+  const wrong=new Set();
+  (ex.wrong||[]).forEach(w=>norm(w).forEach(nw=>{
+    const k=toks.findIndex((t,idx)=>!wrong.has(idx)&&norm(t).join(" ")===nw);
+    if(k>=0)wrong.add(k);
+  }));
+  const sel=new Set();
+  const row=el("div",{class:"tokrow"});
+  const btns=toks.map((t,k)=>el("button",{class:"tok",type:"button",onclick:()=>{
+    if(btns[k].disabled)return;
+    if(sel.has(k)){sel.delete(k);btns[k].classList.remove("sel")}else{sel.add(k);btns[k].classList.add("sel")}
+    if(sel.size)arm(check);else disarm();
+  }},t));
+  btns.forEach(b=>row.append(b));
+  card.append(row,el("p",{class:"fine"},"Toca la palabra (o palabras) que está mal. Si crees que todo está bien, no toques nada y usa «Está bien»."));
+  const okBtn=el("button",{class:"ghost",type:"button",onclick:()=>{sel.clear();btns.forEach(b=>b.classList.remove("sel"));arm(check)}},"✔ Está bien");
+  if(ex.allowCorrect)card.append(okBtn);
+  function check(){
+    const same=sel.size===wrong.size&&[...sel].every(k=>wrong.has(k));
+    btns.forEach((b,k)=>{b.disabled=true;if(wrong.has(k))b.classList.add("right");else if(sel.has(k))b.classList.add("wrong")});
+    const nodes=[];
+    if(ex.correct)nodes.push(modelNode(ex.correct,same?"La frase correcta:":"Así va correcta:"));
+    if(ex.explanation)nodes.push(el("p",{},ex.explanation));
+    return {ok:same,level:null,given:[...sel].map(k=>toks[k]).join(" ")||"(nada)",say:ex.correct||null,title:same?"¡Ojo de águila!":"Casi: mira dónde estaba el error",nodes};
+  }
+}
+
+/* ---------- match: empareja ---------- */
+function bMatch(ex,card){
+  card.append(el("h2",{},ex.prompt||"Une cada par"));
+  const pairs=ex.pairs||[];
+  let selA=null,done=0,errors=0;
+  const A=[],Bk=[];
+  const gl=el("div",{}),gr=el("div",{});
+  gl.className="opts";gr.className="opts";
+  shuffle(pairs.map((_,k)=>k)).forEach(k=>{
+    const b=el("button",{class:"opt",type:"button",onclick:()=>{
+      if(b.disabled)return;
+      A.forEach(x=>x.b.classList.remove("sel"));b.classList.add("sel");selA=k;
+      if(ex.speak==="a")speak(pairs[k].a);
+    }},pairs[k].a);
+    A.push({k,b});gl.append(b);
+  });
+  shuffle(pairs.map((_,k)=>k)).forEach(k=>{
+    const b=el("button",{class:"opt",type:"button",onclick:()=>{
+      if(b.disabled||selA===null)return;
+      const a=A.find(x=>x.k===selA).b;
+      if(selA===k){
+        a.classList.remove("sel");a.classList.add("right");a.disabled=true;
+        b.classList.add("right");b.disabled=true;done++;selA=null;
+        if(ex.speak==="b")speak(pairs[k].b);
+        if(done===pairs.length)arm(check);
+      }else{
+        errors++;b.classList.add("wrong");
+        setTimeout(()=>b.classList.remove("wrong"),600);
+      }
+    }},pairs[k].b);
+    Bk.push({k,b});gr.append(b);
+  });
+  card.append(el("div",{class:"mgrid"},gl,gr),el("p",{class:"fine"},"Toca uno de la izquierda y luego su pareja de la derecha."));
+  function check(){
+    const ok=errors<=(pairs.length>=5?1:0);
+    return {ok,level:null,given:errors+" intentos fallidos",title:ok?"¡Todas emparejadas!":"Lo lograste, con "+errors+" tropiezos",
+      nodes:[el("p",{},pairs.map(p=>p.a+" = "+p.b).join(" · "))]};
+  }
+}
+
+/* ---------- task: tarea abierta con tu coach (genérica) ---------- */
+function bTask(ex,card){
+  const st=getSt(ex);
+  card.append(el("h2",{},ex.prompt||ex.title||"Tarea"));
+  if(ex.context)card.append(el("div",{class:"card3"},ex.context));
+  if(ex.audio)card.append(...audioBar(ex,st));
+  if(ex.task)card.append(el("div",{class:"card3"},el("b",{},"Tu tarea: "),ex.task));
+  if(ex.seconds){
+    const tm=el("div",{class:"timer"},"⏱ "+ex.seconds+" s");
+    let left=ex.seconds;
+    const tb=el("button",{class:"ghost",type:"button",onclick:()=>{
+      if(tick)return;tb.disabled=true;
+      tick=setInterval(()=>{left--;tm.textContent="⏱ "+Math.max(left,0)+" s";if(left<=0){stopTick();tm.textContent="⏱ ¡Tiempo!";stopMic()}},1000);
+    }},"⏱ Empezar cronómetro");
+    card.append(el("div",{class:"row",style:"align-items:center"},tb,tm),el("p",{class:"fine"},"El cronómetro es un reto suave: no te bloquea si te pasas."));
+  }
+  const ta=el("textarea",{placeholder:"Responde con voz (🎤) o texto…",spellcheck:"false"});
+  ta.addEventListener("focus",()=>{activeTA=ta});
+  card.append(ta,el("div",{class:"row"},micBtn(ta)));
+  ta.addEventListener("input",()=>{if(ta.value.trim()&&canAnswer(ex,st))arm(check);else disarm()});
+  async function check(){
+    stopTick();
+    const reply=ta.value.trim();
+    const lv=levelOf(ex,st);
+    const fb=await coachEval(ex,(ex.audio?ex.transcript||ex.audio:(ex.context||"")),ex.task||ex.prompt||"",reply);
+    const nodes=[fb?el("p",{class:"fb-text"},fb):el("p",{},"Sin retroalimentación automática aquí. Compara con el modelo y revisa claridad y verbos.")];
+    if(ex.modelAnswer)nodes.push(modelNode(ex.modelAnswer,"Así lo diría tu coach; escúchalo y repítelo:"));
+    return {ok:null,xp:10,level:lv,given:reply,feedback:fb||"",say:ex.modelAnswer||null,title:ex.boss?"👑 ¡Jefe completado!":"¡Lo hiciste! Respuesta registrada",nodes};
+  }
+}
+
+/* ---------- scene: conversación de varios turnos ---------- */
+function bScene(ex,card){
+  const turns=ex.turns||[];
+  card.append(el("h2",{},ex.title||"Conversación"));
+  if(ex.setting)card.append(el("div",{class:"card3"},el("b",{},"Escenario: "),ex.setting));
+  const box=el("div",{});card.append(box);
+  const log=[];let k=0;
+  const sts=turns.map(()=>({plays:0,hint:false,shown:false}));
+  const tex=turns.map(t=>({type:"scene",audio:t.say,transcript:t.say,voice:ex.voice,retrying:false,id:ex.id}));
+  function showTurn(){
+    box.innerHTML="";
+    const t=turns[k],te=tex[k],st=sts[k],last=k===turns.length-1;
+    box.append(el("div",{class:"tag"},(ex.character||"Interlocutor")+" · turno "+(k+1)+"/"+turns.length),...audioBar(te,st));
+    if(t.task)box.append(el("div",{class:"card3"},el("b",{},"Tu tarea: "),t.task));
+    const ta=el("textarea",{placeholder:"Responde con voz (🎤) o texto…",spellcheck:"false"});
+    ta.addEventListener("focus",()=>{activeTA=ta});
+    box.append(ta,el("div",{class:"row"},micBtn(ta)));
+    const b=$("#main");
+    disarm();
+    async function finish(){
+      log.push({say:t.say,reply:ta.value.trim(),model:t.modelAnswer||""});
+      const dialog=log.map((x,n)=>(ex.character||"Interlocutor")+": "+x.say+" / Alumno/a: "+x.reply).join(" // ");
+      const fb=await coachEval(ex,(ex.setting||"")+" Conversación completa: "+dialog+".",ex.goal||"mantener la conversación con claridad","(ver conversación)");
+      const nodes=[fb?el("p",{class:"fb-text"},fb):el("p",{},"Sin retroalimentación automática aquí. Compara con los modelos.")];
+      log.forEach((x,n)=>{if(x.model)nodes.push(modelNode(x.model,"Turno "+(n+1)+" · así lo diría tu coach:"))});
+      return {ok:null,xp:5*turns.length,level:null,given:log.map((x,n)=>"T"+(n+1)+": "+x.reply).join(" | "),feedback:fb||"",title:ex.boss?"👑 ¡Jefe completado!":"¡Conversación completada!",nodes};
+    }
+    function upd(){
+      if(ta.value.trim()&&canAnswer(te,st)){
+        if(last)arm(finish);
+        else{
+          b.disabled=false;b.className="btn";b.textContent="Responder y continuar";
+          b.onclick=async()=>{await stopMic();log.push({say:t.say,reply:ta.value.trim(),model:t.modelAnswer||""});k++;showTurn()};
+        }
+      }else disarm();
+    }
+    ta.addEventListener("input",upd);ta.addEventListener("focus",upd);
+  }
+  if(turns.length)showTurn();
+  else box.append(el("p",{},"Esta conversación no tiene turnos."));
+}
+
+registerType("word_order","Arma la frase",bWords);
+registerType("find_error","Encuentra el error",bFind);
+registerType("match","Empareja",bMatch);
+registerType("task","Tarea con tu coach",bTask);
+registerType("scene","Conversación",bScene);
+
+/* ---------- review round ---------- */
+function startReview(miss){
+  const seen=new Set();
+  queue=miss.map(r=>r.ex).filter(x=>{const k=(x.audio||"")+"|"+(x.prompt||"")+"|"+(x.sentence||"")+"|"+(x.title||"")+"|"+(x.type||"");if(seen.has(k))return false;seen.add(k);return true})
+    .map((x,k)=>Object.assign({},x,{id:k,shared:undefined,retrying:false,second:false}));
+  i=0;sst={};round=2;
+  render();
+}
+function reviewScreen(gd,n,miss){
+  const card=$("#card");card.innerHTML="";clearFB();
+  $("#prog").style.width="100%";
+  const pct=Math.round(100*gd/n);
+  card.append(el("div",{class:"tag"},"Repaso"),
+    el("h1",{},"Captaste "+pct+"% a la primera"),
+    el("p",{},"Sacaste "+gd+" de "+n+". La meta es "+Math.round(PASS*100)+"%, así que repetimos las preguntas que fallaste ("+miss.length+")."),
+    el("p",{class:"fine"},"Los audios vuelven a sonar una sola vez. Esta ronda se registra aparte como repaso."));
+  const b=$("#main");b.disabled=false;b.className="btn";b.textContent="Repetir las preguntas";
+  b.onclick=()=>startReview(miss);
+}
+
+/* ---------- summary ---------- */
+function summary(){
+  LS("et_prog",null);
+  const card=$("#card");card.innerHTML="";clearFB();
+  $("#prog").style.width="100%";
+  const main=results.filter(r=>r.round===1);
+  const graded=main.filter(r=>typeof r.ok==="boolean"&&!r.retry);
+  const good=graded.filter(r=>r.ok).length;
+  const rescued=main.filter(r=>r.retry&&r.ok).length;
+  const retried=main.filter(r=>r.retry).length;
+  const rv=results.filter(r=>r.round===2&&typeof r.ok==="boolean"&&!r.retry);
+  const rvGood=rv.filter(r=>r.ok).length;
+  const byLevel={};
+  LEVELS.forEach(l=>byLevel[l]={ok:0,n:0});
+  main.filter(r=>typeof r.ok==="boolean").forEach(r=>{if(r.level&&byLevel[r.level]){byLevel[r.level].n++;if(r.ok)byLevel[r.level].ok++}});
+  const missed=main.filter(r=>r.ok===false&&!r.retry);
+  const roles=main.filter(r=>r.ex.type==="roleplay");
+  const tasks=main.filter(r=>r.ex.type==="task"||r.ex.type==="scene");
+  let rep="REPORTE — "+L.title+" ("+(L.date||"")+") — modo: "+(mode==="exam"?"Examen (1 escucha)":"Entrenamiento")+"\n";
+  rep+="Correctas al primer intento: "+good+"/"+graded.length+"\n";
+  if(graded.length)rep+="Porcentaje a la primera: "+Math.round(100*good/graded.length)+"% (meta "+Math.round(PASS*100)+"%)\n";
+  if(retried)rep+="Rescatadas tras repetición: "+rescued+"/"+retried+"\n";
+  if(rv.length)rep+="Ronda de repaso (preguntas repetidas): "+rvGood+"/"+rv.length+"\n";
+  rep+="\nComprensión por tipo de apoyo (solo ejercicios de audio; la primera escucha es la medida autónoma):\n";
+  LEVELS.forEach(l=>{rep+="- "+l+": "+byLevel[l].ok+"/"+byLevel[l].n+"\n"});
+  if(missed.length){rep+="\nFallos:\n";missed.forEach(r=>{const x=r.ex;rep+="- ["+x.type+"] "+(x.audio||x.prompt||"")+" → respondió: \""+r.given+"\"\n"})}
+  if(roles.length){rep+="\nRole-play (respuestas):\n";roles.forEach(r=>{rep+="- Cliente: "+r.ex.audio+"\n  Alumna: "+r.given+"\n"})}
+  if(tasks.length){rep+="\nTareas abiertas (conversación / retos):\n";tasks.forEach(r=>{const x=r.ex;rep+="- ["+x.type+(x.boss?" JEFE":"")+"] "+(x.prompt||x.title||"")+"\n  Respuesta: "+r.given+"\n"+(r.feedback?"  Feedback dado: "+r.feedback.replace(/\n+/g," ")+"\n":"")})}
+  rep+="\nPuntos: "+xp+" · Mejor racha de aciertos: "+bestStreak+(L.stage?" · Etapa: "+L.stage+"/5":"")+"\n";
+  rep+="\nNota: no atribuir reconocimiento autónomo si hubo repetición, pista o lectura.\n";
+  if(!histSaved){
+    histSaved=true;
+    const hist=LS("et_hist")||[];
+    hist.push({t:L.title,d:L.date,good,n:graded.length,at:Date.now()});
+    LS("et_hist",hist.slice(-30));
+    const m=LS("et_meta")||{xp:0,days:0,last:""};
+    const td=new Date().toISOString().slice(0,10),yd=new Date(Date.now()-864e5).toISOString().slice(0,10);
+    if(m.last!==td){m.days=(m.last===yd)?(m.days||0)+1:1;m.last=td}
+    m.xp=(m.xp||0)+xp;LS("et_meta",m);
+  }
+  if(!sessionId)sessionId="s"+Date.now();
+  const statusEl=el("div",{class:"fine"},dbApi?"Guardando el reporte para Claude…":"Esta vista no puede guardar el reporte automáticamente: cópialo.");
+  if(dbApi){
+    const payload={
+      title:L.title||"",date:L.date||"",mode:mode,at:new Date().toISOString(),
+      firstPassPct:graded.length?Math.round(100*good/graded.length):null,
+      good:good,graded:graded.length,rescued:rescued,retried:retried,
+      review:{good:rvGood,n:rv.length},byLevel:byLevel,
+      missed:missed.map(r=>({type:r.ex.type,item:r.ex.audio||r.ex.prompt||r.ex.sentence||"",given:r.given||""})),
+      roleplay:roles.map(r=>({client:r.ex.audio||"",reply:r.given||""})),
+      tasks:tasks.map(r=>({type:r.ex.type,boss:!!r.ex.boss,prompt:r.ex.prompt||r.ex.title||"",reply:r.given||"",feedback:r.feedback||""})),
+      xp:xp,bestStreak:bestStreak,stage:L.stage||null,
+      report:rep
+    };
+    dbApi.doc("sessions/"+sessionId).set(payload)
+      .then(()=>{statusEl.textContent="✓ Reporte guardado: Claude ya puede leerlo, no necesitas copiarlo."})
+      .catch(e=>{statusEl.textContent="No pude guardar el reporte ("+((e&&e.code)||"error")+"). Cópialo con el botón de abajo."});
+  }
+  card.append(el("h1",{},"¡Lección completada!"),el("p",{class:"coach"},celebrate(graded.length?good/graded.length:1)),
+    el("p",{},"⭐ "+xp+" puntos · "+good+" de "+graded.length+" correctas al primer intento ("+(graded.length?Math.round(100*good/graded.length):0)+"%)"+(retried?" · "+rescued+" rescatadas tras repetición":"")+(rv.length?" · repaso: "+rvGood+"/"+rv.length:"")),
+    el("table",{},el("tr",{},el("th",{},"Tipo de comprensión"),el("th",{},"Correctas")),
+      ...LEVELS.map(l=>el("tr",{},el("td",{},l),el("td",{},byLevel[l].n?byLevel[l].ok+"/"+byLevel[l].n:"—")))),
+    statusEl,
+    el("p",{class:"fine"},"Respaldo: si Claude no ve el reporte, cópialo y pégalo en el chat."),
+    el("pre",{class:"rep",id:"rep"},rep),
+    el("div",{class:"row"},
+      el("button",{class:"ghost",type:"button",onclick:async()=>{
+        try{await navigator.clipboard.writeText(rep);setFB("ok","Copiado",[])}
+        catch(e){const r=document.createRange();r.selectNodeContents($("#rep"));const s=getSelection();s.removeAllRanges();s.addRange(r);setFB("ok","Seleccionado: usa Ctrl/Cmd+C",[])}
+      }},"📋 Copiar reporte"),
+      missed.length?el("button",{class:"ghost",type:"button",onclick:()=>startReview(missed)},"🔁 Repetir fallos"):null,
+      pendingLesson?el("button",{class:"ghost",type:"button",onclick:()=>{L=pendingLesson;pendingLesson=null;LS("et_lesson",L);start()}},"📥 Cargar la lección nueva de Claude"):null,
+      el("button",{class:"ghost",type:"button",onclick:()=>start()},"↺ Empezar de nuevo")));
+  const b=$("#main");b.disabled=false;b.className="btn";b.textContent="Cargar lección de otro día";b.onclick=()=>$("#modal").classList.add("on");
+}
+
+/* ---------- start / load ---------- */
+function start(){
+  LANG=(L&&L.lang)||"en-US";queue=expand(L.exercises);i=0;results=[];sst={};xp=0;round=1;histSaved=false;started=false;sessionId=null;streak=0;bestStreak=0;stopTick();
+  $("#xp").textContent="⭐ 0";$("#streak").textContent="";
+  const card=$("#card");card.innerHTML="";clearFB();
+  $("#prog").style.width="0%";
+  const hist=(LS("et_hist")||[]).slice(-5).reverse();
+  card.append(el("div",{class:"tag"},L.date||""),el("h1",{},L.title),
+    el("p",{},L.focus||""),L.stage?el("div",{class:"fine"},stageLine()):null,metaLine(),
+    el("div",{class:"card3"},el("b",{},queue.length+" ejercicios"),el("div",{class:"fine"},"Método: escuchar → entender → hablar → verificar. Cada audio suena una sola vez y no verás el texto hasta después de tu intento.")),
+    el("div",{class:"tag"},"Modo"),
+    (()=>{
+      const d=el("div",{class:"fine"},"");
+      const bt=el("button",{class:"opt",type:"button"},"🎧 Entrenamiento"),be=el("button",{class:"opt",type:"button"},"📝 Examen");
+      const sync=()=>{
+        bt.classList.toggle("sel",mode==="train");be.classList.toggle("sel",mode==="exam");
+        d.textContent=mode==="train"?"1 escucha bloqueada. Si fallas, puedes repetir, usar lento, pista y texto en una segunda oportunidad (se registra aparte, vale la mitad).":"1 escucha, sin segunda oportunidad, sin pistas. Mide tu comprensión autónoma.";
+      };
+      bt.onclick=()=>{mode="train";LS("et_mode","train");sync()};
+      be.onclick=()=>{mode="exam";LS("et_mode","exam");sync()};
+      sync();
+      return el("div",{},el("div",{class:"modes"},bt,be),d);
+    })(),
+    hist.length?el("div",{},el("div",{class:"fine"},"Últimas sesiones:"),...hist.map(h=>el("div",{class:"fine"},"• "+h.t+" — "+h.good+"/"+h.n))):"");
+  const p=LS("et_prog");
+  const canResume=!!(p&&p.key===lessonKey()&&p.i>0&&p.i<queue.length);
+  const jump=el("input",{type:"number",min:"1",max:String(queue.length),value:String(canResume?p.i+1:1),style:"width:72px;padding:8px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg);font:inherit"});
+  card.append(el("div",{class:"card3"},el("b",{},"Empezar desde un ejercicio"),
+    el("div",{class:"row",style:"align-items:center"},"Ejercicio ",jump," de "+queue.length,
+      el("button",{class:"ghost",type:"button",onclick:()=>{
+        const n=Math.max(1,Math.min(queue.length,parseInt(jump.value,10)||1));
+        i=n-1;xp=0;results=[];sst={};round=1;histSaved=false;sessionId=null;render();
+      }},"Ir")),
+    el("div",{class:"fine"},"Los ejercicios anteriores a ese no cuentan en el porcentaje.")));
+  const b=$("#main");b.disabled=false;b.className="btn";
+  if(canResume){
+    b.textContent="Continuar: ejercicio "+(p.i+1)+" de "+queue.length;
+    b.onclick=()=>resume(p);
+    card.append(el("button",{class:"ghost",type:"button",onclick:()=>{LS("et_prog",null);i=0;xp=0;results=[];sst={};round=1;sessionId=null;$("#xp").textContent="⭐ 0";render()}},"↺ Empezar de cero"));
+  }else{
+    b.textContent="Empezar";b.onclick=()=>render();
+  }
+}
+function setLesson(obj){
+  if(!obj||!Array.isArray(obj.exercises)||!obj.exercises.length)throw new Error("El JSON necesita 'exercises' con al menos un ejercicio.");
+  L=obj;start();
+}
+function demo(){return JSON.parse($("#lesson-data").textContent)}
+
+$("#menu").onclick=()=>$("#modal").classList.add("on");
+$("#closemodal").onclick=()=>$("#modal").classList.remove("on");
+$("#loadjson").onclick=()=>{
+  try{
+    const o=JSON.parse($("#jsonin").value);
+    setLesson(o);LS("et_lesson",o);
+    $("#jsonerr").textContent="";$("#modal").classList.remove("on");
+  }catch(e){$("#jsonerr").textContent="JSON no válido: "+e.message}
+};
+$("#resetdemo").onclick=()=>{LS("et_lesson",null);try{localStorage.removeItem("et_lesson")}catch(e){}setLesson(demo());$("#modal").classList.remove("on")};
+$("#copyprompt").onclick=async()=>{
+  try{await navigator.clipboard.writeText(SCHEMA_PROMPT);$("#jsonerr").style.color="var(--greend)";$("#jsonerr").textContent="Prompt copiado. Pégalo en Claude y añade el avance del alumno."}
+  catch(e){$("#jsonin").value=SCHEMA_PROMPT;$("#jsonerr").style.color="var(--redd)";$("#jsonerr").textContent="No pude copiar: el prompt está en el cuadro, cópialo manualmente."}
+};
+
+(async()=>{
+  try{
+    if(!(window.claude&&claude.use))return;
+    const db=await claude.use("db");
+    if(!db)return;
+    dbApi=db;
+    db.doc("lessons/current").onSnapshot(snap=>{
+      if(!snap.exists)return;
+      const d=snap.data();
+      if(!d||!d.lesson||!Array.isArray(d.lesson.exercises)||!d.lesson.exercises.length)return;
+      const ver=String(d.updatedAt||d.lesson.title||"");
+      if(ver===dbVer)return;
+      dbVer=ver;
+      if(!started){L=d.lesson;LS("et_lesson",d.lesson);start()}
+      else pendingLesson=d.lesson;
+    },()=>{});
+  }catch(e){}
+})();
+
+let saved=LS("et_lesson");
+try{setLesson(saved&&saved.exercises?saved:demo())}catch(e){setLesson(demo())}
+})();
+</script>
+</body>
+</html>
