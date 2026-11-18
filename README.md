@@ -40,6 +40,7 @@ Para ideas nuevas se usa el tipo genérico `task` (Claude evalúa la respuesta);
 
 ## Versiones
 
+- **v3.2** — corrige un texto «null» que aparecía en la pantalla de inicio.
 - **v3** — instrucciones de Claude incluidas en el archivo.
 - **v2** — 16 tipos de ejercicio, racha/XP/jefe, catálogo y escalera de progresión.
 - **v1** — 9 tipos, voz, segunda oportunidad, repaso, guardado automático de reportes.

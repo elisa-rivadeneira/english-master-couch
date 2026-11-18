@@ -917,7 +917,7 @@ function celebrate(p){
 const STAGES=["Calentamiento: lo esencial, sin prisa","Construyendo base","Ganando soltura","Conversación real","Nivel jefe"];
 function stageLine(){const s=Math.max(1,Math.min(5,parseInt(L.stage,10)||0));return s?"🌱 Etapa "+s+"/5 — "+STAGES[s-1]:""}
 function metaLine(){
-  const m=LS("et_meta");if(!m||!m.days)return null;
+  const m=LS("et_meta");if(!m||!m.days)return "";
   return el("div",{class:"fine"},"🔥 Racha: "+m.days+(m.days===1?" día":" días")+" · 🏅 Nivel "+(Math.floor((m.xp||0)/250)+1)+" · ⭐ "+(m.xp||0)+" puntos en total");
 }
 async function coachEval(ex,scenario,task,reply){
@@ -1690,7 +1690,7 @@ function start(){
   $("#prog").style.width="0%";
   const hist=(LS("et_hist")||[]).slice(-5).reverse();
   card.append(el("div",{class:"tag"},L.date||""),el("h1",{},L.title),
-    el("p",{},L.focus||""),L.stage?el("div",{class:"fine"},stageLine()):null,metaLine(),
+    el("p",{},L.focus||""),L.stage?el("div",{class:"fine"},stageLine()):"",metaLine(),
     el("div",{class:"card3"},el("b",{},queue.length+" ejercicios"),el("div",{class:"fine"},"Método: escuchar → entender → hablar → verificar. Cada audio suena una sola vez y no verás el texto hasta después de tu intento.")),
     el("div",{class:"tag"},"Modo"),
     (()=>{
