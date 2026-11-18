@@ -71,7 +71,7 @@ C) CREAR LA APP A PARTIR DE ESTE ARCHIVO (rápido; NO programes la app desde cer
    - Deja intactos los bloques exercise-catalog y agent-instructions (los necesitarás los días siguientes).
 4. Publica con publish_files: SIN slug (artefacto nuevo), título "Mi entrenador de [idioma] — [su nombre]", privado. Con una página nueva se publica primero y se declara después.
 5. Declara las capacidades con declare_capabilities: tts, dictation, sample, db (usa describe_capabilities si dudas).
-6. Escribe en la base de datos del artefacto nuevo con db_write: el doc "dossier" (expediente + mapa de temática + plan + stage) y el doc "lessons/current" con la primera lección: {updatedAt: <fecha-hora ISO>, lesson: {...}}.
+6. Escribe en la base de datos del artefacto nuevo con db_write: el doc "dossier/main" (expediente + mapa de temática + plan + stage; las rutas de documento son colección/id) y el doc "lessons/current" con la primera lección: {updatedAt: <fecha-hora ISO>, lesson: {...}}. Escribe también el doc "skills/map" (ver HABILIDADES en D).
 7. Comprueba que el artefacto cargó (get_artifact) y que lessons/current existe (db_get).
 
 D) PRIMERA LECCIÓN
@@ -80,6 +80,8 @@ D) PRIMERA LECCIÓN
 - Incluye al menos un ejercicio de habla y refuerza los errores que detectaste en la entrevista. Cada ejercicio con hint útil y específico, nunca genérico.
 - Tono de coach: abre con una frase que conecte con su meta y cierra con un reconocimiento concreto. El personaje de los role-plays conversa de forma amable y natural, no como examinador.
 - Cada 3–4 días introduce un tema nuevo del mapa y un tipo de ejercicio nuevo; si dice que un tema le aburre, retíralo.
+- HABILIDADES Y CAMINO: la app dibuja un camino tipo Duolingo (pantalla "Mi camino") y mide el dominio con los reportes. Escribe el doc "skills/map" con 8 a 14 habilidades personalizadas agrupadas en 3 o 4 grupos: skills [{id,label,short (nombre corto),desc,cluster,x,y, y si la entrevista dio una pista: base (1 a 3) y baseNota}], clusters [{id,label,color,x,y}], "path" (los ids en el orden en que conviene recorrerlas) y "defaults":{audio,grammar,vocab,speak,open} con el id que corresponde por defecto a cada categoría. Cada ejercicio (menos cards y match) lleva "skill" con uno de esos ids. Lo de la entrevista (base) es una estimación cualitativa, no una medida: la app lo marca así. Los pasos se desbloquean por dominio medido, no por días.
+- CONVERSACIONES POR VOZ: la voz no se bloquea nunca; la persona puede conversar cuando quiera, y la app le sugiere una conversación después de CADA lección (una conversación marcada incompleta no cuenta). Cada conversación termina como un hito brillante en el camino y debe personalizarlo: cuando la persona vuelva y diga que terminó, lee la colección "voice" y su nota, y actualiza "skills/map" con lo observado al hablar (ajusta base/baseNota de las habilidades de hablar, agrega una o dos habilidades nuevas si surgieron, reordena "path" si hace falta). Sólo lo que de verdad se observó, sin inventar.
 - SIGUIENTE PASO: toda lección lleva "nextStep":{"type":"lesson" o "voice","text":"…"}; la app lo muestra al terminar. Por defecto "lesson": que escriba «listo» o «dame otra lección» en el chat con Claude. Cuando el plan lo pida (cada 3–4 lecciones, al cerrar una semana del plan o si ya domina la etapa), usa "voice": una conversación de 5–10 min con Claude en modo voz sobre un tema de su mapa, con el escenario y su meta (p. ej. hacer de consultora con un cliente), y que al volver al texto escriba «listo».
 
 E) RESPUESTA FINAL (máximo 7 líneas)
@@ -87,8 +89,8 @@ Con calidez: 1) lo que más destacó de ella en la entrevista; 2) el enlace a su
 
 ══════ PASO 3 · BUCLE DIARIO ══════
 Cuando la persona te pida la lección de hoy o escriba "listo":
-1. Localiza su artefacto (lista tus artefactos) y léelo con read_file para tener estas instrucciones y el catálogo. Lee sus reportes con db_list/db_get del prefijo "sessions/" (el más reciente) y el doc "dossier".
-2. Analiza: % por ejercicio y por tipo, qué fue a la primera escucha vs. tras repetición vs. con pistas, qué se repitió en el repaso, errores recurrentes, y el feedback que Claude dio en las tareas abiertas.
+1. Localiza su artefacto (lista tus artefactos) y léelo con read_file para tener estas instrucciones y el catálogo. Lee sus reportes con db_list/db_get del prefijo "sessions/" (el más reciente) y el doc "dossier/main" (db_list necesita la colección: "sessions").
+2. Analiza: % por ejercicio, por tipo y por habilidad (cada sesión trae "items" con type, skill, ok y level; la colección "voice" guarda lo que contó tras sus conversaciones por voz; si lessons/current trae source:"app", la creó la app), qué fue a la primera escucha vs. tras repetición vs. con pistas, qué se repitió en el repaso, errores recurrentes, y el feedback que Claude dio en las tareas abiertas.
 3. Decide la etapa con las reglas del catálogo y actualiza el "dossier" (nivel, etapa, errores recurrentes, temas usados y pendientes).
 4. Escribe la lección de mañana en "lessons/current" con las reglas de D): refuerza lo débil, avanza lo sólido, rota los temas, mezcla tipos (no más de 3 seguidos iguales) y abre con una conexión a su meta.
 5. Respuesta corta y cálida: qué mejoró (con datos), qué toca reforzar, de qué quiere hablar mañana, y que su app ya se actualizó sola.
@@ -174,12 +176,111 @@ pre.rep{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:1
 .tok.sel{border-color:var(--blue);background:rgba(28,176,246,.12)}
 .tok.right{border-color:var(--green);background:var(--okbg)}
 .tok.wrong{border-color:var(--red);background:var(--badbg)}
+#cons{position:fixed;inset:0;background:var(--bg);color:var(--fg);z-index:60;overflow:auto;display:none}
+#cons.on{display:block}
+.cwrap{max-width:720px;margin:0 auto;padding:12px 16px 48px}
+.chead{display:flex;align-items:center;justify-content:space-between}
+.chead h2{margin:0;letter-spacing:.14em;font-size:18px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+#cons svg text.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+.sky{border-radius:16px;background:radial-gradient(ellipse at 28% 18%,#14304a 0%,#0a1826 55%,#060e17 100%);border:1px solid #1d3b55;padding:2px;margin:10px 0;box-shadow:inset 0 0 40px rgba(90,209,255,.06)}
+.sky svg{display:block;width:100%;height:auto;max-height:78vh}
+.sky .nd{cursor:pointer;outline:none}
+.sky .nd:focus-visible rect{stroke:#5ad1ff;stroke-opacity:1}
+.sky .tw{animation:twk 3.2s ease-in-out infinite}
+.sky .tw:nth-child(3n){animation-delay:.9s}.sky .tw:nth-child(5n){animation-delay:1.7s}
+@keyframes twk{0%,100%{opacity:.25}50%{opacity:1}}
+.scap{font-size:12px;line-height:1.5;color:var(--mut);min-height:54px;margin:6px 2px;letter-spacing:.01em}
+.chd{margin:18px 2px 6px;font-size:12px;letter-spacing:.18em;font-weight:700}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:10px 12px;border:1px solid var(--line);border-left:3px solid var(--line);border-radius:10px;margin:6px 0;background:var(--card);cursor:pointer}
+.hrow:hover{border-color:var(--blue)}
+.hrow.sel{border-color:var(--blue);background:var(--soft)}
+.hl b{font-size:15px}
+.hl .fine{margin:2px 0 0}
+.hl .est{color:#2a8fbf;font-size:11.5px;line-height:1.4}
+.hs{align-self:start;text-align:right}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;padding:2px 7px;border-radius:6px;background:var(--soft);color:var(--mut);border:1px solid var(--line)}
+.chip.k-dom{background:#fff3c8;color:#8a6500;border-color:#f0d36b}
+.chip.k-adv,.chip.k-learn{background:#fff8dd;color:#9a7400;border-color:#f3dd8a}
+.chip.k-est{background:#e6f6fe;color:#1b7fae;border-color:#a9dbf2}
+.hbar{display:grid;grid-template-columns:repeat(20,1fr);gap:2px;grid-column:1/2;align-self:center}
+.hbar i{height:9px;border-radius:2px;background:var(--line)}
+.hbar i.on{background:#ffc94d}
+.hbar i.est{background:transparent;border:1px dashed #5ad1ff}
+.hn{font-size:12px;color:var(--mut);text-align:right;align-self:center;white-space:nowrap}
+.hseq{grid-column:1/3;display:flex;gap:3px;min-height:8px}
+.hseq i{width:8px;height:8px;border-radius:2px;background:var(--line)}
+.hseq i.ok{background:#58cc02}.hseq i.bad{background:#ff4b4b}.hseq i.open{background:#9aa9ae}
+.nextbox{border:2px solid var(--blue);border-radius:14px;padding:14px;margin:18px 0;background:var(--soft)}
+.nextbox .btn{width:100%;margin-top:8px}
+.stars3{font-size:44px;letter-spacing:6px;text-align:center;margin:6px 0}
+.stars3 span{display:inline-block;animation:pop .5s both}
+@keyframes pop{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.35)}100%{transform:scale(1)}}
+.cf{position:fixed;top:-30px;font-size:22px;z-index:80;pointer-events:none;animation:fall 2.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media(prefers-reduced-motion:reduce){.cf{display:none}.stars3 span{animation:none}.sky .tw{animation:none}}
+
+.pathwrap{display:flex;justify-content:center;margin:14px 0}
+.path{position:relative;width:320px;flex:none}
+.ptrack{position:absolute;left:0;top:0;pointer-events:none}
+.pn{position:absolute;width:88px;height:88px;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pn .ring{display:flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:50%;padding:6px;box-sizing:border-box;background:transparent}
+.pn .face{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;background:var(--c);box-shadow:0 7px 0 rgba(0,0,0,.32),inset 0 -5px 0 rgba(0,0,0,.14),inset 0 4px 0 rgba(255,255,255,.28);transition:transform .12s,box-shadow .12s}
+.pn:active .face{transform:translateY(5px);box-shadow:0 2px 0 rgba(0,0,0,.32),inset 0 -5px 0 rgba(0,0,0,.14)}
+.pn .ic{font-size:36px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.s-done .face{background:linear-gradient(#ffd84d,#f0a41c);box-shadow:0 7px 0 #a8730a,inset 0 4px 0 rgba(255,255,255,.4)}
+.s-done .ring{background:#ffd84d33}
+.badge{position:absolute;right:-2px;top:-4px;font-size:22px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.s-prog .face{background:#5d6c86;box-shadow:0 7px 0 #3d4a61,inset 0 4px 0 rgba(255,255,255,.18)}
+.s-prog.cur .face{background:var(--c)}
+.s-prog .ic{filter:saturate(.7)}
+.s-done.s-done .face{}
+.plg{text-align:center}
+.s-next .face,.s-mys .face{background:#3a4254;box-shadow:0 7px 0 #262c3a,inset 0 4px 0 rgba(255,255,255,.08)}
+.s-next .ic{filter:grayscale(1) brightness(.55);opacity:.8}
+.s-mys .ic{filter:brightness(0);opacity:.32}
+.s-mys{opacity:.9}
+.s-vcur .face{background:linear-gradient(#c792ff,#8d5fe0);box-shadow:0 7px 0 #5d3aa8,inset 0 4px 0 rgba(255,255,255,.3)}
+.s-done.pn[class*=pn] .ic{filter:none}
+.lock{position:absolute;right:-4px;bottom:-2px;font-size:20px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+.pn.cur .face{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.plab{position:absolute;width:120px;text-align:center;font-size:13px;font-weight:700;color:var(--fg);pointer-events:none;line-height:1.15}
+.plab.q{opacity:.4;letter-spacing:2px}
+.bub{position:absolute;width:68px;padding:5px 0;text-align:center;font-size:12px;font-weight:800;letter-spacing:.5px;color:#fff;background:#2fb457;border-radius:10px;box-shadow:0 3px 0 #1c7a3a;pointer-events:none;animation:bob 1.2s ease-in-out infinite}
+.bub:after{content:"";position:absolute;left:-6px;top:50%;margin-top:-6px;border:6px solid transparent;border-left:0;border-right-color:#2fb457}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.det{position:sticky;bottom:8px;margin:8px 0;padding:12px 14px;border-radius:14px;background:var(--card);color:var(--fg);border:2px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.25);z-index:5}
+.det[hidden]{display:none}
+.det .iconbtn{float:right}
+.det .dl{margin:4px 0}
+.tbl{margin:14px 0}
+.tbl summary{cursor:pointer;padding:10px 0;font-size:12px;letter-spacing:1px;opacity:.8}
+@media (prefers-reduced-motion:reduce){.pn.cur .face,.bub{animation:none}}
+
+.s-lcur .face{background:linear-gradient(#58cc02,#3fa000);box-shadow:0 7px 0 #2c7000,inset 0 4px 0 rgba(255,255,255,.3)}
+
+.vrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.vrow .ghost{flex:1 1 auto}
+.s-vdone .face{background:linear-gradient(#d8b4ff,#9b5cf0);box-shadow:0 7px 0 #5d3aa8,0 0 22px 4px rgba(199,146,255,.7),inset 0 4px 0 rgba(255,255,255,.4);animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 7px 0 #5d3aa8,0 0 14px 2px rgba(199,146,255,.5),inset 0 4px 0 rgba(255,255,255,.4)}50%{box-shadow:0 7px 0 #5d3aa8,0 0 30px 8px rgba(199,146,255,.85),inset 0 4px 0 rgba(255,255,255,.4)}}
+.s-vrec .face{background:linear-gradient(#c792ff,#8d5fe0);box-shadow:0 7px 0 #5d3aa8,inset 0 4px 0 rgba(255,255,255,.3)}
+.s-vrec .ring{background:repeating-conic-gradient(#c792ff 0 10deg,transparent 10deg 20deg)}
+.s-vrec.cur .face{animation:pulse 1.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.s-vdone .face{animation:none}}
+
+.s-ldone .face{background:linear-gradient(#7bdc3a,#3fa000);box-shadow:0 7px 0 #2c7000,inset 0 4px 0 rgba(255,255,255,.3)}
+.badge.stars{right:auto;left:50%;top:-14px;bottom:auto;transform:translateX(-50%);font-size:13px;white-space:nowrap;letter-spacing:-1px}
+
+.pn.inc .ring{background:repeating-conic-gradient(#c792ff 0 10deg,transparent 10deg 20deg)}
+
+.pn .ic svg{color:#fff;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
 </style>
 </head>
 <body>
 <div id="app">
   <header>
-    <button class="iconbtn" id="menu" title="¿Hay lección nueva?">☰</button>
+    <button class="iconbtn" id="menu" title="Mi camino">☰</button>
     <div class="bar"><i id="prog"></i></div>
     <span id="streak"></span><span id="xp">⭐ 0</span>
   </header>
@@ -208,7 +309,7 @@ CATÁLOGO DE EJERCICIOS Y ESCALERA DE PROGRESIÓN (lo lee el agente que arma las
 
 == FORMATO DE LA LECCIÓN ==
 {"title":"","date":"AAAA-MM-DD","lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"","student":"nombre","stage":1-5,"focus":"","speakTip":"consejo de pronunciación/gramática corto (opcional)","nextStep":{"type":"lesson|voice","text":"qué hacer después, según el plan"},"exercises":[...]}
-Todo ejercicio acepta "block" (etiqueta de sección), "hint" (pista útil y específica), "noRetry":true (sin segunda oportunidad) y "boss":true (jefe: triple de puntos).
+Todo ejercicio acepta "skill" (id de una habilidad de skills/map), "block" (etiqueta de sección), "hint" (pista útil y específica), "noRetry":true (sin segunda oportunidad) y "boss":true (jefe: triple de puntos).
 Con "audio", la app lo reproduce una sola vez y bloquea las respuestas hasta que se escucha; si la persona falla, se le ofrece una segunda oportunidad.
 
 == TIPOS (cada uno con su forma exacta) ==
@@ -336,14 +437,14 @@ let round=1,histSaved=false;
 let started=false,sessionId=null,dbApi=null,dbVer=null,pendingLesson=null;
 const SIGUE=()=>"No pude conectarme a tu base de datos. Abre un chat con Claude y escribe: «Sigue las instrucciones del bloque agent-instructions de mi artefacto «"+document.title+"» y dame la lección de hoy».";
 const SIGUE_NEXT=()=>{const n=L&&L.nextStep;return (n&&n.text)?n.text:"Pídele a Claude en el chat: «dame otra lección»."};
-const nsBox=()=>{const n=(L&&L.nextStep&&L.nextStep.text)?L.nextStep:null;return el("div",{style:n?"background:var(--soft);border:2px solid var(--blue);border-radius:14px;padding:12px 14px;margin:10px 0":"display:none"},el("b",{},n?(n.type==="voice"?"🎙️ Siguiente paso: conversa con Claude en modo voz":"➡️ Siguiente paso"):""),el("p",{style:"margin:6px 0 0"},n?n.text:""))};
+const nsBox=()=>{const n=(L&&L.nextStep&&L.nextStep.text)?L.nextStep:null;return el("div",{style:n?"background:var(--soft);border:2px solid var(--blue);border-radius:14px;padding:12px 14px;margin:10px 0":"display:none"},el("b",{},n?(n.type==="voice"?"🔊 Siguiente paso: conversa con Claude en modo voz":"➡️ Siguiente paso"):""),el("p",{style:"margin:6px 0 0"},n?n.text:""))};
 let LANG="en-US";let streak=0,bestStreak=0,tick=null;function stopTick(){if(tick){clearInterval(tick);tick=null}}
 const PASS=0.8;
-let ttsApi=null,dic=null,listening=false;
+let ttsApi=null,dic=null,listening=false,rid=0,speakRid=0;
 
 /* ---------- audio ---------- */
 if(window.claude&&claude.use){
-  claude.use("tts").then(t=>{ttsApi=t||null}).catch(()=>{});
+  claude.use("tts").then(t=>{ttsApi=t||null;try{if(ttsApi&&ttsApi.onState)ttsApi.onState(({state})=>{if(state==="speaking"&&speakRid!==rid){try{ttsApi.stop()}catch(e){}}})}catch(e){}}).catch(()=>{});
   claude.use("dictation").then(d=>{
     if(!d)return;
     dic=d;
@@ -359,6 +460,7 @@ async function stopMic(){
   }
 }
 function speak(text,o){
+  speakRid=rid;
   if(dic&&listening)return stopMic().then(()=>doSpeak(text,o));
   return doSpeak(text,o);
 }
@@ -515,10 +617,14 @@ function arm(fn){
     saveProg();
     const cl=coachLine(r.ok);
     setFB(r.ok===false?"bad":"ok",r.title,(r.nodes||[]).concat(cl?[el("p",{class:"coach"},cl)]:[]));
-    if(r.say)speak(r.say);
-    b.disabled=false;b.className="btn"+(r.ok===false?" blue":"");
-    b.textContent="Continuar";
+    b.className="btn"+(r.ok===false?" blue":"");
     b.onclick=next;
+    if(r.say){
+      b.disabled=true;b.textContent="🔊 Escuchando la corrección…";
+      let fin_=false;const fin=()=>{if(fin_)return;fin_=true;b.disabled=false;b.textContent="Continuar"};
+      try{Promise.resolve(speak(r.say)).then(fin,fin)}catch(e){fin()}
+      setTimeout(fin,9000);
+    }else{b.disabled=false;b.textContent="Continuar"}
     $("#retry").style.display="none";
     if(r.ok===false&&mode==="train"&&ex.audio&&!ex.retrying&&!ex.second&&!ex.noRetry&&!OPEN[ex.type]){
       const rb=$("#retry");rb.style.display="block";
@@ -542,6 +648,9 @@ function resume(p){
 function next(){i++;saveProg();render()}
 
 function render(){
+  rid++;
+  try{if(ttsApi&&ttsApi.stop)ttsApi.stop()}catch(e){}
+  try{if("speechSynthesis" in window)speechSynthesis.cancel()}catch(e){}
   stopMic();stopTick();started=true;
   const card=$("#card");card.innerHTML="";clearFB();
   $("#prog").style.width=(queue.length?Math.round(100*i/queue.length):0)+"%";
@@ -618,7 +727,9 @@ function bDict(ex,card){
   ta.addEventListener("focus",()=>{activeTA=ta});
   card.append(ta,el("div",{class:"row"},el("button",{class:"ghost micbtn",type:"button",onclick:()=>{}},"")));
   card.lastChild.remove();
-  ta.addEventListener("input",()=>{if(ta.value.trim()&&canAnswer(ex,st))arm(check);else disarm()});
+  const need=el("p",{class:"fine",style:"color:#d33;font-weight:700",hidden:true},"⚠ Primero toca «Escuchar» (solo suena 1 vez) y luego escribe lo que oíste.");
+  card.append(need);
+  ta.addEventListener("input",()=>{const ok=ta.value.trim()&&canAnswer(ex,st);need.hidden=!(ta.value.trim()&&!canAnswer(ex,st));if(ok)arm(check);else disarm()});
   function check(){
     const target=norm(ex.audio),said=norm(ta.value);
     const mark=lcsMark(target,said);
@@ -642,7 +753,9 @@ function bShadow(ex,card){
   const ta=el("textarea",{placeholder:"Toca 🎤 y repite la frase, o escríbela…",spellcheck:"false"});
   ta.addEventListener("focus",()=>{activeTA=ta});
   card.append(ta,el("div",{class:"row"},micBtn(ta)),el("p",{class:"fine"},"Repite con el mismo ritmo, sin ver el texto. Primero escucha."));
-  ta.addEventListener("input",()=>{if(ta.value.trim()&&canAnswer(ex,st))arm(check);else disarm()});
+  const need=el("p",{class:"fine",style:"color:#d33;font-weight:700",hidden:true},"⚠ Primero toca «Escuchar» (solo suena 1 vez) y luego repite lo que oíste. Sin escuchar, no se puede comprobar.");
+  card.append(need);
+  ta.addEventListener("input",()=>{const ok=ta.value.trim()&&canAnswer(ex,st);need.hidden=!(ta.value.trim()&&!canAnswer(ex,st));if(ok)arm(check);else disarm()});
   function check(){
     const t=norm(ex.audio),s=norm(ta.value),mark=lcsMark(t,s);
     const pct=mark.filter(Boolean).length/t.length;
@@ -663,11 +776,13 @@ function bChunks(ex,card){
   card.append(el("h2",{},"Escucha y ordena los bloques de significado"),...audioBar(ex,st));
   const placed=[];
   const pool=el("div",{class:"chips"}),area=el("div",{class:"chips"});
+  const needc=el("p",{class:"fine",style:"color:#d33;font-weight:700",hidden:true},"⚠ Primero toca «Escuchar» (solo suena 1 vez) y luego ordena los bloques.");
+  card.append(needc);
   const chipOf={};
   const items=shuffle(ex.chunks.map((c,k)=>k));
   function redraw(){
     pool.innerHTML="";area.innerHTML="";
-    items.filter(k=>!placed.includes(k)).forEach(k=>pool.append(el("button",{class:"chip",type:"button",onclick:()=>{if(!canAnswer(ex,st)){return}placed.push(k);redraw()}},ex.chunks[k])));
+    items.filter(k=>!placed.includes(k)).forEach(k=>pool.append(el("button",{class:"chip",type:"button",onclick:()=>{if(!canAnswer(ex,st)){needc.hidden=false;return}needc.hidden=true;placed.push(k);redraw()}},ex.chunks[k])));
     placed.forEach(k=>area.append(el("button",{class:"chip",type:"button",onclick:()=>{placed.splice(placed.indexOf(k),1);redraw()}},ex.chunks[k])));
     if(placed.length===ex.chunks.length)arm(check);else disarm();
   }
@@ -870,7 +985,7 @@ function bFind(ex,card){
     if(sel.size)arm(check);else disarm();
   }},t));
   btns.forEach(b=>row.append(b));
-  card.append(row,el("p",{class:"fine"},"Toca la palabra (o palabras) que está mal. Si crees que todo está bien, no toques nada y usa «Está bien»."));
+  card.append(row,el("p",{class:"fine"},"Toca la palabra (o palabras) que está mal."+(ex.allowCorrect?" Si crees que todo está bien, usa «Está bien».":"")));
   const okBtn=el("button",{class:"ghost",type:"button",onclick:()=>{sel.clear();btns.forEach(b=>b.classList.remove("sel"));arm(check)}},"✔ Está bien");
   if(ex.allowCorrect)card.append(okBtn);
   function check(){
@@ -1073,14 +1188,14 @@ function summary(){
       missed:missed.map(r=>({type:r.ex.type,item:r.ex.audio||r.ex.prompt||r.ex.sentence||"",given:r.given||""})),
       roleplay:roles.map(r=>({client:r.ex.audio||"",reply:r.given||""})),
       tasks:tasks.map(r=>({type:r.ex.type,boss:!!r.ex.boss,prompt:r.ex.prompt||r.ex.title||"",reply:r.given||"",feedback:r.feedback||""})),
-      xp:xp,bestStreak:bestStreak,stage:L.stage||null,
+      items:main.filter(r=>!r.retry&&(typeof r.ok==="boolean"||r.ok===null)&&r.ex.type!=="cards").map(r=>({type:r.ex.type,skill:skillOf(r.ex),ok:(typeof r.ok==="boolean"?r.ok:null),level:r.level||null})),xp:xp,bestStreak:bestStreak,stage:L.stage||null,
       report:rep
     };
     dbApi.doc("sessions/"+sessionId).set(payload)
       .then(()=>{statusEl.textContent="✓ Reporte guardado: Claude ya puede leerlo, no necesitas copiarlo."})
       .catch(e=>{statusEl.textContent="No pude guardar el reporte ("+((e&&e.code)||"error")+"). Cópialo con el botón de abajo."});
   }
-  card.append(el("h1",{},"¡Lección completada!"),el("p",{class:"coach"},celebrate(graded.length?good/graded.length:1)),nsBox(),
+  card.append(el("h1",{},"¡Lección completada!"),starsBox(graded.length?good/graded.length:1),el("p",{class:"coach"},celebrate(graded.length?good/graded.length:1)),nsBox(),
     el("p",{},"⭐ "+xp+" puntos · "+good+" de "+graded.length+" correctas al primer intento ("+(graded.length?Math.round(100*good/graded.length):0)+"%)"+(retried?" · "+rescued+" rescatadas tras repetición":"")+(rv.length?" · repaso: "+rvGood+"/"+rv.length:"")),
     el("table",{},el("tr",{},el("th",{},"Tipo de comprensión"),el("th",{},"Correctas")),
       ...LEVELS.map(l=>el("tr",{},el("td",{},l),el("td",{},byLevel[l].n?byLevel[l].ok+"/"+byLevel[l].n:"—")))),
@@ -1095,7 +1210,476 @@ function summary(){
       missed.length?el("button",{class:"ghost",type:"button",onclick:()=>startReview(missed)},"🔁 Repetir fallos"):null,
       pendingLesson?el("button",{class:"ghost",type:"button",onclick:()=>{L=pendingLesson;pendingLesson=null;LS("et_lesson",L);start()}},"📥 Cargar la lección nueva de Claude"):null,
       el("button",{class:"ghost",type:"button",onclick:()=>start()},"↺ Empezar de nuevo")));
-  const b=$("#main");b.disabled=false;b.className="btn";b.textContent=pendingLesson?"📥 Cargar la lección nueva":"📥 Buscar lección nueva";b.onclick=async()=>{if(pendingLesson){L=pendingLesson;pendingLesson=null;LS("et_lesson",L);start();return}try{if(dbApi){const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();if(d&&d.lesson&&Array.isArray(d.lesson.exercises)&&d.lesson.exercises.length&&d.lesson.title!==(L&&L.title)){L=d.lesson;dbVer=String(d.updatedAt||d.lesson.title||"");LS("et_lesson",L);start();return}}}catch(e){setFB("bad",SIGUE(),[]);return}setFB("ok","Aún no hay lección nueva. "+SIGUE_NEXT(),[])};
+  const b=$("#main");b.disabled=false;b.className="btn";b.textContent="🗺️ Ver mi camino";b.onclick=()=>openCons();
+}
+
+/* ---------- constelación de habilidades ---------- */
+const DEF_MAP={skills:[
+ {id:"escucha",label:"Escuchar",desc:"Entender lo que te dicen a velocidad natural",x:18,y:26},
+ {id:"habla",label:"Hablar",desc:"Pronunciar y responder sin trabarte",x:50,y:12},
+ {id:"conversar",label:"Conversar",desc:"Sostener una conversación real",x:82,y:26},
+ {id:"vocab",label:"Vocabulario",desc:"Las palabras de tu trabajo",x:28,y:68},
+ {id:"gramatica",label:"Gramática",desc:"Las estructuras que más usas",x:72,y:68}],
+ links:[["escucha","habla"],["habla","conversar"],["escucha","vocab"],["vocab","gramatica"],["gramatica","conversar"],["habla","gramatica"]],
+ defaults:{audio:"escucha",grammar:"gramatica",vocab:"vocab",speak:"habla",open:"conversar"}};
+let SKMAP=DEF_MAP;
+const AUDIO_T={choice:1,minimal_pair:1,listen_multi:1,true_false:1,dictation:1,chunks:1};
+function skillOf(ex){
+  if(ex&&ex.skill)return ex.skill;
+  const d=SKMAP.defaults||DEF_MAP.defaults,t=ex&&ex.type;
+  if(t==="match"||t==="cards")return d.vocab;
+  if(t==="shadow"||t==="speak")return d.speak;
+  if(t==="roleplay"||t==="scene"||t==="task")return d.open;
+  if(AUDIO_T[t]&&ex.audio)return d.audio;
+  return d.grammar;
+}
+async function readColl(name){
+  if(!dbApi)return [];
+  const pick=q=>{
+    const docs=q&&q.docs?q.docs:(q&&q.forEach?q:null);
+    if(!docs)return null;
+    const a=[];
+    docs.forEach(d=>{const x=typeof d.data==="function"?d.data():d;a.push(Object.assign({_id:d.id},x))});
+    return a;
+  };
+  try{const c=dbApi.collection(name);if(typeof c.get==="function"){const r=pick(await c.get());if(r)return r}}catch(e){}
+  return new Promise(res=>{
+    let done=false,un=null;
+    const fin=v=>{if(done)return;done=true;setTimeout(()=>{try{un&&un()}catch(e){}},0);res(v)};
+    setTimeout(()=>fin([]),6000);
+    try{un=dbApi.collection(name).onSnapshot(q=>fin(pick(q)||[]),()=>fin([]))}catch(e){fin([])}
+  });
+}
+async function loadSkMap(){
+  if(!dbApi)return;
+  try{
+    const s=await dbApi.doc("skills/map").get();
+    const d=s&&s.exists&&s.data();
+    if(d&&Array.isArray(d.skills)&&d.skills.length>=3&&d.skills.every(k=>k.id&&k.label&&typeof k.x==="number"&&typeof k.y==="number"))
+      SKMAP=Object.assign({links:[],clusters:[],defaults:DEF_MAP.defaults},d);
+  }catch(e){}
+}
+const CRED={"primera escucha":1,"tras repetición":.6,"con pistas":.4,"por lectura":.3};
+function calcMastery(sessions){
+  const items=[];
+  sessions.slice().sort((a,b)=>String(a.at).localeCompare(String(b.at))).forEach(s=>(s.items||[]).forEach(it=>items.push(it)));
+  const out={};
+  SKMAP.skills.forEach(s=>{
+    const mine=items.filter(it=>it.skill===s.id);
+    const scored=mine.filter(it=>typeof it.ok==="boolean").slice(-24);
+    let sw=0,sv=0;
+    scored.forEach((it,k)=>{
+      const w=Math.pow(.92,scored.length-1-k);
+      const c=it.ok?(it.level&&CRED[it.level]!=null?CRED[it.level]:1):0;
+      sw+=w;sv+=w*c;
+    });
+    out[s.id]={n:scored.length,open:mine.length-scored.length,m:sw?sv/sw:null,seq:mine.slice(-12).map(it=>typeof it.ok==='boolean'?it.ok:null)};
+  });
+  return out;
+}
+function skStatus(x,s){
+  if(!x.n&&!x.open)return s&&s.base?{k:"est",txt:"Estimada en la entrevista (aún sin medir)"}:{k:"out",txt:"En camino: la app aún no la trabaja"};
+  if(!x.n)return {k:"open",txt:"Practicada "+x.open+(x.open===1?" vez":" veces")+" · la evalúa Claude, sin porcentaje"};
+  const conf=x.n>=10?"evidencia sólida":(x.n>=4?"poca evidencia":"muy pocos datos");
+  const k=(x.m>=.85&&x.n>=10)?"dom":(x.m>=.6?"adv":"learn");
+  return {k,txt:{dom:"Dominada",adv:"Avanzando",learn:"Aprendiendo"}[k]+" · "+conf};
+}
+function skBright(x){return x.n?Math.max(.25,x.m*Math.min(1,x.n/8)):(x.open?.25:0)}
+
+const SVGNS="http://www.w3.org/2000/svg";
+function sv(tag,at,...kids){
+  const e=document.createElementNS(SVGNS,tag);
+  for(const k in (at||{}))e.setAttribute(k,at[k]);
+  kids.flat().forEach(c=>{if(c!=null)e.append(c.nodeType?c:document.createTextNode(String(c)))});
+  return e;
+}
+const REDUCE=(()=>{try{return !!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)}catch(e){return false}})();
+const GOLD="#ffc94d",CY="#5ad1ff";
+const px=x=>6+x*.88,py=y=>10+y*1.0;
+function arcPath(cx,cy,r,f){
+  f=Math.min(Math.max(f,0.001),.9999);
+  const a=-Math.PI/2,b=a+f*2*Math.PI;
+  return "M"+(cx+r*Math.cos(a)).toFixed(2)+" "+(cy+r*Math.sin(a)).toFixed(2)+" A"+r+" "+r+" 0 "+(f>.5?1:0)+" 1 "+(cx+r*Math.cos(b)).toFixed(2)+" "+(cy+r*Math.sin(b)).toFixed(2);
+}
+function drawSky(M,inLesson,total,onPick){
+  const SK=SKMAP.skills,CL=SKMAP.clusters||[],by={};SK.forEach(s=>by[s.id]=s);
+  const svg=sv("svg",{viewBox:"0 0 100 126",role:"img","aria-label":"Carta estelar de tus habilidades"});
+  const defs=sv("defs",{});
+  defs.append(sv("radialGradient",{id:"halo"},sv("stop",{offset:"0%","stop-color":"#ffe9a8","stop-opacity":.95}),sv("stop",{offset:"45%","stop-color":GOLD,"stop-opacity":.35}),sv("stop",{offset:"100%","stop-color":GOLD,"stop-opacity":0})));
+  CL.forEach(c=>defs.append(sv("radialGradient",{id:"neb-"+c.id},sv("stop",{offset:"0%","stop-color":c.color,"stop-opacity":.17}),sv("stop",{offset:"100%","stop-color":c.color,"stop-opacity":0}))));
+  svg.append(defs);
+  [16,31,46].forEach(r=>svg.append(sv("circle",{cx:50,cy:63,r:r,fill:"none",stroke:CY,"stroke-opacity":.07,"stroke-width":.25})));
+  for(let k=0;k<=100;k+=10){
+    const t={stroke:CY,"stroke-opacity":.28,"stroke-width":.2};
+    svg.append(sv("line",Object.assign({x1:k,y1:0,x2:k,y2:1.4},t)),sv("line",Object.assign({x1:k,y1:126,x2:k,y2:124.6},t)),sv("line",Object.assign({x1:0,y1:k*1.26,x2:1.4,y2:k*1.26},t)),sv("line",Object.assign({x1:100,y1:k*1.26,x2:98.6,y2:k*1.26},t)));
+  }
+  svg.append(sv("line",{x1:50,y1:4,x2:50,y2:122,stroke:CY,"stroke-opacity":.05,"stroke-width":.2}),sv("line",{x1:4,y1:63,x2:96,y2:63,stroke:CY,"stroke-opacity":.05,"stroke-width":.2}));
+  let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+  for(let k=0;k<80;k++){
+    const c=sv("circle",{cx:(rnd()*98+1).toFixed(1),cy:(rnd()*124+1).toFixed(1),r:(rnd()*.38+.12).toFixed(2),fill:"#cfe6ff","fill-opacity":(rnd()*.45+.1).toFixed(2)});
+    if(k%7===0&&!REDUCE)c.setAttribute("class","tw");
+    svg.append(c);
+  }
+  CL.forEach(c=>{
+    svg.append(sv("circle",{cx:px(c.x),cy:py(c.y),r:22,fill:"url(#neb-"+c.id+")"}));
+    svg.append(sv("text",{x:(c.lx!=null?c.lx:px(c.x)),y:(c.ly!=null?c.ly:py(c.y)),"text-anchor":c.anchor||"middle","font-size":2.4,"letter-spacing":.6,fill:c.color,"fill-opacity":.85,class:"mono"},"◆ "+c.label));
+  });
+  (SKMAP.links||[]).forEach(l=>{
+    const a=by[l[0]],b=by[l[1]];if(!a||!b)return;
+    const x1=px(a.x),y1=py(a.y),x2=px(b.x),y2=py(b.y),dx=x2-x1,dy=y2-y1,d=Math.hypot(dx,dy)||1,o=6.2;
+    const lit=skBright(M[a.id])>0&&skBright(M[b.id])>0;
+    svg.append(sv("line",{x1:x1+dx/d*o,y1:y1+dy/d*o,x2:x2-dx/d*o,y2:y2-dy/d*o,stroke:lit?GOLD:CY,"stroke-opacity":lit?.55:.2,"stroke-width":lit?.3:.2,"stroke-dasharray":lit?"":"0.8 0.9"}));
+  });
+  SK.forEach(s=>{
+    const x=px(s.x),y=py(s.y),m=M[s.id],b=skBright(m),st=skStatus(m,s),Rg=4.4;
+    const col=(CL.find(c=>c.id===s.cluster)||{}).color||CY;
+    const g=sv("g",{class:"nd",tabindex:"0",role:"button","aria-label":s.label+": "+st.txt});
+    g.append(sv("circle",{cx:x,cy:y,r:9,fill:"transparent"}));
+    if(b>0)g.append(sv("circle",{cx:x,cy:y,r:3.6+7.4*b,fill:"url(#halo)","fill-opacity":(.25+.75*b).toFixed(2)}));
+    g.append(sv("circle",{cx:x,cy:y,r:Rg,fill:"none",stroke:col,"stroke-opacity":.3,"stroke-width":.35}));
+    if(m.n)g.append(sv("path",{d:arcPath(x,y,Rg,m.m),fill:"none",stroke:GOLD,"stroke-width":.8,"stroke-linecap":"round"}));
+    else if(s.base)g.append(sv("path",{d:arcPath(x,y,Rg,s.base/3*.98),fill:"none",stroke:CY,"stroke-width":.55,"stroke-opacity":.8,"stroke-dasharray":".55 .5"}));
+    for(let k=0;k<10;k++){
+      const an=-Math.PI/2+k*Math.PI/5,r1=Rg+1.1,r2=Rg+1.9,on=k<m.n;
+      g.append(sv("line",{x1:x+r1*Math.cos(an),y1:y+r1*Math.sin(an),x2:x+r2*Math.cos(an),y2:y+r2*Math.sin(an),stroke:on?GOLD:col,"stroke-opacity":on?.95:.2,"stroke-width":.35}));
+    }
+    if(b>0){
+      const L=3+6*b,sp={stroke:"#fff2c4","stroke-opacity":(.45+.4*b).toFixed(2),"stroke-width":.22};
+      g.append(sv("line",Object.assign({x1:x-L,y1:y,x2:x+L,y2:y},sp)),sv("line",Object.assign({x1:x,y1:y-L,x2:x,y2:y+L},sp)));
+      if(b>.7){const D=L*.55;g.append(sv("line",Object.assign({x1:x-D,y1:y-D,x2:x+D,y2:y+D},sp,{"stroke-opacity":.3})),sv("line",Object.assign({x1:x-D,y1:y+D,x2:x+D,y2:y-D},sp,{"stroke-opacity":.3})))}
+      g.append(sv("circle",{cx:x,cy:y,r:(.7+1.1*b).toFixed(2),fill:"#fff6d6"}));
+    }else{
+      g.append(sv("circle",{cx:x,cy:y,r:1,fill:s.base?CY:"none","fill-opacity":.7,stroke:"#7f9bb3","stroke-width":.3,"stroke-dasharray":s.base?"":".5 .5"}));
+    }
+    if(inLesson.has(s.id)){
+      g.append(sv("circle",{cx:x,cy:y,r:7.6,fill:"none",stroke:CY,"stroke-opacity":.28,"stroke-width":.25,"stroke-dasharray":"1 1"}));
+      const o=sv("g",{},sv("circle",{cx:x+7.6,cy:y,r:.85,fill:CY}));
+      if(!REDUCE)o.append(sv("animateTransform",{attributeName:"transform",type:"rotate",from:"0 "+x+" "+y,to:"360 "+x+" "+y,dur:"7s",repeatCount:"indefinite"}));
+      g.append(o);
+    }
+    const val=m.n?Math.round(100*m.m)+"% · n="+m.n:(m.open?"PRACT. x"+m.open:(s.base?"ESTIM. "+"●".repeat(s.base)+"○".repeat(3-s.base):"SIN DATOS"));
+    const nm=s.short||s.label,w=Math.max(nm.length*1.62,val.length*1.3)+3.6,ty=y+Rg+2.6;
+    g.append(sv("rect",{x:x-w/2,y:ty,width:w,height:7.4,rx:1.1,fill:"#07111b","fill-opacity":.8,stroke:col,"stroke-opacity":.3,"stroke-width":.2}));
+    g.append(sv("text",{x:x,y:ty+3.1,"text-anchor":"middle","font-size":2.7,fill:"#fff","fill-opacity":(b>0||s.base)?1:.7},nm));
+    g.append(sv("text",{x:x,y:ty+6.2,"text-anchor":"middle","font-size":2,fill:m.n?GOLD:CY,"fill-opacity":.9,class:"mono"},val));
+    g.addEventListener("click",()=>onPick(s.id));
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onPick(s.id)}});
+    svg.append(g);
+  });
+  const hud={"font-size":1.9,fill:CY,"fill-opacity":.55,class:"mono"};
+  svg.append(sv("text",Object.assign({x:3,y:4.6},hud),"CARTA ESTELAR · "+SK.length+" HABILIDADES"));
+  svg.append(sv("text",Object.assign({x:97,y:122.6,"text-anchor":"end"},hud),total+" OBS"));
+  svg.append(sv("text",Object.assign({x:3,y:122.6},hud),"ARCO DORADO = DOMINIO MEDIDO · ARCO PUNTEADO = ESTIMACIÓN"));
+  return svg;
+}
+function starsBox(p){
+  const n=p>=.9?3:(p>=.8?2:1);
+  const box=el("div",{class:"stars3","aria-label":n+" de 3 estrellas"},
+    [1,2,3].map(k=>el("span",{style:"animation-delay:"+(k*.25)+"s;"+(k<=n?"":"filter:grayscale(1);opacity:.35")},"⭐")));
+  setTimeout(()=>confetti(n),300);
+  return box;
+}
+function confetti(n){
+  try{if(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)return}catch(e){}
+  const E=["🎉","⭐","✨","🎊"],N=n>=3?36:(n===2?24:12);
+  for(let k=0;k<N;k++){
+    const c=el("div",{class:"cf",style:"left:"+(Math.random()*100)+"vw;animation-delay:"+(Math.random()*.8)+"s"},E[k%E.length]);
+    document.body.append(c);setTimeout(()=>c.remove(),3800);
+  }
+}
+
+const wave=sz=>{const bars=[[2,9],[6.5,15],[11,22],[15.5,13],[20,18]];
+  return sv("svg",{viewBox:"0 0 24 24",width:sz,height:sz,"aria-hidden":"true",style:"vertical-align:-3px"},
+    ...bars.map(([x,h])=>sv("rect",{x:x,y:(24-h)/2,width:3,height:h,rx:1.5,fill:"currentColor"})))};
+const ICONS={esc_natural:"🎧",esc_hilo:"🧵",esc_detalle:"🔍",esc_video:"📺",hab_pron:"🗣️",hab_repair:"🔁",hab_fluidez:"🌊",con_preguntas:"🕵️",con_explicar:"💡",con_proponer:"📋",con_negociar:"🤝",len_vocab:"📚",len_gram:"🧩",len_precision:"🎯",escucha:"🎧",preguntas:"🕵️",propuestas:"📋",habla:"🗣️",vocab:"📚",gramatica:"🧩"};
+const DX=[0,52,74,52,0,-52,-74,-52];
+function buildSteps(M,voices,lessonDone,les,voiceRec,sessions){
+  const steps=[{kind:"interview",done:true,icon:"~wave",st:"done"}];
+  const hist=[];
+  (sessions||[]).forEach(q=>{const p=Number(q.firstPassPct)||0;hist.push({kind:"hist",icon:"📖",st:"ldone",at:String(q.at||""),q,pct:p,stars:p>=90?3:(p>=80?2:1)})});
+  voices.forEach(v=>hist.push({kind:"voice",icon:"~wave",st:"vdone",at:String(v.at||""),v}));
+  hist.sort((p,q)=>p.at.localeCompare(q.at));
+  let ln=0,vn=0;hist.forEach(t=>{if(t.kind==="hist"){ln++;const mm=String(t.q.title||"").match(/Lecci[oó]n\s*(\d+)/);t.label=mm?"Lección "+mm[1]:"Lección "+ln}else{vn++;t.n=vn}});
+  steps.push(...hist);
+  if(!lessonDone&&les){const mm=String(les.title||"").match(/Lecci[oó]n\s*(\d+)/);steps.push({kind:"lesson",icon:"📖",les,label:mm?"Lección "+mm[1]:"Tu lección",st:"lcur"});
+    if(voiceRec)steps.push({kind:"voice",icon:"~wave",st:"vrec"})}
+  else{if(voiceRec)steps.push({kind:"voice",icon:"~wave",st:"vrec"});
+    steps.push({kind:"lesson",icon:"📖",les:null,label:"Próxima lección",st:"lcur"})}
+  const ic=SKMAP.skills.map(s=>s.icon||ICONS[s.id]||"⭐").filter((x,i,a)=>a.indexOf(x)===i);
+  for(let k=0;k<7;k++)steps.push({kind:"mys",icon:ic[(k*3+1)%ic.length]||"⭐",st:"mys"});
+  steps.push({kind:"goal",icon:"🏆",st:"mys"});
+  return steps;
+}
+function drawPath(steps,inLesson,onPick){
+  const H=steps.length*104+40,W=320,cx=i=>W/2+DX[i%DX.length],cy=i=>56+i*104;
+  const box=el("div",{class:"path",style:"height:"+H+"px"});
+  let d="";steps.forEach((t,i)=>{d+=(i?" C "+cx(i-1)+" "+(cy(i-1)+52)+", "+cx(i)+" "+(cy(i)-52)+", ":"M ")+cx(i)+" "+cy(i)});
+  const svg=sv("svg",{class:"ptrack",viewBox:"0 0 "+W+" "+H,width:W,height:H},
+    sv("path",{d,fill:"none",stroke:"rgba(120,140,170,.28)","stroke-width":10,"stroke-linecap":"round","stroke-dasharray":"2 16"}));
+  box.append(svg);
+  let curIdx=steps.findIndex(t=>t.st==="lcur");
+  const vr=steps.findIndex(t=>t.st==="vrec");
+  if(curIdx>=0&&steps[curIdx].les===null&&vr>=0)curIdx=vr;
+  if(curIdx<0)curIdx=vr;
+  if(curIdx<0){const op=steps.map((t,i)=>i).filter(i=>steps[i].kind==="skill"&&(steps[i].st==="prog"));
+    curIdx=op.find(i=>inLesson.has(steps[i].id));if(curIdx==null)curIdx=op.length?op[0]:steps.findIndex(t=>t.st==="next")}
+  steps.forEach((t,i)=>{
+    const mys=t.st==="mys",nxt=t.st==="next";
+    const cls="pn s-"+t.st+(i===curIdx?" cur":"")+(t.v&&t.v.incomplete?" inc":"");
+    const ring=(t.kind==="skill"&&t.st==="prog")?"background:conic-gradient(#ffc83a "+Math.round(360*t.prog)+"deg,rgba(130,145,170,.25) 0);":"";
+    const node=el("button",{type:"button",class:cls,style:"left:"+(cx(i)-44)+"px;top:"+(cy(i)-44)+"px;--c:"+(t.color||"#8b97ad"),"aria-label":mys?"Paso por descubrir":(t.s?t.s.label:(t.kind==="interview"?"Entrevista":(t.kind==="lesson"||t.kind==="hist"?t.label:(t.kind==="voice"?"Conversación con Claude":"Meta")))),onclick:()=>onPick(t,i)},
+      el("span",{class:"ring",style:ring},el("span",{class:"face"},el("span",{class:"ic"},t.icon==="~wave"?wave(42):t.icon))),
+      t.st==="done"?el("span",{class:"badge"},t.kind==="skill"?"⭐":"✓"):(t.st==="vdone"?el("span",{class:"badge"},"✨"):null),
+      (nxt||t.st==="vcur"&&false)?el("span",{class:"lock"},"🔒"):null,
+      mys?el("span",{class:"lock"},"🔒"):null);
+    box.append(node);
+    const lab=t.kind==="interview"?"Entrevista":t.kind==="hist"?t.label+" "+"⭐".repeat(t.stars):t.kind==="lesson"?t.label:t.kind==="voice"?(t.st==="vdone"?"Conversación "+t.n+(t.v&&t.v.incomplete?" ◐":""):"Conversar"):(t.kind==="goal"?"Tu meta":(mys?"":t.s.short||t.s.label));
+    box.append(el("div",{class:"plab"+(mys?" q":""),style:"left:"+(cx(i)-60)+"px;top:"+(cy(i)+46)+"px"},mys?"???":lab));
+    if(i===curIdx)box.append(el("div",{class:"bub",style:"left:"+(cx(i)+50)+"px;top:"+(cy(i)-14)+"px"},t.kind==="lesson"?(t.les?"¡EMPIEZA!":"SIGUE"):(t.kind==="voice"?"SUGERIDO":"AQUÍ")));
+  });
+  return box;
+}
+
+async function openCons(){
+  let host=$("#cons");
+  if(!host){host=el("div",{id:"cons"});document.body.append(host)}
+  host.className="on";host.innerHTML="";
+  host.append(el("div",{class:"cwrap"},el("p",{class:"fine"},"Cargando tu camino…")));
+  await loadSkMap();
+  const [sessions,voices,cur]=await Promise.all([readColl("sessions"),readColl("voice"),(async()=>{
+    try{const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();return d&&d.lesson?d.lesson:null}catch(e){return null}})()]);
+  if(cur&&Array.isArray(cur.exercises)&&cur.exercises.length&&cur.title!==(L&&L.title)&&!pendingLesson)pendingLesson=cur;
+  const M=calcMastery(sessions);
+  const inLesson=new Set(((L&&L.exercises)||[]).filter(e=>e.type!=="cards").map(skillOf));
+  const total=SKMAP.skills.reduce((t,s)=>t+M[s.id].n+M[s.id].open,0);
+  const wrap=el("div",{class:"cwrap"});
+  wrap.append(el("div",{class:"chead"},el("h2",{class:"mono"},"MI CAMINO"),el("button",{class:"iconbtn",type:"button","aria-label":"Cerrar",onclick:()=>{host.className=""}},"✕")));
+  wrap.append(el("p",{class:"fine"},"Tu recorrido: lecciones y conversaciones. Toca una lección para ver qué practicaste. Lo que viene se descubre contigo y no tiene límite de ritmo: avanzas tan rápido como quieras."));
+  const sk=SKMAP.skills,CL=SKMAP.clusters||[],rows={};
+  const cap=el("p",{class:"scap mono"},"Toca un paso para ver los detalles.");
+  const det=el("div",{class:"det",hidden:true});
+  const pick=id=>{
+    const s=sk.find(q=>q.id===id),x=M[id],st=skStatus(x,s);
+    cap.textContent=s.label.toUpperCase()+" — "+(s.desc||"")+" · "+st.txt+(x.n?" · "+Math.round(100*x.m)+"% sobre "+x.n+" ejercicios":"")+(s.base?" · ENTREVISTA (estimada): "+s.baseNota:"")+(inLesson.has(id)?" · 🎯 en tu lección actual":"");
+    Object.values(rows).forEach(r=>r.classList.remove("sel"));
+    if(rows[id]){rows[id].classList.add("sel");}
+  };
+  const lessonDone=!L||sessions.some(q=>q.title===L.title);
+  const lastAt=sessions.map(q=>String(q.at||"")).sort().pop()||"";
+  const voiceDone=voices.some(v=>!v.incomplete&&String(v.at||"")>lastAt);
+  const voiceRec=!voiceDone;
+  const steps=buildSteps(M,voices,lessonDone,L,voiceRec,sessions);
+  const skillsWorked=q=>{
+    const g={};(q.items||[]).forEach(it=>{const k=it.skill||"?";(g[k]=g[k]||{ok:0,n:0,open:0});if(typeof it.ok==="boolean"){g[k].n++;if(it.ok)g[k].ok++}else g[k].open++});
+    const out=[el("p",{class:"mono dl"},"LO QUE PRACTICASTE")];
+    Object.keys(g).forEach(k=>{const sd=SKMAP.skills.find(x=>x.id===k);if(!sd)return;const r=g[k];
+      out.push(el("p",{class:"fine"},(sd.icon||ICONS[k]||"•")+" "+sd.label+" — "+(r.n?r.ok+" de "+r.n+" bien":"práctica abierta")+(sd.desc?" · "+sd.desc:"")))});
+    const miss=(q.missed||[]);
+    if(miss.length)out.push(el("p",{class:"mono dl"},"PARA REPASAR"),...miss.slice(0,3).map(m=>el("p",{class:"fine"},"• "+String(m.item||"").slice(0,90))));
+    if(out.length===1)out.push(el("p",{class:"fine"},"Esta lección no guardó detalle por habilidad."));
+    return out};
+  const pickStep=(t,i)=>{
+    det.hidden=false;det.innerHTML="";
+    const close=el("button",{class:"iconbtn",type:"button","aria-label":"Cerrar",onclick:()=>{det.hidden=true}},"✕");
+    if(t.st==="mys"&&t.kind!=="voice"){det.append(close,el("b",{},"🔒 Aún por descubrir"),el("p",{class:"fine"},"Este paso todavía no existe del todo: el camino se arma contigo. Se abre al avanzar en los pasos de antes, y su contenido depende de cómo te vaya."));return}
+    if(t.kind==="hist"){const q=t.q,miss=(q.missed||[]).length;det.append(close,el("b",{},"📖 "+(q.title||t.label)),el("p",{class:"mono dl"},String(q.at||"").slice(0,10)+" · "+t.pct+"% a la primera · "+"⭐".repeat(t.stars)),el("p",{class:"fine"},(q.graded?q.good+" de "+q.graded+" correctas al primer intento":"")+(miss?" · "+miss+" para repasar":"")+(q.stage?" · etapa "+q.stage+"/5":"")),el("p",{class:"fine"},"Lección hecha."),...skillsWorked(q));return}
+    if(t.kind==="lesson"&&!t.les){
+      const gs=el("p",{class:"fine"});
+      const go=()=>genLesson(host,sessions,voices,M,lastVoice,gs);
+      det.append(close,el("b",{},"📖 Próxima lección"),
+        el("p",{class:"fine"},voiceRec?"Se arma con tus resultados y con lo que se observe al conversar. Te sugiero conversar primero, pero puedes crearla ya.":"Se arma con tus resultados más recientes."),
+        voiceRec?el("button",{class:"btn",type:"button",onclick:()=>{det.hidden=true;openVoice()}},wave(16)," Conversar primero"):null,
+        el("button",{class:voiceRec?"ghost":"btn",type:"button",style:voiceRec?"margin-top:8px":"",onclick:go},"✨ Crear mi próxima lección"),gs);return}
+    if(t.kind==="lesson"){det.append(close,el("b",{},"📖 "+(t.les.title||"Tu lección")),el("p",{class:"fine"},"Es tu paso actual. Al terminarla, la app te sugiere el siguiente paso."),el("button",{class:"btn",type:"button",onclick:()=>{host.className=""}},"Ir a la lección"));return}
+    if(t.kind==="interview"){det.append(close,el("b",{},wave(16)," Entrevista"),el("p",{class:"fine"},"Tu punto de partida: de ahí salieron las estimaciones iniciales. Todavía no son medidas."));return}
+    if(t.kind==="goal"){det.append(close,el("b",{},"🏆 Tu meta"),el("p",{class:"fine"},"El objetivo que definiste en tu entrevista: es hacia donde va todo tu camino."));return}
+    if(t.kind==="voice"&&t.st==="vdone"){det.append(close,el("b",{},"✨ Conversación "+t.n),el("p",{class:"mono dl"},String(t.v.at||"").slice(0,10)+(t.v.afterLesson?" · después de «"+t.v.afterLesson+"»":"")),t.v.note?el("p",{class:"fine"},"Tu nota: "+t.v.note):null,el("p",{class:"fine"},(t.v.incomplete?"Quedó incompleta (◐), así que sigue sugerida una conversación completa. ":"")+"Hecha. Es un hito de tu camino: Claude usa lo que se observa al hablar para ajustar tus estimaciones y tus próximos pasos."));return}
+    if(t.kind==="voice"){det.append(close,el("b",{},wave(16)," Conversar con Claude"),el("p",{class:"fine"},"Sugerida ahora para practicar hablando de verdad. No tiene candado: puedes hacerla cuando quieras."),el("button",{class:"btn",type:"button",onclick:()=>{openVoice()}},"Abrir conversación"));return}
+    const s=t.s,x=t.x,st=skStatus(x,s);
+    det.append(close,el("b",{},t.icon+" "+s.label,inLesson.has(t.id)?" · 🎯 en tu lección":""),el("p",{class:"fine"},s.desc||""),
+      el("p",{class:"mono dl"},(t.st==="next"?"🔒 SIGUIENTE · aún sin practicar":({dom:"DOMINADA",adv:"AVANZANDO",learn:"APRENDIENDO",est:"SIN MEDIR",open:"PRACTICADA",out:"SIN MEDIR"})[st.k]+(t.cleared?" · PASO SUPERADO ⭐":""))+(x.n?" · "+Math.round(100*x.m)+"% sobre "+x.n+" ejercicios · "+(x.n>=10?"evidencia sólida":(x.n>=4?"poca evidencia":"muy pocos datos")):"")),
+      (!x.n&&s.base)?el("p",{class:"fine est"},"Entrevista (estimación, no medida): "+s.baseNota):null,
+      el("p",{class:"fine"},"Se supera con 6 o más ejercicios al 80% o más."));
+  };
+  const legend=el("p",{class:"fine plg"},"⭐ = tu resultado a la primera (3 estrellas desde 90%) · ✨ conversación hecha · 🔒 por descubrir");
+  wrap.append(legend);
+  const pathBox=el("div",{class:"pathwrap"},drawPath(steps,inLesson,pickStep));
+  wrap.append(pathBox,det);
+  const tbl=el("details",{class:"tbl"},el("summary",{class:"mono"},"VER TELEMETRÍA DETALLADA (las 14 habilidades)"),cap);
+  const groups=CL.length?CL.map(c=>({c:c,list:sk.filter(s=>s.cluster===c.id)})).concat([{c:null,list:sk.filter(s=>!CL.some(c=>c.id===s.cluster))}]):[{c:null,list:sk}];
+  groups.forEach(gp=>{
+    if(!gp.list.length)return;
+    if(gp.c)tbl.append(el("div",{class:"chd mono",style:"color:"+gp.c.color},"◆ "+gp.c.label));
+    gp.list.forEach(s=>{
+      const x=M[s.id],st=skStatus(x,s);
+      const filled=x.n?Math.round(20*x.m*Math.min(1,x.n/8)):0,est=(!x.n&&s.base)?Math.round(20*s.base/3):0;
+      const bar=el("div",{class:"hbar"});
+      for(let k=0;k<20;k++)bar.append(el("i",{class:k<filled?"on":(k<est?"est":"")}));
+      const seq=el("div",{class:"hseq","aria-label":"últimos ejercicios"});
+      x.seq.forEach(v=>seq.append(el("i",{class:v===true?"ok":(v===false?"bad":"open")})));
+      const row=el("div",{class:"hrow",tabindex:"0",onclick:()=>pick(s.id)},
+        el("div",{class:"hl"},el("b",{},s.label,inLesson.has(s.id)?" 🎯":""),el("div",{class:"fine"},s.desc||""),
+          s.base?el("div",{class:"fine est mono"},"ENTREVISTA (estimada): "+s.baseNota):null),
+        el("div",{class:"hs"},el("span",{class:"chip k-"+st.k},({dom:"DOMINADA",adv:"AVANZANDO",learn:"APRENDIENDO",est:"ESTIMADA",open:"PRACTICADA",out:"EN CAMINO"})[st.k])),
+        bar,
+        el("div",{class:"hn mono"},x.n?Math.round(100*x.m)+"% · n="+x.n:(x.open?"x"+x.open+" · Claude":"—")),
+        seq);
+      rows[s.id]=row;tbl.append(row);
+    });
+  });
+  tbl.append(el("p",{class:"fine"},"MEDIDO = promedio de tus ejercicios, con más peso a lo logrado sin ayuda; con pocos datos la barra no se llena. ESTIMACIÓN = lo observado en la entrevista con pocas muestras, no es una medida. Hablar y conversar en tareas abiertas lo evalúa Claude con una rúbrica, no con una fórmula. Los cuadritos de cada fila son tus últimos ejercicios: verde acierto, rojo fallo, gris tarea abierta."));
+
+  wrap.append(tbl);
+  /* siguiente paso */
+  const ns=L&&L.nextStep;
+  const lastVoice=voices.map(v=>String(v.at||"")).sort().pop()||"";
+  const box=el("div",{class:"nextbox"});
+  const stat=el("p",{class:"fine",id:"cstat"});
+  const mkVoice=(text,st)=>{
+    const m=(text||"").match(/«([^»]+)»/);
+    const note=el("textarea",{placeholder:"Opcional: ¿cómo te fue? ¿qué palabras o frases te costaron?",style:"width:100%;min-height:70px;margin:8px 0"});
+    return [el("b",{},wave(16)," Conversar con Claude"),el("p",{},text||"Conversa 5 a 10 minutos con Claude en modo voz. Cuéntale un caso real de tu trabajo en inglés, como si él fuera el cliente."),
+      el("ol",{class:"fine"},el("li",{},"Abre tu chat con Claude y activa el modo voz."),el("li",{},"Di la frase para empezar."),el("li",{},"Al terminar, vuelve aquí y pulsa el botón de abajo.")),
+      m?el("button",{class:"ghost",type:"button",onclick:async()=>{try{await navigator.clipboard.writeText(m[1]);st.textContent="✓ Frase copiada"}catch(e){st.textContent="No pude copiarla. Dila así: "+m[1]}}},"📋 Copiar la frase para empezar"):null,
+      note,
+      el("button",{class:"btn",type:"button",onclick:async()=>{
+        try{await dbApi.doc("voice/v"+Date.now()).set({at:new Date().toISOString(),afterLesson:(L&&L.title)||"",note:note.value.trim()});}catch(e){st.textContent="No pude guardar tu avance, pero puedes seguir.";}
+        VOICENOTE=note.value.trim();openCons();
+      }},"Terminé la conversación"),st];
+  };
+  const vbox=el("div",{class:"nextbox",hidden:true});
+  const openVoice=()=>{
+    if(!vbox.childNodes.length)vbox.append(...mkVoice((ns&&ns.type==="voice"&&ns.text)||"",el("p",{class:"fine"})));
+    vbox.hidden=false;try{vbox.scrollIntoView({behavior:"smooth",block:"center"})}catch(e){}
+  };
+  if(pendingLesson){
+    box.append(el("b",{},"📥 Claude dejó una lección nueva"),el("p",{},"«"+(pendingLesson.title||"Lección nueva")+"»"),
+      el("button",{class:"btn",type:"button",onclick:()=>{L=pendingLesson;pendingLesson=null;LS("et_lesson",L);host.className="";start()}},"Empezar la lección nueva"));
+  }else if(!lessonDone){
+    box.append(el("b",{},"📖 Tu paso: "+(L.title||"la lección")),el("p",{},"Hazla completa. Al terminarla, la app te dirá si toca conversar con Claude o crear la siguiente."),
+      el("button",{class:"btn",type:"button",onclick:()=>{host.className=""}},"Ir a la lección"));
+  }else if(!voiceDone){
+    box.append(...mkVoice(ns&&ns.type==="voice"&&ns.text?ns.text:"",stat),
+      el("button",{class:"ghost",type:"button",style:"margin-top:8px",onclick:()=>genLesson(host,sessions,voices,M,lastVoice)},"Prefiero otra lección ahora"));
+  }else{
+    box.append(el("b",{},"✨ Siguiente paso"),
+      el("p",{},voiceDone?"¡Buena conversación! Ahora creo tu próxima lección con todo lo que llevas.":(ns&&ns.text?ns.text:"Crea tu próxima lección con tus resultados más recientes.")),
+      el("button",{class:"btn",type:"button",id:"genbtn",onclick:()=>genLesson(host,sessions,voices,M,lastVoice)},"✨ Crear mi próxima lección"),
+      el("p",{class:"fine"},"También puedes pedírsela a Claude en el chat: «dame otra lección»."));
+  }
+  box.append(stat);wrap.insertBefore(box,tbl);
+  host.innerHTML="";host.append(wrap);
+  const here=wrap.querySelector(".pn.cur");
+  const row=el("div",{class:"vrow"});
+  if(here)row.append(el("button",{class:"ghost",type:"button",onclick:()=>here.scrollIntoView({behavior:"smooth",block:"center"})},"📍 Ver dónde estoy"));
+  row.append(el("button",{class:"ghost",type:"button",onclick:()=>{vbox.hidden?openVoice():(vbox.hidden=true)}},wave(16)," Conversar con Claude"));
+  wrap.insertBefore(row,pathBox);wrap.insertBefore(vbox,tbl);
+  if(here)setTimeout(()=>{try{here.scrollIntoView({block:"center"})}catch(e){}},80);
+}
+let VOICENOTE="";
+
+const T16=["choice","minimal_pair","listen_multi","true_false","fill_blank","word_order","find_error","match","dictation","chunks","shadow","speak","roleplay","scene","task","cards"];
+function validateLesson(les){
+  const er=[],S=x=>typeof x==="string"&&x.trim().length>0;
+  if(!les||typeof les!=="object"||Array.isArray(les))return ["La respuesta no es un objeto JSON de lección"];
+  const okIdx=(a,o)=>Number.isInteger(a)&&Array.isArray(o)&&o.length>=2&&a>=0&&a<o.length;
+  if(!S(les.title))er.push("falta title");
+  if(!S(les.focus))er.push("falta focus");
+  if(!Number.isInteger(les.stage)||les.stage<1||les.stage>5)er.push("stage debe ser un entero de 1 a 5");
+  const ids=(SKMAP.skills||[]).map(s=>s.id);
+  if(!Array.isArray(les.exercises)||les.exercises.length<8||les.exercises.length>26){er.push("exercises debe tener entre 8 y 26 elementos");return er}
+  les.exercises.forEach((ex,i)=>{
+    const p="Ejercicio "+(i+1)+" ("+(ex&&ex.type)+"): ";
+    if(!ex||!T16.includes(ex.type)){er.push(p+"tipo no permitido");return}
+    if(ex.type!=="cards"&&ex.type!=="match"&&!S(ex.hint))er.push(p+"falta un hint específico");
+    if(ex.skill&&!ids.includes(ex.skill))delete ex.skill;
+    const t=ex.type;
+    if(t==="choice"||t==="minimal_pair"){if(!okIdx(ex.answer,ex.options)||!(S(ex.prompt)||S(ex.audio)))er.push(p+"options/answer/prompt inválidos")}
+    else if(t==="listen_multi"){if(!S(ex.audio)||!Array.isArray(ex.questions)||!ex.questions.length||!ex.questions.every(q=>S(q.q)&&okIdx(q.answer,q.options)))er.push(p+"audio/questions inválidos")}
+    else if(t==="true_false"){if(typeof ex.answer!=="boolean"||!(S(ex.prompt)||S(ex.audio)))er.push(p+"answer debe ser true/false y llevar prompt")}
+    else if(t==="dictation"||t==="shadow"){if(!S(ex.audio))er.push(p+"falta audio")}
+    else if(t==="chunks"){if(!S(ex.audio)||!Array.isArray(ex.chunks)||ex.chunks.length<2)er.push(p+"audio/chunks inválidos")}
+    else if(t==="fill_blank"){if(!S(ex.sentence)||ex.sentence.indexOf("____")<0||!Array.isArray(ex.options)||ex.options.indexOf(ex.answer)<0)er.push(p+"sentence con ____ y answer dentro de options")}
+    else if(t==="word_order"){if(!S(ex.sentence)||!S(ex.prompt))er.push(p+"falta sentence/prompt")}
+    else if(t==="find_error"){if(!S(ex.sentence)||!Array.isArray(ex.wrong)||!S(ex.correct)||(!ex.wrong.length&&!ex.allowCorrect))er.push(p+"sentence/wrong/correct inválidos")}
+    else if(t==="match"){if(!Array.isArray(ex.pairs)||ex.pairs.length<3||!ex.pairs.every(q=>S(q.a)&&S(q.b)))er.push(p+"necesita 3 o más pairs {a,b}")}
+    else if(t==="cards"){if(!Array.isArray(ex.items)||!ex.items.length||!ex.items.every(q=>S(q.en)&&S(q.es)))er.push(p+"items con en y es")}
+    else if(t==="speak"){if(!S(ex.prompt))er.push(p+"falta prompt")}
+    else if(t==="roleplay"){if(!S(ex.audio)||!S(ex.task))er.push(p+"falta audio/task")}
+    else if(t==="scene"){if(!S(ex.title)||!Array.isArray(ex.turns)||ex.turns.length<2||!ex.turns.every(q=>S(q.say)&&S(q.task)))er.push(p+"necesita title y 2 o más turns {say,task}")}
+    else if(t==="task"){if(!S(ex.prompt)||!S(ex.task))er.push(p+"falta prompt/task")}
+    if(i>=3&&les.exercises[i-1].type===t&&les.exercises[i-2].type===t&&les.exercises[i-3].type===t)er.push(p+"más de 3 ejercicios seguidos del mismo tipo");
+  });
+  if(les.nextStep&&(["lesson","voice"].indexOf(les.nextStep.type)<0||!S(les.nextStep.text)))er.push("nextStep debe ser {type:'lesson'|'voice', text}");
+  return er;
+}
+function parseLessonJSON(t){
+  t=String(t||"").replace(/```json|```/g,"");
+  const a=t.indexOf("{"),b=t.lastIndexOf("}");
+  if(a<0||b<=a)throw new Error("no hay JSON");
+  return JSON.parse(t.slice(a,b+1));
+}
+
+async function genLesson(host,sessions,voices,M,lastVoice,statEl){
+  const stat=$("#cstat"),btn=$("#genbtn");
+  const say=t=>{if(stat)stat.textContent=t;if(statEl)statEl.textContent=t};
+  if(btn)btn.disabled=true;
+  let sample=null;
+  try{if(window.claude&&claude.use)sample=await claude.use("sample")}catch(e){}
+  if(!sample||!dbApi){say(SIGUE());if(btn)btn.disabled=false;return}
+  try{
+    say("Leyendo tu expediente y tus resultados…");
+    let dossier={};
+    try{const s=await dbApi.doc("dossier/main").get();dossier=(s&&s.exists&&s.data())||{}}catch(e){}
+    const keep=["nombre","profesion","idiomaMeta","idiomaNativo","objetivo","situacionMasTemida","motivacion","nivel","erroresRecurrentes","mapaTematica","temasUsados","temasPendientes","plan","stage","fortalezas","vocabularioClave"];
+    const dos={};keep.forEach(k=>{if(dossier[k]!=null)dos[k]=dossier[k]});
+    const ord=sessions.slice().sort((a,b)=>String(a.at).localeCompare(String(b.at)));
+    const last=ord.slice(-3).map(s=>({leccion:s.title,etapa:s.stage,primeraPct:s.firstPassPct,porApoyo:s.byLevel,fallos:(s.missed||[]).slice(0,8),tareas:(s.tasks||[]).map(t=>({prompt:t.prompt,respuesta:t.reply,feedback:String(t.feedback||"").slice(0,300)}))}));
+    const titles=ord.map(s=>s.title).concat([L&&L.title]).filter(Boolean);
+    const sinceVoice=ord.filter(s=>String(s.at)>lastVoice).length;
+    const dom=SKMAP.skills.map(s=>({id:s.id,label:s.label,dominio:M[s.id].n?Math.round(100*M[s.id].m):null,ejercicios:M[s.id].n,abiertas:M[s.id].open}));
+    const catalog=(document.getElementById("exercise-catalog")||{}).textContent||"";
+    const today=new Date().toLocaleDateString("sv-SE");
+    const cur=L||{};
+    const base=function(extra){return "Eres el coach personal de idiomas de la alumna: cálido, riguroso con el método, nunca infles su nivel. Genera la PRÓXIMA lección de su entrenador como JSON válido. Responde SOLO con el JSON, sin texto antes ni después y sin bloques de código.\n\n"
+      +"EXPEDIENTE:\n"+JSON.stringify(dos).slice(0,7000)+"\n\n"
+      +"ÚLTIMAS SESIONES (la más reciente al final):\n"+JSON.stringify(last).slice(0,5000)+"\n\n"
+      +"DOMINIO POR HABILIDAD (porcentaje medido y número de ejercicios):\n"+JSON.stringify(dom)+"\n\n"
+      +"LECCIONES YA HECHAS (no repitas títulos ni frases): "+JSON.stringify(titles)+"\n"
+      +"Lecciones desde la última conversación por voz: "+sinceVoice+"\n"
+      +(VOICENOTE?"Nota de la alumna tras su conversación por voz: "+VOICENOTE+"\n":"")
+      +"\nCATÁLOGO Y ESCALERA (formato exacto de cada tipo y reglas de etapa):\n"+catalog+"\n\n"
+      +"REGLAS EXTRA:\n"
+      +"- Copia estos campos de la lección actual: lang="+JSON.stringify(cur.lang||"en-US")+", targetLanguage="+JSON.stringify(cur.targetLanguage||"inglés")+", nativeLanguage="+JSON.stringify(cur.nativeLanguage||"español")+", profession="+JSON.stringify(cur.profession||"")+", student="+JSON.stringify(cur.student||"")+". date="+JSON.stringify(today)+".\n"
+      +"- Decide \"stage\" con las reglas de la escalera usando las dos últimas sesiones. Si dudas, mantén la etapa.\n"
+      +"- Todo ejercicio (menos cards y match) lleva \"hint\" útil y específico y \"skill\" con uno de estos ids: "+SKMAP.skills.map(s=>s.id+" ("+s.label+")").join(", ")+". Elige la habilidad más específica para cada ejercicio. Refuerza primero las habilidades con menor dominio y los errores recurrentes.\n"
+      +"- Usa los temas del mapa de temática de la alumna con detalles concretos suyos; evita sus temas a evitar. Frases cortas primero. Mezcla tipos: no más de 3 seguidos iguales.\n"
+      +"- Abre con un \"focus\" que conecte con su meta y cierra con un reconocimiento concreto en la explanation del último ejercicio.\n"
+      +"- Incluye \"nextStep\": si las lecciones desde la última conversación por voz son 3 o más, o cumplió la meta de un tramo del plan, usa type \"voice\" con un text que proponga una conversación de 5 a 10 minutos en modo voz con Claude sobre un tema de su mapa e incluya entre «» la frase exacta para iniciarla; si no, type \"lesson\" y text \"Pulsa Crear mi próxima lección.\".\n"
+      +"- Si usas listen_multi, scene o task, sigue exactamente el formato del catálogo.\n"
+      +(extra||"");};
+    let les=null,errs=[];
+    for(let tryN=0;tryN<2&&!les;tryN++){
+      say(tryN?"Ajustando detalles de tu lección…":"Escribiendo tu próxima lección…");
+      const r=await sample(base(tryN?"\nTU INTENTO ANTERIOR TUVO ESTOS ERRORES, CORRÍGELOS TODOS Y DEVUELVE EL JSON COMPLETO:\n- "+errs.join("\n- "):""),{modelTier:"complex",cache:false,onText:({text})=>{say("Escribiendo tu próxima lección… ("+String(text||"").length+" caracteres)")}});
+      if(r&&r.truncated){errs=["La respuesta se cortó: hazla más compacta (12 a 15 ejercicios)"];continue}
+      try{
+        const cand=parseLessonJSON(r&&r.text);
+        errs=validateLesson(cand);
+        if(!errs.length)les=cand;
+      }catch(e){errs=["El JSON no es válido: "+(e&&e.message)]}
+    }
+    if(!les){say("No logré crear una lección válida desde aquí. Pídesela a Claude en el chat: «dame otra lección».");if(btn)btn.disabled=false;return}
+    if(!les.nextStep)les.nextStep={type:"lesson",text:"Pulsa Crear mi próxima lección."};
+    const ver=new Date().toISOString();
+    dbVer=ver;
+    await dbApi.doc("lessons/current").set({updatedAt:ver,lesson:les,source:"app"});
+    VOICENOTE="";L=les;LS("et_lesson",L);
+    host.className="";start();
+  }catch(e){
+    say((e&&e.code==="not_granted")?"Necesito tu permiso para crear la lección. Vuelve a pulsar el botón y acéptalo.":((e&&e.code==="rate_limited")?"Hay demasiadas solicitudes seguidas. Espera un momento y vuelve a intentar.":"No pude crear la lección ahora. Pídesela a Claude en el chat: «dame otra lección»."));
+    if(btn)btn.disabled=false;
+  }
 }
 
 /* ---------- start / load ---------- */
@@ -1147,7 +1731,7 @@ function setLesson(obj){
 }
 function demo(){return JSON.parse($("#lesson-data").textContent)}
 
-$("#menu").onclick=async()=>{if(!dbApi){setFB("bad",SIGUE(),[]);return}try{let nuevo=!!pendingLesson;if(!nuevo){const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();nuevo=!!(d&&d.lesson&&Array.isArray(d.lesson.exercises)&&d.lesson.exercises.length&&d.lesson.title!==(L&&L.title))}setFB("ok",nuevo?"Hay una lección nueva: termina esta y pulsa el botón verde del final.":"Estás al día. "+SIGUE_NEXT(),[])}catch(e){setFB("bad",SIGUE(),[])}};
+$("#menu").onclick=()=>openCons();
 $("#closemodal").onclick=()=>$("#modal").classList.remove("on");
 $("#loadjson").onclick=()=>{
   try{
@@ -1167,7 +1751,7 @@ $("#copyprompt").onclick=async()=>{
     if(!(window.claude&&claude.use))return;
     const db=await claude.use("db");
     if(!db)return;
-    dbApi=db;
+    dbApi=db;loadSkMap();
     db.doc("lessons/current").onSnapshot(snap=>{
       if(!snap.exists)return;
       const d=snap.data();

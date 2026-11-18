@@ -24,6 +24,14 @@ Entrenador de idiomas tipo Duolingo, hiperpersonalizado, que funciona **dentro d
 
 Requisitos: artefactos activados en claude.ai. El micrófono (dictado) funciona en navegadores Chromium de escritorio.
 
+## Mi camino
+
+Al terminar una lección (o desde ☰) la app muestra **Mi camino**: tu recorrido real con lecciones (⭐ según tu resultado a la primera) y conversaciones por voz (✨), y siluetas bloqueadas de lo que viene, que se arma contigo. Al tocar una lección ves qué habilidades practicaste y cómo te fue. Las habilidades se miden con los ejercicios; lo que sale de la entrevista o de una conversación por voz es una **estimación** y se marca como tal.
+
+- La **conversación por voz** nunca está bloqueada: se sugiere después de cada lección, y una conversación incompleta no cuenta.
+- La app puede **crear tu próxima lección** sola con `sample`; si no puede, te dice qué pedirle a Claude.
+- Los datos (lecciones, sesiones, conversaciones, mapa de habilidades) se guardan en la base de datos del propio artefacto, no en la memoria de Claude.
+
 ## Tipos de ejercicio
 
 choice · minimal_pair · listen_multi · true_false · fill_blank · word_order · find_error · match · dictation · chunks · shadow · speak · roleplay · scene · task · cards
