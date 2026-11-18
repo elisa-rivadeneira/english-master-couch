@@ -19,7 +19,7 @@ Entrenador de idiomas tipo Duolingo, hiperpersonalizado, que funciona **dentro d
    - O abre el archivo y pulsa el **icono de flecha hacia abajo** (descargar) de la barra superior del archivo.
 2. Abre un chat nuevo en claude.ai y **adjunta el archivo**.
 3. Escribe: `Sigue las instrucciones del bloque agent-instructions de este archivo y empecemos.`
-4. Claude te da un bloque de entrevista para pegar en el **modo voz**. Hazla y vuelve al chat de texto a escribir `terminé la entrevista`.
+4. Claude te deja la guía de la entrevista en el chat. Activa el **modo voz en ese mismo chat** y di `empecemos la entrevista` (el modo voz ya lee toda la conversación, no hay que copiar nada). Al terminar, vuelve al texto y escribe `terminé la entrevista`.
 5. Claude crea tu app personalizada. Cada día, en un chat nuevo, pega la frase que te dé al final.
 
 Requisitos: artefactos activados en claude.ai. El micrófono (dictado) funciona en navegadores Chromium de escritorio.
