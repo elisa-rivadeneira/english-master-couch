@@ -178,7 +178,7 @@ pre.rep{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:1
 <body>
 <div id="app">
   <header>
-    <button class="iconbtn" id="menu" title="Cargar lección">☰</button>
+    <button class="iconbtn" id="menu" title="¿Hay lección nueva?">☰</button>
     <div class="bar"><i id="prog"></i></div>
     <span id="streak"></span><span id="xp">⭐ 0</span>
   </header>
@@ -1143,7 +1143,7 @@ function setLesson(obj){
 }
 function demo(){return JSON.parse($("#lesson-data").textContent)}
 
-$("#menu").onclick=()=>$("#modal").classList.add("on");
+$("#menu").onclick=async()=>{if(!dbApi){$("#modal").classList.add("on");return}try{let nuevo=!!pendingLesson;if(!nuevo){const s=await dbApi.doc("lessons/current").get();const d=s&&s.exists&&s.data();nuevo=!!(d&&d.lesson&&Array.isArray(d.lesson.exercises)&&d.lesson.exercises.length&&d.lesson.title!==(L&&L.title))}setFB("ok",nuevo?"Hay una lección nueva: termina esta y pulsa el botón verde del final.":"Estás al día: no hay lección nueva todavía. Pídesela a Claude.",[])}catch(e){$("#modal").classList.add("on")}};
 $("#closemodal").onclick=()=>$("#modal").classList.remove("on");
 $("#loadjson").onclick=()=>{
   try{
