@@ -563,8 +563,10 @@ function pfAdd(text,front){
 }
 function prefetchVoice(ex){try{if(ex&&ex.audio)pfAdd(ex.audio,true)}catch(e){}}
 function prefetchLesson(){try{for(let k=i+1;k<queue.length;k++){if(queue[k]&&queue[k].audio)pfAdd(queue[k].audio,false)}}catch(e){}}
+function stopCurrent(){try{if(curSrc){curSrc.onended=null;curSrc.stop()}}catch(e){}curSrc=null}
 function stopSrv(){srvTok++;try{if(curSrc){curSrc.onended=null;curSrc.stop()}}catch(e){}curSrc=null;const t=document.getElementById("srvtoast");if(t)t.style.display="none"}
 function playBufs(bufs){
+  stopCurrent();
   return new Promise(res=>{
     const my=++srvTok;let k=0;
     const step=()=>{
@@ -621,6 +623,7 @@ function doSpeak(text,o){
   const rate=o.rate||1;
   const fallbackVoice=()=>doSpeakLocal(text,o);
   if(!/^en/i.test(o.lang||LANG)||srvOK===false)return fallbackVoice();
+  stopCurrent();   // si ya suena una voz, se corta: nunca dos a la vez
   const my=++srvTok;
   return new Promise(res=>{
     let done=false;const fin=v=>{if(!done){done=true;toast(false);res(v)}};
