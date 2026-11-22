@@ -142,6 +142,8 @@ footer{position:sticky;bottom:0;background:var(--bg);border-top:2px solid var(--
 .fb p{margin:4px 0}
 @keyframes fbpop{0%{transform:scale(.97)}50%{transform:scale(1.025)}100%{transform:scale(1)}}
 @keyframes fbshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@keyframes cardin{0%{opacity:0;transform:translateX(36px)}100%{opacity:1;transform:translateX(0)}}
+.cardin{animation:cardin .35s ease-out}
 .fb.show.ok{animation:fbpop .45s}.fb.show.bad{animation:fbshake .4s}
 #srvtoast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#1f3138;color:#fff;padding:8px 14px;border-radius:20px;font-size:14px;font-weight:700;display:none;z-index:50}
 #reg{font-size:13px;font-weight:800;color:var(--mut);cursor:default}#reg.on{color:var(--greend)}
@@ -630,6 +632,15 @@ function tone(freqs,dur,vol){
     });
   }catch(e){}
 }
+let cueT=null;
+function newExCue(n,tot){
+  try{
+    if(!LS("et_mute")){tone([523,784],0.09,0.16);try{navigator.vibrate&&navigator.vibrate(25)}catch(e){}}
+    const c=$("#card");
+    if(c&&!REDUCE){c.classList.remove("cardin");void c.offsetWidth;c.classList.add("cardin")}
+    toast(true,"▶ Ejercicio "+n+" de "+tot);clearTimeout(cueT);cueT=setTimeout(()=>toast(false),1300);
+  }catch(e){}
+}
 function sfx(ok){
   if(LS("et_mute"))return;
   if(ok===true){tone([880,1318],0.16);try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
@@ -858,7 +869,8 @@ function resume(p){
   $("#xp").textContent="⭐ "+xp;
   render();
 }
-function next(){i++;saveProg();render()}
+let fresh=false;
+function next(){i++;fresh=true;saveProg();render()}
 
 function render(){
   rid++;
@@ -893,6 +905,7 @@ function render(){
     };
   }
   window.scrollTo(0,0);
+  if(fresh&&i<queue.length){fresh=false;newExCue(i+1,queue.length)}else fresh=false;
 }
 function bUnknown(ex,card){
   card.append(el("p",{},"Tipo de ejercicio no reconocido: "+ex.type));
