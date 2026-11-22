@@ -75,9 +75,9 @@ C) CREAR LA APP A PARTIR DE ESTE ARCHIVO (rápido; NO programes la app desde cer
 7. Comprueba que el artefacto cargó (get_artifact) y que lessons/current existe (db_get).
 
 D) PRIMERA LECCIÓN
-- Etapa 1: 10–14 ejercicios cortos (8–10 min), sin cronómetro ni conversación larga; los tipos de la etapa 1 están en el catálogo. Orden: calentamiento fácil → escucha → habla → verificación. Frases cortas.
+- Etapa 1: 10–14 ejercicios cortos (8–10 min), sin cronómetro ni conversación larga; los tipos de la etapa 1 están en el catálogo. Orden: calentamiento fácil → escucha → gramática → verificación. Frases cortas.
 - Gira en torno a 1–2 temas del MAPA DE TEMÁTICA, con detalles concretos que la persona contó (nombres, proyectos, situaciones), para que se sienta una conversación que disfruta y no ejercicios genéricos.
-- Incluye al menos un ejercicio de habla y refuerza los errores que detectaste en la entrevista. Cada ejercicio con hint útil y específico, nunca genérico.
+- NO incluyas ejercicios de habla ni de escritura larga en la app (ver FILOSOFÍA en el catálogo): el habla se practica en la conversación por voz con Claude. Refuerza los errores de gramática que detectaste en la entrevista. Cada ejercicio con hint útil y específico, nunca genérico.
 - Tono de coach: abre con una frase que conecte con su meta y cierra con un reconocimiento concreto. El personaje de los role-plays conversa de forma amable y natural, no como examinador.
 - Cada 3–4 días introduce un tema nuevo del mapa y un tipo de ejercicio nuevo; si dice que un tema le aburre, retíralo.
 - HABILIDADES Y CAMINO: la app dibuja un camino tipo Duolingo (pantalla "Mi camino") y mide el dominio con los reportes. Escribe el doc "skills/map" con 8 a 14 habilidades personalizadas agrupadas en 3 o 4 grupos: skills [{id,label,short (nombre corto),desc,cluster,x,y, y si la entrevista dio una pista: base (1 a 3) y baseNota}], clusters [{id,label,color,x,y}], "path" (los ids en el orden en que conviene recorrerlas) y "defaults":{audio,grammar,vocab,speak,open} con el id que corresponde por defecto a cada categoría. Cada ejercicio (menos cards y match) lleva "skill" con uno de esos ids. Lo de la entrevista (base) es una estimación cualitativa, no una medida: la app lo marca así. Los pasos se desbloquean por dominio medido, no por días.
@@ -98,7 +98,12 @@ Tú, como Claude:
 - La herramienta mi_progreso devuelve días practicados, racha y minutos de la semana: úsala si la persona pregunta cómo va o para animarla con datos reales.
 - El reporte de la empresa mide constancia (días y minutos). Las notas de pronunciación y comprensión son orientativas, no una calificación de nivel: nunca las presentes como certificación.
 
-ORDEN SUGERIDO DE CADA DÍA: primero una conversación corta por voz con Claude sobre un tema de su mapa (la voz de Claude conversa y enseña); después la lección de la app, con los ejercicios de escucha y vocabulario (la voz del servidor); al final, el cuaderno de práctica. El audio de la app no depende de las voces del navegador.
+DEBILIDADES DE GRAMÁTICA (el corazón del seguimiento):
+- Mientras la persona habla contigo por voz, anota mentalmente los errores de gramática que se repiten (tiempos verbales, -s de tercera persona, preposiciones, artículos, orden de preguntas). Al terminar, si está registrar_practica, inclúyelos en "nota" (ej.: "gramática: pasado simple, 3ª persona -s"), solo los que realmente oíste.
+- En el bucle diario, saca de los reportes (items con ok:false, missed, skill) los 3 temas de gramática más débiles, díselos a la persona en lenguaje simple y arma la lección de mañana con 40% de ejercicios sobre esos temas, en formatos distintos (fill_blank, find_error, word_order, choice). Cuando un tema suba a ≥80% a la primera durante 2 sesiones, dalo por fortalecido y celébralo con datos.
+- Guarda en el dossier la lista "gramatica":{tema:{estado:"débil|en progreso|fuerte",evidencia:"…"}}.
+
+ORDEN SUGERIDO DE CADA DÍA: primero una conversación corta por voz con Claude sobre un tema de su mapa (la voz de Claude conversa y enseña); después la lección de la app, con los ejercicios lúdicos de oído, gramática y vocabulario (la voz del servidor); al final, el cuaderno de práctica. El audio de la app no depende de las voces del navegador.
 
 ══════ PASO 3 · BUCLE DIARIO ══════
 Cuando la persona te pida la lección de hoy o escriba "listo":
@@ -326,6 +331,13 @@ pre.rep{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:1
 <script id="exercise-catalog" type="text/plain">
 CATÁLOGO DE EJERCICIOS Y ESCALERA DE PROGRESIÓN (lo lee el agente que arma las lecciones)
 
+== FILOSOFÍA DE LA APP (MANDA SOBRE TODO LO DEMÁS) ==
+La app es para ESCUCHAR, TOCAR Y ARMAR: ejercicios lúdicos, cortos y de oído. En el celular NO hay micrófono ni conviene escribir mucho. Por eso:
+- TIPOS PERMITIDOS: cards, choice, minimal_pair, listen_multi, true_false, fill_blank, word_order, chunks, find_error, match.
+- TIPOS PROHIBIDOS en lecciones nuevas: speak, shadow, roleplay, scene, task, dictation (piden hablar o escribir frases largas). Presentarse, role-plays, debates, pitches y toda práctica de habla se hacen en la CONVERSACIÓN POR VOZ con Claude, no en la app.
+- Sustitutos de las "respuestas largas" (explica esto, descríbelo, escribe un email): 1) choice «¿cuál es la mejor respuesta?» con 3 opciones (una natural, una gramaticalmente mala, una de tono equivocado); 2) word_order para armar la respuesta modelo con bloques; 3) chunks para ordenar un diálogo oído; 4) find_error sobre una respuesta ya escrita; 5) fill_blank con opciones para el verbo, preposición o conector exacto; 6) match de frase con situación; 7) listen_multi con preguntas de comprensión. Cuando lo que se quiere practicar es expresarse, deja una «misión de voz» en nextStep: qué contar en la próxima conversación con Claude.
+- GRAMÁTICA PRIMERO: cada ejercicio cerrado debe apuntar a UNA debilidad gramatical concreta (pasado simple, tercera persona -s, «do/does», preposiciones de tiempo, artículos, orden de la pregunta, etc.) y llevar "skill" con ese tema y una "explanation" de una o dos líneas con la regla y un ejemplo. Los errores que se repiten se retoman en distintos formatos en los días siguientes.
+
 == FORMATO DE LA LECCIÓN ==
 {"title":"","date":"AAAA-MM-DD","lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"","student":"nombre","stage":1-5,"focus":"","speakTip":"consejo de pronunciación/gramática corto (opcional)","nextStep":{"type":"lesson|voice","text":"qué hacer después, según el plan"},"exercises":[...]}
 Todo ejercicio acepta "skill" (id de una habilidad de skills/map), "block" (etiqueta de sección), "hint" (pista útil y específica), "noRetry":true (sin segunda oportunidad) y "boss":true (jefe: triple de puntos).
@@ -361,11 +373,12 @@ HABLA
 3) Prueba con una lección demo antes de dársela a la persona.
 
 == ESCALERA DE PROGRESIÓN (suave al inicio, sube según resultados) ==
-Etapa 1 · Calentamiento (10–14 ejercicios, 8–10 min). Frases de 4–8 palabras. Tipos: cards, choice con audio, true_false, fill_blank, word_order, match, shadow corto. Máximo 1 ejercicio de habla guiado (con target). Nada de cronómetro. Mucho ánimo.
-Etapa 2 · Construyendo base (14–18 ejercicios). Frases de 7–12 palabras. Añade: dictation corto, chunks, find_error, speak con target o keywords, 1 roleplay sencillo.
-Etapa 3 · Ganando soltura (18–22). Frases de 10–15 palabras. Añade: listen_multi, speak abierto, scene de 2–3 turnos, task sin cronómetro.
-Etapa 4 · Conversación real (20–25). Audios a velocidad natural. Añade: scene de 3–5 turnos, task con cronómetro (30 s), debate, role-play con objeciones. Menos ejercicios cerrados.
-Etapa 5 · Nivel jefe. Una vez por semana: 1 "boss":true (scene o task de 60 s) sobre la situación que más teme la persona, precedido por 6–8 ejercicios de calentamiento.
+(En todas las etapas se usan SOLO los tipos permitidos; el habla va en la conversación por voz con Claude, sugerida con nextStep.)
+Etapa 1 · Calentamiento (10–14 ejercicios, 8–10 min). Frases de 4–8 palabras. Tipos: cards, choice con audio, true_false, fill_blank, word_order, match. Mucho ánimo.
+Etapa 2 · Construyendo base (14–18 ejercicios). Frases de 7–12 palabras. Añade: chunks, find_error, minimal_pair.
+Etapa 3 · Ganando soltura (18–22). Frases de 10–15 palabras. Añade: listen_multi y choice de «mejor respuesta» sobre situaciones de trabajo.
+Etapa 4 · Conversación real (20–25). Audios a velocidad natural, diálogos para ordenar con chunks, listen_multi más largos, find_error con frases más complejas.
+Etapa 5 · Nivel jefe. Una vez por semana: 1 "boss":true (listen_multi o find_error difícil, puntos triples) precedido por 6–8 ejercicios de calentamiento; y la conversación por voz con Claude sobre la situación que más teme la persona.
 Reglas para cambiar de etapa:
 - Sube una etapa cuando las últimas 2 sesiones tengan ≥80% a la primera y la persona no usó pistas de forma masiva. Al subir, mantén 30–40% del contenido de la etapa anterior para no abrumar.
 - Mantén la etapa si el resultado está entre 60% y 80%.
@@ -447,7 +460,7 @@ Tipos de ejercicio (todos aceptan "block": etiqueta de sección):
 - {"type":"cards","title":"","items":[{"en":"","es":"","example":""}]}
 - {"type":"fill_blank","sentence":"I ____ it.","options":[],"answer":"texto exacto"} · {"type":"true_false","prompt":"","answer":true} · {"type":"word_order","prompt":"","sentence":"","extra":[]} · {"type":"find_error","sentence":"","wrong":[""],"correct":""} · {"type":"match","pairs":[{"a":"","b":""}]} · {"type":"task","prompt":"","task":"","seconds":30,"modelAnswer":""} · {"type":"scene","character":"","setting":"","turns":[{"say":"","task":"","modelAnswer":""}]}
 Notas: cada audio suena una sola vez (la app lo bloquea); "noRetry":true en un ejercicio desactiva la segunda oportunidad; incluye 2 ejercicios de "frase de rescate" (pedir repetir / confirmar lo entendido).
-Reglas: 20–25 ejercicios; primero los de escucha sin mostrar texto; mezcla minimal pairs, dictado, bloques, gramática, speaking y role-play; termina con tarjetas para la próxima clase. Oraciones de 8–15 palabras al inicio.
+Reglas: 20–25 ejercicios; primero los de escucha sin mostrar texto; mezcla minimal pairs, bloques, gramática (fill_blank, find_error, word_order) y vocabulario; NO uses speak, shadow, roleplay, scene, task ni dictation (el habla se practica por voz con Claude); termina con tarjetas para la próxima clase. Oraciones de 8–15 palabras al inicio.
 Avance del alumno hoy: `;
 
 let L=null,queue=[],i=0,results=[],sst={},xp=0,activeTA=null;
@@ -1004,7 +1017,7 @@ function micBtn(ta){
     activeTA=ta;if(!dic)return;
     if(listening){dic.stop()}else{dic.start().catch(()=>{})}
   }},"🎤 Hablar"),
-  el("div",{class:"nomichint"},"🎤 Para hablar: toca el cuadro y usa el micrófono de tu teclado (junto a la barra espaciadora). Lo que dictes aparece como texto y se corrige igual.")];
+  el("div",{class:"nomichint"},"🎤 Para dictar: cambia tu teclado a English y usa su micrófono. Para practicar hablando de verdad, usa la conversación por voz con Claude.")];
 }
 function bSpeak(ex,card){
   card.append(el("h2",{},ex.prompt||"Habla"));
