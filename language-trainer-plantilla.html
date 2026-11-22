@@ -70,7 +70,7 @@ C) CREAR LA APP A PARTIR DE ESTE ARCHIVO (rápido; NO programes la app desde cer
    - Cambia el <title> con su nombre. Si su idioma nativo no es español, traduce los textos de interfaz con reemplazos puntuales.
    - Deja intactos los bloques exercise-catalog y agent-instructions (los necesitarás los días siguientes).
 4. Publica con publish_files: SIN slug (artefacto nuevo), título "Mi entrenador de [idioma] — [su nombre]", privado. Con una página nueva se publica primero y se declara después.
-5. Declara las capacidades con declare_capabilities: tts, dictation, sample, db (usa describe_capabilities si dudas).
+5. Declara las capacidades con declare_capabilities: tts, dictation, sample, db y mcp con {"servers":[{"server":"Registro Ingles","tools":["generar_audio","registrar_practica","mi_progreso"]}]} (usa describe_capabilities si dudas). La declaración es la lista COMPLETA: incluye todas juntas. Si la persona no tiene ese conector, la app funciona igual con las voces de respaldo y avisa «sin registro».
 6. Escribe en la base de datos del artefacto nuevo con db_write: el doc "dossier/main" (expediente + mapa de temática + plan + stage; las rutas de documento son colección/id) y el doc "lessons/current" con la primera lección: {updatedAt: <fecha-hora ISO>, lesson: {...}}. Escribe también el doc "skills/map" (ver HABILIDADES en D).
 7. Comprueba que el artefacto cargó (get_artifact) y que lessons/current existe (db_get).
 
@@ -86,6 +86,19 @@ D) PRIMERA LECCIÓN
 
 E) RESPUESTA FINAL (máximo 7 líneas)
 Con calidez: 1) lo que más destacó de ella en la entrevista; 2) el enlace a su app; 3) qué trabajará en la primera lección; 4) cómo seguir cada día, con este texto exacto que debe pegar en un chat nuevo: "Sigue las instrucciones del bloque agent-instructions de mi artefacto «Mi entrenador de [idioma] — [su nombre]» y dame la lección de hoy". No repitas el expediente completo.
+
+══════ VOZ Y REGISTRO (conector «Registro Ingles») ══════
+Si la persona tiene agregado el conector personalizado «Registro Ingles» (cada alumno lo agrega una vez con su código, en Plugins → Conectores), la app hace sola, sin que tú intervengas:
+- la voz de los audios de inglés viene del servidor (gratuita, buena para listening y vocabulario). Si no está el conector, usa las voces de respaldo;
+- suena una campanita al acertar y un tono al fallar, y el teléfono vibra;
+- cada ejercicio se registra solo (tipo, acierto) para el reporte del gerente. NO pidas ni hagas copiar/pegar datos de práctica: ese registro es automático.
+Tú, como Claude:
+- Si en esta conversación está disponible la herramienta registrar_practica (conector «Registro Ingles»), llámala al terminar cada conversación por voz con tipo "conversacion" y SOLO valores reales (pronunciacion y comprension de 1 a 5 únicamente si de verdad los observaste; si no, 0). Nunca inventes datos ni redondees a favor.
+- Si la herramienta responde que el código no es válido, díselo a la persona en una línea y que revise la URL del conector.
+- La herramienta mi_progreso devuelve días practicados, racha y minutos de la semana: úsala si la persona pregunta cómo va o para animarla con datos reales.
+- El reporte de la empresa mide constancia (días y minutos). Las notas de pronunciación y comprensión son orientativas, no una calificación de nivel: nunca las presentes como certificación.
+
+ORDEN SUGERIDO DE CADA DÍA: primero una conversación corta por voz con Claude sobre un tema de su mapa (la voz de Claude conversa y enseña); después la lección de la app, con los ejercicios de escucha y vocabulario (la voz del servidor); al final, el cuaderno de práctica. El audio de la app no depende de las voces del navegador.
 
 ══════ PASO 3 · BUCLE DIARIO ══════
 Cuando la persona te pida la lección de hoy o escriba "listo":
@@ -122,6 +135,11 @@ footer{position:sticky;bottom:0;background:var(--bg);border-top:2px solid var(--
 .fb.ok{background:var(--okbg)}.fb.bad{background:var(--badbg)}
 .fb h3{margin:0 0 4px;font-size:18px}.fb.ok h3{color:var(--greend)}.fb.bad h3{color:var(--redd)}
 .fb p{margin:4px 0}
+@keyframes fbpop{0%{transform:scale(.97)}50%{transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes fbshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.fb.show.ok{animation:fbpop .45s}.fb.show.bad{animation:fbshake .4s}
+#srvtoast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#1f3138;color:#fff;padding:8px 14px;border-radius:20px;font-size:14px;font-weight:700;display:none;z-index:50}
+#reg{font-size:13px;font-weight:800;color:var(--mut);cursor:default}#reg.on{color:var(--greend)}
 .foot{padding:14px 20px}
 .btn{width:100%;border:0;border-bottom:4px solid var(--greend);background:var(--green);color:#fff;font:800 16px inherit;font-family:inherit;letter-spacing:.5px;text-transform:uppercase;padding:14px;border-radius:14px;cursor:pointer}
 .btn:disabled{background:var(--line);border-color:#cfcfcf;color:#aaa;cursor:not-allowed}
@@ -282,11 +300,11 @@ pre.rep{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:1
   <header>
     <button class="iconbtn" id="menu" title="Mi camino">☰</button>
     <div class="bar"><i id="prog"></i></div>
-    <span id="streak"></span><span id="xp">⭐ 0</span>
+    <span id="streak"></span><span id="reg" title="Registro de práctica"></span><span id="xp">⭐ 0</span>
   </header>
   <main id="card"></main>
   <footer>
-    <div id="fb" class="fb"></div>
+    <div id="fb" class="fb"></div><div id="srvtoast">⏳ Preparando la voz…</div>
     <div class="foot"><button class="btn" id="main"></button><button class="ghost" id="retry" style="display:none;width:100%;margin-top:10px">🔁 Repetir y reintentar (cuenta como «tras repetición»)</button></div>
   </footer>
 </div>
@@ -464,7 +482,122 @@ function speak(text,o){
   if(dic&&listening)return stopMic().then(()=>doSpeak(text,o));
   return doSpeak(text,o);
 }
+
+/* ---------- conector «Registro Ingles»: voz gratuita del servidor, sonidos y registro de práctica ---------- */
+const SRV="Registro Ingles";
+let mcpApi=null,srvOK=null,regOK=null,actx=null,curSrc=null,srvTok=0;
+const vcache=new Map();
+const mcpReady=(window.claude&&claude.use)?claude.use("mcp").then(m=>{mcpApi=m||null}).catch(()=>{}):Promise.resolve();
+function unlockAudio(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!actx)actx=new AC();if(actx.state!=="running"&&actx.resume)actx.resume()}catch(e){}}
+["pointerdown","touchstart","keydown","click"].forEach(ev=>document.addEventListener(ev,unlockAudio,{passive:true,capture:true}));
+const CONN_DOWN=c=>c==="server_not_connected"||c==="not_in_manifest"||c==="needs_reauth"||c==="blocked_by_policy"||c==="selection_required"||c==="not_granted"||c==="capability_disabled";
+function chunkText(t){
+  t=String(t||"").replace(/\s+/g," ").trim();
+  if(t.length<=280)return t?[t]:[];
+  const parts=t.match(/[^.!?…]+[.!?…]*\s*/g)||[t];const out=[];let cur="";
+  parts.forEach(x=>{if((cur+x).length>280&&cur){out.push(cur.trim());cur=x}else cur+=x});
+  if(cur.trim())out.push(cur.trim());
+  return out.flatMap(x=>x.length<=300?[x]:x.match(/.{1,280}(\s|$)/g).map(y=>y.trim()).filter(Boolean));
+}
+function srvFetch(text,vel){
+  const key=vel+"|"+text;
+  if(vcache.has(key))return vcache.get(key);
+  const pr=(async()=>{
+    await mcpReady;
+    if(!mcpApi||srvOK===false)throw {code:"server_not_connected"};
+    const res=await mcpApi.callTool(SRV,"generar_audio",{texto:text,velocidad:vel},{cache:false});
+    const b=(res.content||[]).find(c=>c.type==="audio");
+    if(!b)throw new Error("sin audio");
+    srvOK=true;unlockAudio();
+    if(!actx)throw new Error("sin audio web");
+    const bin=atob(b.data),u=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)u[k]=bin.charCodeAt(k);
+    return await new Promise((ok,no)=>actx.decodeAudioData(u.buffer,ok,no));
+  })();
+  pr.catch(e=>{vcache.delete(key);if(CONN_DOWN(e&&e.code)||(e&&e.message==='sin audio'))srvOK=false});
+  vcache.set(key,pr);
+  return pr;
+}
+function srvVoice(text,rate){
+  if(srvOK===false||!/^en/i.test(LANG))return Promise.resolve(null);
+  const vel=Math.round(Math.min(1.3,Math.max(0.7,0.95*(rate||1)))*100)/100;
+  const ch=chunkText(text);if(!ch.length)return Promise.resolve(null);
+  return Promise.all(ch.map(c=>srvFetch(c,vel))).catch(()=>null);
+}
+function prefetchVoice(ex){try{if(ex&&typeof ex.audio==="string"&&ex.audio&&srvOK!==false)srvVoice(ex.audio,1)}catch(e){}}
+function stopSrv(){srvTok++;try{if(curSrc){curSrc.onended=null;curSrc.stop()}}catch(e){}curSrc=null;const t=document.getElementById("srvtoast");if(t)t.style.display="none"}
+function playBufs(bufs){
+  return new Promise(res=>{
+    const my=++srvTok;let k=0;
+    const step=()=>{
+      if(my!==srvTok||k>=bufs.length){curSrc=null;return res()}
+      try{
+        const src=actx.createBufferSource();src.buffer=bufs[k++];src.connect(actx.destination);
+        src.onended=step;curSrc=src;src.start();
+      }catch(e){res()}
+    };
+    step();
+  });
+}
+function toast(on,msg){const t=document.getElementById("srvtoast");if(!t)return;if(msg)t.textContent=msg;else t.textContent="⏳ Preparando la voz…";t.style.display=on?"block":"none"}
+function tone(freqs,dur,vol){
+  try{
+    unlockAudio();if(!actx||actx.state!=="running")return;
+    const t=actx.currentTime;
+    freqs.forEach((f,k)=>{
+      const o=actx.createOscillator(),g=actx.createGain();
+      o.type="sine";o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t+k*dur);
+      g.gain.exponentialRampToValueAtTime(vol||0.3,t+k*dur+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+k*dur+dur);
+      o.connect(g);g.connect(actx.destination);o.start(t+k*dur);o.stop(t+k*dur+dur+0.05);
+    });
+  }catch(e){}
+}
+function sfx(ok){
+  if(LS("et_mute"))return;
+  if(ok===true){tone([880,1318],0.16);try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
+  else if(ok===false){tone([260,180],0.2);try{navigator.vibrate&&navigator.vibrate([110,60,110])}catch(e){}}
+}
+const REG_AYUDA="Tu práctica NO se está registrando. Agrega el conector «Registro Ingles» con tu código (Plugins → Conectores) y vuelve a abrir esta página.";
+function setReg(on,msg){const r=document.getElementById("reg");if(!r)return;r.textContent=on?"● registro":"⚠ sin registro";r.className=on?"on":"";r.title=msg||"";r.onclick=on?null:()=>{toast(true,REG_AYUDA);setTimeout(()=>toast(false),6000)}}
+function logPractice(ex,r){
+  (async()=>{
+    try{
+      await mcpReady;
+      if(!mcpApi){if(regOK!==false){regOK=false;setReg(false,REG_AYUDA)}return}
+      if(regOK===false)return;
+      const graded=typeof r.ok==="boolean";
+      const res=await mcpApi.callTool(SRV,"registrar_practica",{tipo:String(ex.type||"ejercicio").slice(0,40),aciertos:r.ok===true?1:0,total:graded?1:0,pronunciacion:0,comprension:0,nota:""},{cache:false});
+      const txt=(res&&res.content||[]).map(c=>c.text||"").join(" ");
+      if(!/registrada/i.test(txt)){regOK=false;setReg(false,txt||REG_AYUDA);return}
+      regOK=true;setReg(true,"Tu práctica se está registrando");
+    }catch(e){
+      const c=e&&e.code;
+      if(CONN_DOWN(c)||c==="tool_error"){if(regOK!==true){regOK=false;setReg(false,REG_AYUDA)}}
+    }
+  })();
+}
 function doSpeak(text,o){
+  o=o||{};
+  const rate=o.rate||1;
+  const fallbackVoice=()=>doSpeakLocal(text,o);
+  if(!/^en/i.test(o.lang||LANG)||srvOK===false)return fallbackVoice();
+  const my=++srvTok;
+  return new Promise(res=>{
+    let done=false;const fin=v=>{if(!done){done=true;toast(false);res(v)}};
+    const pend=setTimeout(()=>{if(!done&&my===srvTok)toast(true)},350);
+    const lim=setTimeout(()=>{if(!done){done=true;toast(false);clearTimeout(pend);Promise.resolve(fallbackVoice()).then(res,res)}},14000);
+    srvVoice(text,rate).then(bufs=>{
+      clearTimeout(pend);clearTimeout(lim);
+      if(done)return;
+      if(my!==srvTok){return fin()}   // otra voz o pantalla lo reemplazó
+      if(!bufs){done=true;toast(false);return Promise.resolve(fallbackVoice()).then(res,res)}
+      toast(false);
+      playBufs(bufs).then(()=>fin(),()=>fin());
+    });
+  });
+}
+function doSpeakLocal(text,o){
   o=o||{};
   const rate=o.rate||1;
   const fallback=()=>new Promise(res=>{
@@ -615,8 +748,10 @@ function arm(fn){
     $("#xp").textContent="⭐ "+xp;
     results.push({ex:ex,ok:r.ok,level:r.level,given:r.given||"",retry:!!ex.second,round:round,feedback:r.feedback||""});
     saveProg();
+    logPractice(ex,r);
     const cl=coachLine(r.ok);
     setFB(r.ok===false?"bad":"ok",r.title,(r.nodes||[]).concat(cl?[el("p",{class:"coach"},cl)]:[]));
+    sfx(r.ok);
     b.className="btn"+(r.ok===false?" blue":"");
     b.onclick=next;
     if(r.say){
@@ -651,6 +786,7 @@ function render(){
   rid++;
   try{if(ttsApi&&ttsApi.stop)ttsApi.stop()}catch(e){}
   try{if("speechSynthesis" in window)speechSynthesis.cancel()}catch(e){}
+  stopSrv();
   stopMic();stopTick();started=true;
   const card=$("#card");card.innerHTML="";clearFB();
   $("#prog").style.width=(queue.length?Math.round(100*i/queue.length):0)+"%";
@@ -664,6 +800,7 @@ function render(){
     return summary();
   }
   const ex=queue[i];
+  prefetchVoice(ex);prefetchVoice(queue[i+1]);
   card.append(...header(ex).filter(Boolean));
   disarm();
   const B=Object.assign({shadow:bShadow,choice:bChoice,dictation:bDict,chunks:bChunks,speak:bSpeak,roleplay:bRole,cards:bCards},EXT);

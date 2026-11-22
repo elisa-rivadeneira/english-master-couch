@@ -38,8 +38,19 @@ choice · minimal_pair · listen_multi · true_false · fill_blank · word_order
 
 Para ideas nuevas se usa el tipo genérico `task` (Claude evalúa la respuesta); detalles en el bloque `exercise-catalog`.
 
+## Voz del servidor y registro automático (v4)
+
+Con el conector personalizado **«Registro Ingles»** (servidor `english-coach-registro`, repositorio aparte), la plantilla:
+- reproduce los audios de inglés con una **voz gratuita generada en el servidor** (Kokoro), también en la app del celular, donde las voces del navegador no existen;
+- suena una **campanita al acertar** y un tono al fallar, con animación y vibración;
+- **registra cada ejercicio** automáticamente para el reporte del gerente (sin copiar y pegar);
+- muestra «● registro» en la cabecera si todo va bien y «⚠ sin registro» si falta el conector.
+
+Sin el conector todo sigue funcionando con las voces de respaldo (voz de Claude o del navegador). Cada alumno agrega el conector una sola vez, con su código; ver `GUIA-ALUMNO.md`.
+
 ## Versiones
 
+- **v4** — voz del servidor por conector, sonidos de acierto/error, registro automático de práctica y aviso «sin registro».
 - **v3.2** — corrige un texto «null» que aparecía en la pantalla de inicio.
 - **v3** — instrucciones de Claude incluidas en el archivo.
 - **v2** — 16 tipos de ejercicio, racha/XP/jefe, catálogo y escalera de progresión.
