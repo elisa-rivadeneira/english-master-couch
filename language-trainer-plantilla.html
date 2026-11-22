@@ -171,6 +171,7 @@ textarea{width:100%;min-height:90px;border:2px solid var(--line);border-radius:1
 .chip{background:var(--card);color:var(--fg);border:2px solid var(--line);border-bottom-width:4px;border-radius:12px;padding:8px 12px;font:600 15px inherit;font-family:inherit;cursor:pointer}
 .w-ok{color:var(--greend);font-weight:700}.w-miss{color:var(--redd);font-weight:700;text-decoration:underline}
 .micbtn{display:none}.hasmic .micbtn{display:inline-block}
+.nomichint{display:block;flex:1 1 100%;font-size:13px;color:var(--mut);margin:6px 0}.hasmic .nomichint{display:none}
 .listening .micbtn{background:var(--red);color:#fff;border-color:var(--redd)}
 .card3{border:2px solid var(--line);border-radius:16px;padding:14px;margin:10px 0;background:var(--card)}
 .card3 b{font-size:18px}
@@ -555,14 +556,28 @@ async function pfRun(){
 function pfAdd(text,front){
   if(typeof text!=="string"||!text||srvOK===false||!/^en/i.test(LANG))return;
   const k=text.trim();
+  if(!k||/_{2,}/.test(k))return;   // los huecos «____» no se precargan
   if(!front&&pfSeen.has(k))return;
   pfSeen.add(k);
   const at=pfList.indexOf(k);if(at>=0)pfList.splice(at,1);
   if(front)pfList.unshift(k);else pfList.push(k);
   if(!pfRunning)pfRun();
 }
-function prefetchVoice(ex){try{if(ex&&ex.audio)pfAdd(ex.audio,true)}catch(e){}}
-function prefetchLesson(){try{for(let k=i+1;k<queue.length;k++){if(queue[k]&&queue[k].audio)pfAdd(queue[k].audio,false)}}catch(e){}}
+function exTexts(ex){
+  // textos que la app puede decir en este ejercicio: primero el audio principal, luego correcciones y tarjetas
+  const main=[],extra=[];
+  if(!ex)return {main,extra};
+  if(typeof ex.audio==="string")main.push(ex.audio);
+  ["target","modelAnswer","sentence","correct"].forEach(f=>{if(typeof ex[f]==="string")extra.push(ex[f])});
+  if(Array.isArray(ex.items))ex.items.forEach(it=>{if(it&&typeof it.en==="string")main.push(it.en);if(it&&typeof it.example==="string")extra.push(it.example)});
+  if(Array.isArray(ex.pairs)&&(ex.speak==="a"||ex.speak==="b"))ex.pairs.forEach(pr=>{if(pr&&typeof pr[ex.speak]==="string")extra.push(pr[ex.speak])});
+  return {main,extra};
+}
+function prefetchVoice(ex){try{const t=exTexts(ex);t.main.slice().reverse().forEach(x=>pfAdd(x,true));t.extra.forEach(x=>pfAdd(x,false))}catch(e){}}
+function prefetchLesson(){try{
+  for(let k=i+1;k<queue.length;k++){exTexts(queue[k]).main.forEach(x=>pfAdd(x,false))}
+  for(let k=i+1;k<queue.length;k++){exTexts(queue[k]).extra.forEach(x=>pfAdd(x,false))}
+}catch(e){}}
 function stopCurrent(){try{if(curSrc){curSrc.onended=null;curSrc.stop()}}catch(e){}curSrc=null}
 function stopSrv(){srvTok++;try{if(curSrc){curSrc.onended=null;curSrc.stop()}}catch(e){}curSrc=null;const t=document.getElementById("srvtoast");if(t)t.style.display="none"}
 function playBufs(bufs){
@@ -977,10 +992,11 @@ function bChunks(ex,card){
 
 /* speak */
 function micBtn(ta){
-  return el("button",{class:"ghost micbtn",type:"button",onclick:()=>{
+  return [el("button",{class:"ghost micbtn",type:"button",onclick:()=>{
     activeTA=ta;if(!dic)return;
     if(listening){dic.stop()}else{dic.start().catch(()=>{})}
-  }},"🎤 Hablar");
+  }},"🎤 Hablar"),
+  el("div",{class:"nomichint"},"🎤 Para hablar: toca el cuadro y usa el micrófono de tu teclado (junto a la barra espaciadora). Lo que dictes aparece como texto y se corrige igual.")];
 }
 function bSpeak(ex,card){
   card.append(el("h2",{},ex.prompt||"Habla"));
@@ -991,7 +1007,7 @@ function bSpeak(ex,card){
       el("button",{class:"ghost",type:"button",onclick:()=>speak(ex.audio,{voice:ex.voice})},"🔊 Modelo"),
       el("button",{class:"ghost",type:"button",onclick:()=>speak(ex.audio,{rate:0.75,voice:ex.voice})},"🐢 Lento")));
   }
-  const ta=el("textarea",{placeholder:"Toca 🎤 y habla, o escribe lo que dirías…",spellcheck:"false"});
+  const ta=el("textarea",{placeholder:"Habla (🎤 del teclado) o escribe lo que dirías…",spellcheck:"false"});
   ta.addEventListener("focus",()=>{activeTA=ta});
   card.append(ta,el("div",{class:"row"},micBtn(ta)),el("p",{class:"fine"},"El micrófono transcribe lo que dices; la corrección viene después de hablar, no durante."));
   ta.addEventListener("input",()=>{if(ta.value.trim())arm(check);else disarm()});
