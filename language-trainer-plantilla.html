@@ -82,7 +82,7 @@ D) PRIMERA LECCIÓN
 - Cada 3–4 días introduce un tema nuevo del mapa y un tipo de ejercicio nuevo; si dice que un tema le aburre, retíralo.
 - HABILIDADES Y CAMINO: la app dibuja un camino tipo Duolingo (pantalla "Mi camino") y mide el dominio con los reportes. Escribe el doc "skills/map" con 8 a 14 habilidades personalizadas agrupadas en 3 o 4 grupos: skills [{id,label,short (nombre corto),desc,cluster,x,y, y si la entrevista dio una pista: base (1 a 3) y baseNota}], clusters [{id,label,color,x,y}], "path" (los ids en el orden en que conviene recorrerlas) y "defaults":{audio,grammar,vocab,speak,open} con el id que corresponde por defecto a cada categoría. Cada ejercicio (menos cards y match) lleva "skill" con uno de esos ids. Lo de la entrevista (base) es una estimación cualitativa, no una medida: la app lo marca así. Los pasos se desbloquean por dominio medido, no por días.
 - CONVERSACIONES POR VOZ: la voz no se bloquea nunca; la persona puede conversar cuando quiera, y la app le sugiere una conversación después de CADA lección (una conversación marcada incompleta no cuenta). Cada conversación (con su duración completa, ver DURACIÓN DE LA CONVERSACIÓN POR VOZ) termina como un hito brillante en el camino y debe personalizarlo: cuando la persona vuelva y diga que terminó, lee la colección "voice" y su nota, y actualiza "skills/map" con lo observado al hablar (ajusta base/baseNota de las habilidades de hablar, agrega una o dos habilidades nuevas si surgieron, reordena "path" si hace falta). Sólo lo que de verdad se observó, sin inventar.
-- SIGUIENTE PASO: toda lección lleva "nextStep":{"type":"lesson" o "voice","text":"…"}; la app lo muestra al terminar. Por defecto "lesson": que escriba «listo» o «dame otra lección» en el chat con Claude. Cuando el plan lo pida (cada 3–4 lecciones, al cerrar una semana del plan o si ya domina la etapa), usa "voice": una conversación de 5–10 min con Claude en modo voz sobre un tema de su mapa, con el escenario y su meta (p. ej. hacer de consultora con un cliente), y que al volver al texto escriba «listo».
+- SIGUIENTE PASO: toda lección lleva "nextStep":{"type":"lesson" o "voice","text":"…"}; la app lo muestra al terminar. Por defecto "lesson": que pulse el botón brillante del mapa o escriba «next» en el chat con Claude. Cuando el plan lo pida (cada 3–4 lecciones, al cerrar una semana del plan o si ya domina la etapa), usa "voice": una conversación de 5–10 min con Claude en modo voz sobre un tema de su mapa, con el escenario y su meta (p. ej. hacer de consultora con un cliente), y que al volver al texto pulse «Terminé la conversación» en el mapa (o escriba «next»).
 
 E) RESPUESTA FINAL (máximo 7 líneas)
 Con calidez: 1) lo que más destacó de ella en la entrevista; 2) el enlace a su app; 3) qué trabajará en la primera lección; 4) cómo seguir cada día, con este texto exacto que debe pegar en un chat nuevo: "Sigue las instrucciones del bloque agent-instructions de mi artefacto «Mi entrenador de [idioma] — [su nombre]» y dame la lección de hoy". No repitas el expediente completo.
@@ -107,12 +107,19 @@ NIVEL INICIAL (A0–A1, personas que casi no saben inglés):
 - Cuando el nivel suba, avisa a la persona con datos concretos de su progreso («hace 2 semanas no podías… hoy…»).
 
 DURACIÓN DE LA CONVERSACIÓN POR VOZ (reloj del servidor):
-- EN LA ENTREVISTA INICIAL pregunta cuántos minutos al día se compromete a practicar hablando contigo (explica con calidez que el máximo son 60 minutos diarios). Guarda su respuesta con fijar_compromiso(minutos) y anótala en el dossier ("compromisoMin"). Dimensiona el plan de ese compromiso.
-- Tú no sientes el paso del tiempo, así que NO lo estimes: usa el reloj del conector. Al EMPEZAR cualquier conversación por voz llama a iniciar_sesion (sin minutos: usa el compromiso que la persona dijo en su entrevista; si hoy pide otro tiempo, pásalo como "minutos"). El servidor nunca permite más de 60 minutos de conversación por día en total: si responde que ya se cumplió, no inicies otra conversación. Devuelve la agenda de la sesión.
+- EN LA ENTREVISTA INICIAL pregunta cuántos minutos al día se compromete a practicar hablando contigo (sin tope: el tiempo que ella quiera, mínimo 5 minutos; no le pongas límites). Guarda su respuesta con fijar_compromiso(minutos) y anótala en el dossier ("compromisoMin"). Dimensiona el plan de ese compromiso.
+- Tú no sientes el paso del tiempo, así que NO lo estimes: usa el reloj del conector. Al EMPEZAR cualquier conversación por voz llama a iniciar_sesion (sin minutos: usa el compromiso que la persona dijo en su entrevista; si hoy pide otro tiempo, pásalo como "minutos"). No hay tope diario de conversación: la persona practica lo que quiera. Devuelve la agenda de la sesión. Si la llamada se corta, cuando la persona vuelva a llamar y diga «next», retoma: llama a tiempo_restante (el reloj del servidor sigue) y continúa la actividad que toca sin saludar de nuevo.
 - Durante la conversación llama a tiempo_restante cada 4 o 5 minutos y SIEMPRE antes de despedirte; te dice qué actividad toca y cuánto falta.
 - NUNCA preguntes «¿quieres algo más?» ni cierres porque la persona dijo «no» o «ya»: si todavía queda tiempo, cambia de actividad (role-play de su trabajo, preguntas rápidas, repaso de los errores que oíste, describir una imagen mental, simular una llamada). Solo cierras antes si pide terminar dos veces o dice que debe irse.
 - Cuando tiempo_restante diga que se cumplió el tiempo: cierra con un resumen breve, 2 o 3 puntos de gramática a reforzar, llama a registrar_practica (tipo "conversacion") con valores reales y despídete.
 - Si el conector no está disponible, pregunta cuántos minutos quiere practicar, pide la hora actual con la herramienta de hora si existe, y sigue la agenda: 10% calentamiento, 35% conversación del tema, 30% role-play, 15% repaso de errores, 10% cierre.
+
+PALABRA CLAVE «next» (retomar donde va, sin saludos genéricos):
+- La PALABRA CLAVE es «next». Cuando la persona la diga o la escriba (suele pegarla desde el botón brillante del mapa de su app), significa «sigue desde donde voy». NO saludes de forma genérica ni preguntes «¿en qué te ayudo?».
+- Al oírla, primero localiza su artefacto y lee con db_list/db_get la colección "sessions" (última lección hecha, sus fallos y habilidades débiles), la colección "voice" (conversaciones por voz hechas) y el doc "lessons/current" (lección pendiente); si hay un reloj abierto, llama a tiempo_restante. Con eso decide en una sola frase dónde está: «Veo que terminaste X…».
+- Si le toca CONVERSAR (lección hecha y conversación pendiente): llama a iniciar_sesion, di una frase breve que conecte con lo que acaba de practicar (nombra la debilidad de gramática concreta que más falló) y empieza la conversación en ese tema.
+- Si le toca una LECCIÓN NUEVA (conversación hecha): arma la lección de lessons/current con el bucle diario y dile que pulse el botón brillante del mapa.
+- Si queda una conversación a medias (reloj abierto), retómala sin presentarte de nuevo.
 
 DEBILIDADES DE GRAMÁTICA (el corazón del seguimiento):
 - Mientras la persona habla contigo por voz, anota mentalmente los errores de gramática que se repiten (tiempos verbales, -s de tercera persona, preposiciones, artículos, orden de preguntas). Al terminar, si está registrar_practica, inclúyelos en "nota" (ej.: "gramática: pasado simple, 3ª persona -s"), solo los que realmente oíste.
@@ -122,7 +129,7 @@ DEBILIDADES DE GRAMÁTICA (el corazón del seguimiento):
 ORDEN SUGERIDO DE CADA DÍA: primero una conversación corta por voz con Claude sobre un tema de su mapa (la voz de Claude conversa y enseña); después la lección de la app, con los ejercicios lúdicos de oído, gramática y vocabulario (la voz del servidor); al final, el cuaderno de práctica. El audio de la app no depende de las voces del navegador.
 
 ══════ PASO 3 · BUCLE DIARIO ══════
-Cuando la persona te pida la lección de hoy o escriba "listo":
+Cuando la persona te pida la lección de hoy o diga/escriba "next" o "listo":
 1. Localiza su artefacto (lista tus artefactos) y léelo con read_file para tener estas instrucciones y el catálogo. Lee sus reportes con db_list/db_get del prefijo "sessions/" (el más reciente) y el doc "dossier/main" (db_list necesita la colección: "sessions").
 2. Analiza: % por ejercicio, por tipo y por habilidad (cada sesión trae "items" con type, skill, ok y level; la colección "voice" guarda lo que contó tras sus conversaciones por voz; si lessons/current trae source:"app", la creó la app), qué fue a la primera escucha vs. tras repetición vs. con pistas, qué se repitió en el repaso, errores recurrentes, y el feedback que Claude dio en las tareas abiertas.
 3. Decide la etapa con las reglas del catálogo y actualiza el "dossier" (nivel, etapa, errores recurrentes, temas usados y pendientes).
@@ -262,6 +269,11 @@ pre.rep{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:1
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
 @media(prefers-reduced-motion:reduce){.cf{display:none}.stars3 span{animation:none}.sky .tw{animation:none}}
 
+.pbar{height:12px;border-radius:99px;background:rgba(130,145,170,.25);overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2fb457,#ffc83a);border-radius:99px;transition:width .25s}
+.glow{position:relative;font-weight:800;font-size:17px;padding:16px 18px;border-radius:16px;background:linear-gradient(#ffd84d,#f0a41c);color:#3a2600;border:0;box-shadow:0 6px 0 #a8730a,0 0 0 0 rgba(255,200,58,.7);animation:glowp 1.8s ease-in-out infinite;width:100%;cursor:pointer}
+@keyframes glowp{0%,100%{box-shadow:0 6px 0 #a8730a,0 0 0 0 rgba(255,200,58,.65)}50%{box-shadow:0 6px 0 #a8730a,0 0 24px 8px rgba(255,200,58,.55)}}
+@media(prefers-reduced-motion:reduce){.glow{animation:none}}
 .pathwrap{display:flex;justify-content:center;margin:14px 0}
 .path{position:relative;width:320px;flex:none}
 .ptrack{position:absolute;left:0;top:0;pointer-events:none}
@@ -482,11 +494,11 @@ Reglas: 20–25 ejercicios; primero los de escucha sin mostrar texto; mezcla min
 Avance del alumno hoy: `;
 
 let L=null,queue=[],i=0,results=[],sst={},xp=0,activeTA=null;
-let mode=LS("et_mode")==="exam"?"exam":"train";
+let mode="train";   // solo existe el modo Entrenamiento
 let round=1,histSaved=false;
 let started=false,sessionId=null,dbApi=null,dbVer=null,pendingLesson=null;
 const SIGUE=()=>"No pude conectarme a tu base de datos. Abre un chat con Claude y escribe: «Sigue las instrucciones del bloque agent-instructions de mi artefacto «"+document.title+"» y dame la lección de hoy».";
-const SIGUE_NEXT=()=>{const n=L&&L.nextStep;return (n&&n.text)?n.text:"Pídele a Claude en el chat: «dame otra lección»."};
+const SIGUE_NEXT=()=>{const n=L&&L.nextStep;return (n&&n.text)?n.text:"Vuelve al mapa y pulsa el botón brillante, o dile «next» a Claude."};
 const nsBox=()=>{const n=(L&&L.nextStep&&L.nextStep.text)?L.nextStep:null;return el("div",{style:n?"background:var(--soft);border:2px solid var(--blue);border-radius:14px;padding:12px 14px;margin:10px 0":"display:none"},el("b",{},n?(n.type==="voice"?"🔊 Siguiente paso: conversa con Claude en modo voz":"➡️ Siguiente paso"):""),el("p",{style:"margin:6px 0 0"},n?n.text:""))};
 let LANG="en-US";let streak=0,bestStreak=0,tick=null;function stopTick(){if(tick){clearInterval(tick);tick=null}}
 const PASS=0.8;
@@ -582,6 +594,24 @@ function srvVoice(text,rate){
   const vel=Math.round(Math.min(1.3,Math.max(0.7,0.95*(rate||1)))*100)/100;
   const ch=chunkText(text);if(!ch.length)return Promise.resolve(null);
   return Promise.all(ch.map(c=>srvFetch(c,vel).then(b64=>srvDecode(vel+"|"+c,b64)))).catch(()=>null);
+}
+let PRELOAD_TOK=0;
+function preloadAll(qs,onProg){
+  if(!/^en/i.test(LANG)||srvOK===false)return null;
+  const my=++PRELOAD_TOK,texts=[],seen=new Set();
+  const add=t=>{if(typeof t!=="string")return;const k=t.trim();if(!k||/_{2,}/.test(k)||seen.has(k))return;seen.add(k);texts.push(k)};
+  qs.forEach(ex=>{const t=exTexts(ex);t.main.forEach(add);t.extra.forEach(add)});   // pregunta 1 primero
+  if(!texts.length)return null;
+  let done=0,idx=0;const n=texts.length;
+  const one=async()=>{
+    while(idx<n&&my===PRELOAD_TOK&&srvOK!==false){
+      const t=texts[idx++];
+      try{await Promise.race([Promise.all(chunkText(t).map(c=>srvFetch(c,0.95))),new Promise((_,no)=>setTimeout(()=>no(new Error("lento")),25000))])}catch(e){}
+      done++;try{onProg(done,n)}catch(e){}
+    }
+  };
+  onProg(0,n);
+  return Promise.all([one(),one(),one()]).then(()=>{try{onProg(n,n)}catch(e){}});
 }
 const pfList=[],pfSeen=new Set();let pfRunning=false;
 async function pfRun(){
@@ -1401,7 +1431,7 @@ function summary(){
   const missed=main.filter(r=>r.ok===false&&!r.retry);
   const roles=main.filter(r=>r.ex.type==="roleplay");
   const tasks=main.filter(r=>r.ex.type==="task"||r.ex.type==="scene");
-  let rep="REPORTE — "+L.title+" ("+(L.date||"")+") — modo: "+(mode==="exam"?"Examen (1 escucha)":"Entrenamiento")+"\n";
+  let rep="REPORTE — "+L.title+" ("+(L.date||"")+") — modo: Entrenamiento\n";
   rep+="Correctas al primer intento: "+good+"/"+graded.length+"\n";
   if(graded.length)rep+="Porcentaje a la primera: "+Math.round(100*good/graded.length)+"% (meta "+Math.round(PASS*100)+"%)\n";
   if(retried)rep+="Rescatadas tras repetición: "+rescued+"/"+retried+"\n";
@@ -1781,12 +1811,13 @@ async function openCons(){
   const lastVoice=voices.map(v=>String(v.at||"")).sort().pop()||"";
   const box=el("div",{class:"nextbox"});
   const stat=el("p",{class:"fine",id:"cstat"});
+  const KEY="next";
+  const copyKey=async st=>{try{await navigator.clipboard.writeText(KEY);st.textContent="✓ Copiado: «"+KEY+"». Cierra esta ventana y pégalo en tu chat con Claude (modo voz) o dilo en voz alta."}catch(e){st.textContent="No pude copiarlo. Escribe o di: «"+KEY+"»"}};
   const mkVoice=(text,st)=>{
-    const m=(text||"").match(/«([^»]+)»/);
     const note=el("textarea",{placeholder:"Opcional: ¿cómo te fue? ¿qué palabras o frases te costaron?",style:"width:100%;min-height:70px;margin:8px 0"});
-    return [el("b",{},wave(16)," Conversar con Claude"),el("p",{},text||"Conversa 5 a 10 minutos con Claude en modo voz. Cuéntale un caso real de tu trabajo en inglés, como si él fuera el cliente."),
-      el("ol",{class:"fine"},el("li",{},"Abre tu chat con Claude y activa el modo voz."),el("li",{},"Di la frase para empezar."),el("li",{},"Al terminar, vuelve aquí y pulsa el botón de abajo.")),
-      m?el("button",{class:"ghost",type:"button",onclick:async()=>{try{await navigator.clipboard.writeText(m[1]);st.textContent="✓ Frase copiada"}catch(e){st.textContent="No pude copiarla. Dila así: "+m[1]}}},"📋 Copiar la frase para empezar"):null,
+    return [el("b",{},wave(16)," Conversar con Claude"),el("p",{},text||"Conversa con Claude en modo voz. Él ya sabe dónde vas y sigue contigo, sin saludos genéricos."),
+      el("ol",{class:"fine"},el("li",{},"Pulsa el botón brillante: copia la palabra «"+KEY+"»."),el("li",{},"Cierra esta ventana, abre tu chat con Claude y activa el modo voz."),el("li",{},"Pega o di «"+KEY+"». Claude revisa tu mapa y empieza."),el("li",{},"Al terminar, vuelve aquí y pulsa «Terminé la conversación».")),
+      el("button",{class:"glow",type:"button",onclick:()=>copyKey(st)},"📋 Copiar «"+KEY+"» y hablar con Claude"),
       note,
       el("button",{class:"btn",type:"button",onclick:async()=>{
         try{await dbApi.doc("voice/v"+Date.now()).set({at:new Date().toISOString(),afterLesson:(L&&L.title)||"",note:note.value.trim()});}catch(e){st.textContent="No pude guardar tu avance, pero puedes seguir.";}
@@ -1818,7 +1849,13 @@ async function openCons(){
   const here=wrap.querySelector(".pn.cur");
   const row=el("div",{class:"vrow"});
   if(here)row.append(el("button",{class:"ghost",type:"button",onclick:()=>here.scrollIntoView({behavior:"smooth",block:"center"})},"📍 Ver dónde estoy"));
-  row.append(el("button",{class:"ghost",type:"button",onclick:()=>{vbox.hidden?openVoice():(vbox.hidden=true)}},wave(16)," Conversar con Claude"));
+  const gst=el("p",{class:"fine"});
+  let gb;
+  if(pendingLesson)gb=el("button",{class:"glow",type:"button",onclick:()=>{L=pendingLesson;pendingLesson=null;LS("et_lesson",L);host.className="";start()}},"📥 Empezar la lección nueva");
+  else if(!lessonDone)gb=el("button",{class:"glow",type:"button",onclick:()=>{host.className=""}},"▶ Ir a mi lección");
+  else if(!voiceDone)gb=el("button",{class:"glow",type:"button",onclick:()=>{openVoice();copyKey(gst)}},"🎙️ Copiar «"+KEY+"» y hablar con Claude");
+  else gb=el("button",{class:"glow",type:"button",onclick:()=>genLesson(host,sessions,voices,M,lastVoice,gst)},"✨ Crear mi próxima lección");
+  wrap.insertBefore(el("div",{style:"margin:12px 0"},gb,gst),pathBox);
   wrap.insertBefore(row,pathBox);wrap.insertBefore(vbox,tbl);
   if(here)setTimeout(()=>{try{here.scrollIntoView({block:"center"})}catch(e){}},80);
 }
@@ -1931,7 +1968,6 @@ async function genLesson(host,sessions,voices,M,lastVoice,statEl){
 /* ---------- start / load ---------- */
 function start(){
   LANG=(L&&L.lang)||"en-US";queue=expand(L.exercises);i=0;results=[];sst={};xp=0;round=1;histSaved=false;started=false;sessionId=null;streak=0;bestStreak=0;stopTick();
-  try{prefetchVoice(queue[0]);prefetchLesson()}catch(e){}   // la voz empieza a prepararse mientras lee la pantalla de inicio
   $("#xp").textContent="⭐ 0";$("#streak").textContent="";
   const card=$("#card");card.innerHTML="";clearFB();
   $("#prog").style.width="0%";
@@ -1939,19 +1975,7 @@ function start(){
   card.append(el("div",{class:"tag"},L.date||""),el("h1",{},L.title),
     el("p",{},L.focus||""),L.stage?el("div",{class:"fine"},stageLine()):"",metaLine(),
     el("div",{class:"card3"},el("b",{},queue.length+" ejercicios"),el("div",{class:"fine"},"Método: escuchar → entender → hablar → verificar. Cada audio suena una sola vez y no verás el texto hasta después de tu intento.")),
-    el("div",{class:"tag"},"Modo"),
-    (()=>{
-      const d=el("div",{class:"fine"},"");
-      const bt=el("button",{class:"opt",type:"button"},"🎧 Entrenamiento"),be=el("button",{class:"opt",type:"button"},"📝 Examen");
-      const sync=()=>{
-        bt.classList.toggle("sel",mode==="train");be.classList.toggle("sel",mode==="exam");
-        d.textContent=mode==="train"?"1 escucha bloqueada. Si fallas, puedes repetir, usar lento, pista y texto en una segunda oportunidad (se registra aparte, vale la mitad).":"1 escucha, sin segunda oportunidad, sin pistas. Mide tu comprensión autónoma.";
-      };
-      bt.onclick=()=>{mode="train";LS("et_mode","train");sync()};
-      be.onclick=()=>{mode="exam";LS("et_mode","exam");sync()};
-      sync();
-      return el("div",{},el("div",{class:"modes"},bt,be),d);
-    })(),
+    el("div",{class:"fine"},"🎧 Entrenamiento: cada audio suena una vez. Si fallas, puedes repetir, usar lento, pista y texto en una segunda oportunidad (se registra aparte, vale la mitad)."),
     hist.length?el("div",{},el("div",{class:"fine"},"Últimas sesiones:"),...hist.map(h=>el("div",{class:"fine"},"• "+h.t+" — "+h.good+"/"+h.n))):"");
   const p=LS("et_prog");
   const canResume=!!(p&&p.key===lessonKey()&&p.i>0&&p.i<queue.length);
@@ -1964,12 +1988,43 @@ function start(){
       }},"Ir")),
     el("div",{class:"fine"},"Los ejercicios anteriores a ese no cuentan en el porcentaje.")));
   const b=$("#main");b.disabled=false;b.className="btn";
+  let lbl="Empezar";
   if(canResume){
-    b.textContent="Continuar: ejercicio "+(p.i+1)+" de "+queue.length;
+    lbl="Continuar: ejercicio "+(p.i+1)+" de "+queue.length;
     b.onclick=()=>resume(p);
     card.append(el("button",{class:"ghost",type:"button",onclick:()=>{LS("et_prog",null);i=0;xp=0;results=[];sst={};round=1;sessionId=null;$("#xp").textContent="⭐ 0";render()}},"↺ Empezar de cero"));
   }else{
-    b.textContent="Empezar";b.onclick=()=>render();
+    b.onclick=()=>render();
+  }
+  delete b.dataset.busy;b.dataset.lbl=lbl;b.textContent=lbl;
+  /* lección ya hecha: se avisa y se ofrece repetirla */
+  if(dbApi&&!canResume){const key=lessonKey();
+    readColl("sessions").then(ss=>{
+      if(key!==lessonKey())return;
+      const q=(ss||[]).filter(x=>x.title===L.title).pop();
+      if(!q)return;
+      const ban=el("div",{style:"background:var(--soft);border:2px solid #2fb457;border-radius:14px;padding:10px 14px;margin:10px 0"},
+        el("b",{},"✅ Ya hiciste esta lección"+(q.firstPassPct!=null?" ("+q.firstPassPct+"% a la primera)":"")),
+        el("p",{class:"fine",style:"margin:6px 0 0"},"¿Quieres repetirla para afianzarla? Pulsa «Repetir la lección». O vuelve al mapa para seguir con lo que toca."));
+      card.insertBefore(ban,card.children[2]||null);
+      b.dataset.lbl="🔁 Repetir la lección";if(!b.dataset.busy)b.textContent=b.dataset.lbl;
+    }).catch(()=>{});
+  }
+  /* precarga de TODOS los audios antes de empezar, con barra de progreso */
+  const pre=preloadAll(queue,(k,n)=>{
+    const t=$("#prebar");if(t)t.firstChild.style.width=Math.round(100*k/Math.max(1,n))+"%";
+    const m=$("#pretxt");if(m)m.textContent="Preparando tus audios, "+k+" de "+n;
+    if(b.dataset.busy)b.textContent="⏳ Preparando tus audios, "+k+" de "+n+"…";
+  });
+  if(pre){
+    b.dataset.busy="1";b.disabled=true;b.textContent="⏳ Preparando tus audios…";
+    card.insertBefore(el("div",{id:"prebox",style:"margin:10px 0"},el("div",{id:"pretxt",class:"fine"},"Preparando tus audios…"),el("div",{id:"prebar",class:"pbar"},el("i"))),card.children[2]||null);
+    pre.then(()=>{
+      if(!b.dataset.busy)return;
+      delete b.dataset.busy;b.disabled=false;b.textContent=b.dataset.lbl;
+      const bx=$("#prebox");if(bx)bx.innerHTML="<div class='fine'>✅ Audios listos</div>";
+      setTimeout(()=>{const x=$("#prebox");if(x)x.remove()},1800);
+    });
   }
 }
 function setLesson(obj){
