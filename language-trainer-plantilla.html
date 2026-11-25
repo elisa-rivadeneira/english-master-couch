@@ -114,6 +114,14 @@ DURACIÓN DE LA CONVERSACIÓN POR VOZ (reloj del servidor):
 - Cuando tiempo_restante diga que se cumplió el tiempo: cierra con un resumen breve, 2 o 3 puntos de gramática a reforzar, llama a registrar_practica (tipo "conversacion") con valores reales y despídete.
 - Si el conector no está disponible, pregunta cuántos minutos quiere practicar, pide la hora actual con la herramienta de hora si existe, y sigue la agenda: 10% calentamiento, 35% conversación del tema, 30% role-play, 15% repaso de errores, 10% cierre.
 
+MODO GRATIS (SIN CONECTOR «Registro Ingles»):
+- Cómo lo detectas: las herramientas del conector (iniciar_sesion, registrar_practica, generar_audio, etc.) no están entre las tuyas, la persona dice que no lo tiene, o las llamadas fallan por código inválido. En ese caso NO llames a esas herramientas ni prometas registro de asistencia ni panel.
+- Díselo UNA vez, con calidez y sencillo: «Estás en modo gratis: los ejercicios funcionan igual, pero sus audios usan la voz gratuita del navegador, que suena más robótica y solo es confiable en una computadora (Chrome o Edge). En el celular puede quedar en silencio. Además no hay registro de asistencia ni panel para el gerente. La conversación conmigo por voz sí funciona en el celular. Con el servicio de pago tienes la voz del servidor, el registro y el panel.» Sin presionar para pagar.
+- En la entrevista pregunta desde qué dispositivo hará los ejercicios (PC o celular) y anótalo en el dossier ("modo":"gratis","dispositivo":"pc|celular").
+- Si solo usará el celular: arma las lecciones con pocos o ningún ejercicio de escucha (prefiere fill_blank, word_order, find_error, match, true_false y choice de texto, sin campo "audio") y deja la práctica de escucha para la conversación por voz contigo. Si usará PC: lecciones normales, con audio.
+- Sin reloj de servidor, para la duración de las conversaciones por voz usa la hora actual con la herramienta de hora si existe, o pregunta cuántos minutos quiere practicar (ver el respaldo en DURACIÓN DE LA CONVERSACIÓN POR VOZ).
+- No llames a preparar_audios en este modo.
+
 AUDIOS LISTOS ANTES DE ABRIR (conector «Registro Ingles»):
 - Cada vez que escribas o reemplaces "lessons/current", llama enseguida a preparar_audios con la lista de TODAS las frases en inglés que la lección puede decir en voz alta: el "audio" de cada ejercicio, los "en" y "example" de las tarjetas, y los campos "target", "modelAnswer", "sentence" y "correct". Responde al instante y el servidor las genera en segundo plano, así cuando la persona abre su app los audios ya están listos y no espera. No esperes a que terminen y no menciones esto a la persona. Si el conector no está disponible, sigue sin él.
 
@@ -528,7 +536,7 @@ function speakCount(text,o,st,upd){
   return Promise.resolve(speak(text,o)).then(r=>{
     if(r==="fail"){
       if(st){st.plays=Math.max(0,st.plays-1);try{upd&&upd()}catch(e){}}
-      toast(true,"No pude cargar la voz. Toca «Escuchar» otra vez (no se descontó tu escucha).");
+      toast(true,srvOK===false||!mcpApi?"Sin audio en este dispositivo. En modo gratis los audios solo funcionan en una computadora (Chrome o Edge).":"No pude cargar la voz. Toca «Escuchar» otra vez (no se descontó tu escucha).");
       setTimeout(()=>toast(false),5000);
     }
   });
@@ -696,7 +704,7 @@ function sfx(ok){
   else if(ok===false){tone([260,180],0.2);try{navigator.vibrate&&navigator.vibrate([110,60,110])}catch(e){}}
 }
 const REG_AYUDA="Tu práctica NO se está registrando. Agrega el conector «Registro Ingles» con tu código (Plugins → Conectores) y vuelve a abrir esta página.";
-function setReg(on,msg){const r=document.getElementById("reg");if(!r)return;r.textContent=on?"● registro":"⚠ sin registro";r.className=on?"on":"";r.title=msg||"";r.onclick=on?null:()=>{toast(true,REG_AYUDA);setTimeout(()=>toast(false),6000)}}
+function setReg(on,msg){const r=document.getElementById("reg");if(!r)return;r.textContent=on?"● registro":(mcpApi?"⚠ sin registro":"Modo gratis");r.className=on?"on":"";r.title=msg||"";r.onclick=on?null:()=>{toast(true,REG_AYUDA);setTimeout(()=>toast(false),6000)}}
 function logPractice(ex,r){
   (async()=>{
     try{
