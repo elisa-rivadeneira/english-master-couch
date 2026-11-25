@@ -70,8 +70,8 @@ C) CREAR LA APP A PARTIR DE ESTE ARCHIVO (rápido; NO programes la app desde cer
    - Cambia el <title> con su nombre. Si su idioma nativo no es español, traduce los textos de interfaz con reemplazos puntuales.
    - Deja intactos los bloques exercise-catalog y agent-instructions (los necesitarás los días siguientes).
 4. Publica con publish_files: SIN slug (artefacto nuevo), título "Mi entrenador de [idioma] — [su nombre]", privado. Con una página nueva se publica primero y se declara después.
-5. Declara las capacidades con declare_capabilities: tts, dictation, sample, db y mcp con {"servers":[{"server":"Registro Ingles","tools":["generar_audio","registrar_practica","mi_progreso"]}]} (usa describe_capabilities si dudas). La declaración es la lista COMPLETA: incluye todas juntas. Si la persona no tiene ese conector, la app funciona igual con las voces de respaldo y avisa «sin registro».
-6. Escribe en la base de datos del artefacto nuevo con db_write: el doc "dossier/main" (expediente + mapa de temática + plan + stage; las rutas de documento son colección/id) y el doc "lessons/current" con la primera lección: {updatedAt: <fecha-hora ISO>, lesson: {...}}. Escribe también el doc "skills/map" (ver HABILIDADES en D).
+5. Declara las capacidades con declare_capabilities: tts, dictation, sample, db y mcp con {"servers":[{"server":"Registro Ingles","tools":["generar_audio","registrar_practica","mi_progreso","preparar_audios"]}]} (usa describe_capabilities si dudas). La declaración es la lista COMPLETA: incluye todas juntas. Si la persona no tiene ese conector, la app funciona igual con las voces de respaldo y avisa «sin registro».
+6. Escribe en la base de datos del artefacto nuevo con db_write: el doc "dossier/main" (expediente + mapa de temática + plan + stage; las rutas de documento son colección/id) y el doc "lessons/current" con la primera lección: {updatedAt: <fecha-hora ISO>, lesson: {...}}. Después de escribirla, llama a preparar_audios con TODAS las frases en inglés que la lección dirá en voz alta (ver AUDIOS LISTOS ANTES DE ABRIR). Escribe también el doc "skills/map" (ver HABILIDADES en D).
 7. Comprueba que el artefacto cargó (get_artifact) y que lessons/current existe (db_get).
 
 D) PRIMERA LECCIÓN
@@ -114,6 +114,9 @@ DURACIÓN DE LA CONVERSACIÓN POR VOZ (reloj del servidor):
 - Cuando tiempo_restante diga que se cumplió el tiempo: cierra con un resumen breve, 2 o 3 puntos de gramática a reforzar, llama a registrar_practica (tipo "conversacion") con valores reales y despídete.
 - Si el conector no está disponible, pregunta cuántos minutos quiere practicar, pide la hora actual con la herramienta de hora si existe, y sigue la agenda: 10% calentamiento, 35% conversación del tema, 30% role-play, 15% repaso de errores, 10% cierre.
 
+AUDIOS LISTOS ANTES DE ABRIR (conector «Registro Ingles»):
+- Cada vez que escribas o reemplaces "lessons/current", llama enseguida a preparar_audios con la lista de TODAS las frases en inglés que la lección puede decir en voz alta: el "audio" de cada ejercicio, los "en" y "example" de las tarjetas, y los campos "target", "modelAnswer", "sentence" y "correct". Responde al instante y el servidor las genera en segundo plano, así cuando la persona abre su app los audios ya están listos y no espera. No esperes a que terminen y no menciones esto a la persona. Si el conector no está disponible, sigue sin él.
+
 PALABRA CLAVE «next» (retomar donde va, sin saludos genéricos):
 - La PALABRA CLAVE es «next». Cuando la persona la diga o la escriba (suele pegarla desde el botón brillante del mapa de su app), significa «sigue desde donde voy». NO saludes de forma genérica ni preguntes «¿en qué te ayudo?».
 - Al oírla, primero localiza su artefacto y lee con db_list/db_get la colección "sessions" (última lección hecha, sus fallos y habilidades débiles), la colección "voice" (conversaciones por voz hechas) y el doc "lessons/current" (lección pendiente); si hay un reloj abierto, llama a tiempo_restante. Con eso decide en una sola frase dónde está: «Veo que terminaste X…».
@@ -133,7 +136,7 @@ Cuando la persona te pida la lección de hoy o diga/escriba "next" o "listo":
 1. Localiza su artefacto (lista tus artefactos) y léelo con read_file para tener estas instrucciones y el catálogo. Lee sus reportes con db_list/db_get del prefijo "sessions/" (el más reciente) y el doc "dossier/main" (db_list necesita la colección: "sessions").
 2. Analiza: % por ejercicio, por tipo y por habilidad (cada sesión trae "items" con type, skill, ok y level; la colección "voice" guarda lo que contó tras sus conversaciones por voz; si lessons/current trae source:"app", la creó la app), qué fue a la primera escucha vs. tras repetición vs. con pistas, qué se repitió en el repaso, errores recurrentes, y el feedback que Claude dio en las tareas abiertas.
 3. Decide la etapa con las reglas del catálogo y actualiza el "dossier" (nivel, etapa, errores recurrentes, temas usados y pendientes).
-4. Escribe la lección de mañana en "lessons/current" con las reglas de D): refuerza lo débil, avanza lo sólido, rota los temas, mezcla tipos (no más de 3 seguidos iguales) y abre con una conexión a su meta.
+4. Escribe la lección de mañana en "lessons/current" con las reglas de D): refuerza lo débil, avanza lo sólido, rota los temas, mezcla tipos (no más de 3 seguidos iguales) y abre con una conexión a su meta. Luego llama a preparar_audios con todas sus frases en inglés.
 5. Respuesta corta y cálida: qué mejoró (con datos), qué toca reforzar, de qué quiere hablar mañana, y que su app ya se actualizó sola.
 Si no hay reporte nuevo, díselo, pídele que termine la lección en la app y no inventes resultados.
 
@@ -1957,6 +1960,7 @@ async function genLesson(host,sessions,voices,M,lastVoice,statEl){
     const ver=new Date().toISOString();
     dbVer=ver;
     await dbApi.doc("lessons/current").set({updatedAt:ver,lesson:les,source:"app"});
+    try{await mcpReady;if(mcpApi&&srvOK!==false){const fr=[];expand(les.exercises).forEach(ex=>{const t=exTexts(ex);t.main.concat(t.extra).forEach(x=>{if(typeof x==="string"&&x.trim()&&fr.indexOf(x)<0)fr.push(x)})});mcpApi.callTool(SRV,"preparar_audios",{frases:fr.slice(0,80)},{cache:false}).catch(()=>{})}}catch(e){}
     VOICENOTE="";L=les;LS("et_lesson",L);
     host.className="";start();
   }catch(e){
