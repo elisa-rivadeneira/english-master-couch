@@ -407,7 +407,7 @@ GRAMÁTICA / VOCABULARIO
    (si allowCorrect=true y la frase ya está bien, deja "wrong":[] y la alumna usa «Está bien»)
 - match: {"type":"match","prompt":"","pairs":[{"a":"report","b":"informe"}],"speak":"a"}  (3–6 pares)
 - cards: {"type":"cards","title":"","items":[{"en":"","es":"","example":""}]}   (la clave "en" es la frase en el idioma meta, "es" su traducción)
-HABLA
+HABLA — NO USAR POR AHORA (la app oculta speak, roleplay, scene, task y shadow aunque vengan en la lección; el habla se practica en la conversación por voz con Claude)
 - speak: {"type":"speak","prompt":"","target":"frase a repetir (opcional)","keywords":["…"],"audio":"modelo (opcional)","modelAnswer":""}
 - roleplay: {"type":"roleplay","audio":"lo que dice el interlocutor","task":"","modelAnswer":"","rubric":""}
 - scene (conversación de 2–5 turnos, con una única evaluación de Claude al final):
@@ -502,10 +502,8 @@ Tipos de ejercicio (todos aceptan "block": etiqueta de sección):
 - {"type":"minimal_pair"|"choice","audio":"frase que se oye (opcional)","prompt":"pregunta","options":[...],"answer":índice,"explanation":"","hint":""}
 - {"type":"listen_multi","audio":"monólogo","transcript":"","hint":"","questions":[{"q":"","options":[...],"answer":0,"explanation":""}]}
 - {"type":"dictation","audio":"frase","es":"significado en español","hint":""}
-- {"type":"shadow","audio":"frase corta que se oye una vez y la alumna repite de memoria"}
 - {"type":"chunks","audio":"frase","chunks":["bloque 1","bloque 2","bloque 3"]}
-- {"type":"speak","prompt":"","target":"frase a repetir (opcional)","keywords":["palabras clave (opcional)"],"audio":"modelo (opcional)","modelAnswer":""}
-- {"type":"roleplay","audio":"lo que dice el cliente","task":"","modelAnswer":"","rubric":""}
+- NO uses shadow, speak, roleplay, scene ni task: la app los oculta (el habla se practica en la conversación por voz con Claude).
 - {"type":"cards","title":"","items":[{"en":"","es":"","example":""}]}
 - {"type":"fill_blank","sentence":"I ____ it.","options":[],"answer":"texto exacto","es":"significado en español de la frase completa"} · {"type":"true_false","prompt":"","answer":true} · {"type":"word_order","prompt":"","sentence":"","extra":[]} · {"type":"find_error","sentence":"","wrong":[""],"correct":""} · {"type":"match","pairs":[{"a":"","b":""}]} · {"type":"task","prompt":"","task":"","seconds":30,"modelAnswer":""} · {"type":"scene","character":"","setting":"","turns":[{"say":"","task":"","modelAnswer":""}]}
 IMPORTANTE: todo ejercicio con una frase en inglés (fill_blank, word_order, find_error, true_false, choice con frase en inglés, chunks) lleva "es" con su significado en español; la app lo muestra al corregir, acierte o falle.
@@ -809,9 +807,11 @@ function levelOf(ex,st){
   return LEVELS[1];
 }
 function canAnswer(ex,st){return !ex.audio||st.plays>=1||!!ex.retrying}
+/* Tipos de ejercicio ocultos por ahora: exigen hablar o escribir en libre y no se corrigen con IA. Quita un tipo de esta lista para volver a mostrarlo. */
+const HIDDEN_TYPES=["speak","roleplay","scene","task","shadow"];
 function expand(exs){
   const out=[];
-  exs.forEach((x,n)=>{
+  exs.filter(x=>!(x&&HIDDEN_TYPES.includes(x.type))).forEach((x,n)=>{
     if(x.type==="listen_multi"){
       (x.questions||[]).forEach(q=>out.push({type:"choice",block:x.block,audio:x.audio,hint:x.hint,transcript:x.transcript||x.audio,shared:"m"+n,prompt:q.q,options:q.options,answer:q.answer,explanation:q.explanation,es:q.es||x.es}));
     }else{
