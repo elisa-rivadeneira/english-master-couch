@@ -380,7 +380,7 @@ pre.rep{white-space:pre-wrap;background:var(--soft);border-radius:12px;padding:1
 CATÁLOGO DE EJERCICIOS Y ESCALERA DE PROGRESIÓN (lo lee el agente que arma las lecciones)
 
 == FILOSOFÍA DE LA APP (MANDA SOBRE TODO LO DEMÁS) ==
-La app es para ESCUCHAR, TOCAR Y ARMAR: ejercicios lúdicos, cortos y de oído. En el celular NO hay micrófono ni conviene escribir mucho. Por eso:
+La app es para ESCUCHAR, TOCAR Y ARMAR: ejercicios lúdicos, cortos y de oído. (La app OCULTA por código los tipos prohibidos: si por error vienen en una lección, no se muestran.) En el celular NO hay micrófono ni conviene escribir mucho. Por eso:
 - TIPOS PERMITIDOS: cards, choice, minimal_pair, listen_multi, true_false, fill_blank, word_order, chunks, find_error, match.
 - TIPOS PROHIBIDOS en lecciones nuevas: speak, shadow, roleplay, scene, task, dictation (piden hablar o escribir frases largas). Presentarse, role-plays, debates, pitches y toda práctica de habla se hacen en la CONVERSACIÓN POR VOZ con Claude, no en la app.
 - Sustitutos de las "respuestas largas" (explica esto, descríbelo, escribe un email): 1) choice «¿cuál es la mejor respuesta?» con 3 opciones (una natural, una gramaticalmente mala, una de tono equivocado); 2) word_order para armar la respuesta modelo con bloques; 3) chunks para ordenar un diálogo oído; 4) find_error sobre una respuesta ya escrita; 5) fill_blank con opciones para el verbo, preposición o conector exacto; 6) match de frase con situación; 7) listen_multi con preguntas de comprensión. Cuando lo que se quiere practicar es expresarse, deja una «misión de voz» en nextStep: qué contar en la próxima conversación con Claude.
@@ -388,7 +388,7 @@ La app es para ESCUCHAR, TOCAR Y ARMAR: ejercicios lúdicos, cortos y de oído. 
 
 == FORMATO DE LA LECCIÓN ==
 {"title":"","date":"AAAA-MM-DD","lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"","student":"nombre","stage":1-5,"focus":"","speakTip":"consejo de pronunciación/gramática corto (opcional)","nextStep":{"type":"lesson|voice","text":"qué hacer después, según el plan"},"exercises":[...]}
-SIGNIFICADO EN ESPAÑOL (obligatorio): todo ejercicio cuyo contenido sea una frase en inglés (fill_blank, word_order, find_error, dictation, shadow, chunks, true_false, listen_multi (campo "es" en el ejercicio, traduce el monólogo) y choice/minimal_pair con "audio" o frase en inglés) debe llevar el campo "es" con la traducción natural de esa frase al español. La app lo muestra siempre al corregir, esté bien o mal la respuesta, para que la persona fije el significado. Para fill_blank y find_error, "es" traduce la frase ya correcta y completa.
+SIGNIFICADO EN ESPAÑOL (obligatorio): todo ejercicio cuyo contenido sea una frase en inglés (fill_blank, word_order, find_error, chunks, true_false, listen_multi (campo "es" en el ejercicio, traduce el monólogo) y choice/minimal_pair con "audio" o frase en inglés) debe llevar el campo "es" con la traducción natural de esa frase al español. La app lo muestra siempre al corregir, esté bien o mal la respuesta, para que la persona fije el significado. Para fill_blank y find_error, "es" traduce la frase ya correcta y completa.
 Todo ejercicio acepta "skill" (id de una habilidad de skills/map), "block" (etiqueta de sección), "hint" (pista útil y específica), "noRetry":true (sin segunda oportunidad) y "boss":true (jefe: triple de puntos).
 Con "audio", la app lo reproduce una sola vez y bloquea las respuestas hasta que se escucha; si la persona falla, se le ofrece una segunda oportunidad.
 
@@ -397,9 +397,9 @@ CON AUDIO / ESCUCHA
 - choice / minimal_pair: {"type":"choice","audio":"frase (opcional)","prompt":"","options":["",""],"answer":0,"explanation":""}
 - listen_multi: {"type":"listen_multi","audio":"monólogo","transcript":"","questions":[{"q":"","options":[],"answer":0,"explanation":""}]}
 - true_false: {"type":"true_false","audio":"(opcional)","prompt":"Verdadero o falso: …","answer":true,"es":"significado en español de la frase en inglés","explanation":""}
-- dictation: {"type":"dictation","audio":"frase","es":"significado en español"}
+- (NO USAR, la app lo oculta) dictation: {"type":"dictation","audio":"frase","es":"significado en español"}
 - chunks: {"type":"chunks","audio":"frase","chunks":["bloque 1","bloque 2"],"es":"significado en español"}
-- shadow: {"type":"shadow","audio":"frase corta que se repite de memoria","es":"significado en español"}
+- (NO USAR, la app lo oculta) shadow: {"type":"shadow","audio":"frase corta que se repite de memoria","es":"significado en español"}
 GRAMÁTICA / VOCABULARIO
 - fill_blank: {"type":"fill_blank","sentence":"I ____ the report yesterday.","options":["send","sent"],"answer":"sent","es":"Envié el informe ayer.","explanation":""}
 - word_order: {"type":"word_order","prompt":"Arma: «¿Podrías enviarme el informe?»","sentence":"Could you send me the report?","extra":["sent"],"alts":["Can you send me the report?"],"es":"¿Podrías enviarme el informe?","audio":"(opcional)"}
@@ -407,7 +407,7 @@ GRAMÁTICA / VOCABULARIO
    (si allowCorrect=true y la frase ya está bien, deja "wrong":[] y la alumna usa «Está bien»)
 - match: {"type":"match","prompt":"","pairs":[{"a":"report","b":"informe"}],"speak":"a"}  (3–6 pares)
 - cards: {"type":"cards","title":"","items":[{"en":"","es":"","example":""}]}   (la clave "en" es la frase en el idioma meta, "es" su traducción)
-HABLA — NO USAR POR AHORA (la app oculta speak, roleplay, scene, task y shadow aunque vengan en la lección; el habla se practica en la conversación por voz con Claude)
+HABLA — NO USAR POR AHORA (la app oculta speak, roleplay, scene, task, shadow y dictation aunque vengan en la lección; el habla se practica en la conversación por voz con Claude)
 - speak: {"type":"speak","prompt":"","target":"frase a repetir (opcional)","keywords":["…"],"audio":"modelo (opcional)","modelAnswer":""}
 - roleplay: {"type":"roleplay","audio":"lo que dice el interlocutor","task":"","modelAnswer":"","rubric":""}
 - scene (conversación de 2–5 turnos, con una única evaluación de Claude al final):
@@ -437,36 +437,171 @@ Reglas para cambiar de etapa:
 </script>
 <script id="lesson-data" type="application/json">
 {
- "title":"Lección de ejemplo: todos los tipos",
- "date":"2026-01-01",
- "lang":"en-US","targetLanguage":"inglés","nativeLanguage":"español","profession":"profesional","student":"",
- "stage":2,
- "focus":"Demostración de todos los tipos de ejercicio de la plantilla. El agente la reemplaza por la primera lección real.",
- "exercises":[
-  {"type":"cards","block":"Calentamiento","title":"Frases útiles","items":[
-    {"en":"Could you repeat that, please?","es":"¿Podrías repetir eso, por favor?","example":"Sorry, could you repeat that, please?"},
-    {"en":"Let me check and get back to you.","es":"Déjame revisar y te respondo.","example":"Let me check and get back to you by Friday."}]},
-  {"type":"choice","block":"Escucha","audio":"The meeting starts at three o'clock.","prompt":"¿A qué hora empieza la reunión?","options":["2:00","3:00","4:00"],"answer":1,"hint":"Es un número entre dos y cuatro.","explanation":"«Three o'clock» = las 3."},
-  {"type":"minimal_pair","block":"Escucha","audio":"She wants to ship the order today.","options":["ship","sheep"],"answer":0,"hint":"Habla de enviar un pedido.","explanation":"«Ship» = enviar; «sheep» = oveja."},
-  {"type":"listen_multi","block":"Escucha","audio":"Hi, this is Ana. The report is ready, but I still need the final numbers from sales. Can we meet on Thursday?","transcript":"Hi, this is Ana. The report is ready, but I still need the final numbers from sales. Can we meet on Thursday?","hint":"Piensa en qué falta y cuándo.","questions":[
-    {"q":"¿Qué le falta a Ana?","options":["El informe","Los números finales de ventas","Una reunión"],"answer":1,"explanation":"El informe ya está listo; faltan los números."},
-    {"q":"¿Cuándo propone reunirse?","options":["El martes","El jueves","El viernes"],"answer":1,"explanation":"Dice «on Thursday»."}]},
-  {"type":"fill_blank","block":"Gramática","sentence":"I ____ the report yesterday.","options":["send","sent","sending"],"answer":"sent","es":"Envié el informe ayer.","explanation":"Con «yesterday» usamos pasado: sent."},
-  {"type":"true_false","block":"Escucha","audio":"We usually have the team meeting on Mondays.","prompt":"Verdadero o falso: el equipo se reúne normalmente los lunes.","answer":true,"es":"Normalmente tenemos la reunión del equipo los lunes.","hint":"Escucha el día de la semana.","explanation":"Dice «on Mondays»."},
-  {"type":"word_order","block":"Gramática","prompt":"Arma la frase: «¿Podrías enviarme el informe?»","sentence":"Could you send me the report?","extra":["sent"],"alts":["Can you send me the report?"],"es":"¿Podrías enviarme el informe?"},
-  {"type":"match","block":"Vocabulario","prompt":"Une cada palabra con su significado","pairs":[{"a":"report","b":"informe"},{"a":"deadline","b":"fecha límite"},{"a":"meeting","b":"reunión"},{"a":"budget","b":"presupuesto"}],"speak":"a"},
-  {"type":"find_error","block":"Gramática","sentence":"Yesterday I go to the office early.","wrong":["go"],"correct":"Yesterday I went to the office early.","es":"Ayer fui temprano a la oficina.","explanation":"Con «yesterday» usamos el pasado: went."},
-  {"type":"dictation","block":"Escucha","audio":"Please send me the final version tomorrow.","es":"Por favor, envíame la versión final mañana.","hint":"Son 7 palabras."},
-  {"type":"chunks","block":"Escucha","audio":"I will send you the report after the meeting.","chunks":["I will send you","the report","after the meeting."],"es":"Te enviaré el informe después de la reunión.","hint":"Primero lo que harás, luego qué, luego cuándo."},
-  {"type":"shadow","block":"Habla","audio":"Let me check and get back to you.","es":"Déjame revisar y te respondo.","hint":"Son 7 palabras y empieza con «Let me»."},
-  {"type":"speak","block":"Habla","prompt":"Preséntate en una frase: tu nombre y a qué te dedicas.","keywords":["my name","I work"],"modelAnswer":"My name is Ana and I work in sales."},
-  {"type":"roleplay","block":"Conversación","audio":"Hi, thanks for joining. Could you tell me what you do?","task":"Preséntate y di en una o dos frases a qué te dedicas.","modelAnswer":"Sure. I work in sales, and I help companies find the right solution for their needs.","rubric":"claridad y frases cortas"},
-  {"type":"task","block":"Conversación","prompt":"Defiéndete en 30 segundos","audio":"Honestly, I think this project is too expensive. Why should we do it?","task":"Responde con una razón clara y una consecuencia positiva.","seconds":30,"rubric":"una razón clara, tono profesional, frases cortas","modelAnswer":"I understand your concern. However, this project will save us time and reduce errors, so it pays for itself in a few months."},
-  {"type":"scene","block":"Conversación","title":"Reunión con un cliente","character":"Cliente","setting":"Tu cliente quiere saber si el proyecto estará listo a tiempo.","goal":"dar una respuesta clara y proponer un siguiente paso","rubric":"claridad, cortesía y un siguiente paso concreto","turns":[
-    {"say":"Hi. Will the project be ready by the end of the month?","task":"Responde si llegará a tiempo y por qué.","modelAnswer":"Yes, we are on schedule. The main work is done and we are testing it now."},
-    {"say":"Good. And what are the next steps?","task":"Explica el siguiente paso.","modelAnswer":"Next, we will do a final review with you and fix any small issues."},
-    {"say":"Great. Can we meet next week to review it?","task":"Acepta y propone un día.","modelAnswer":"Of course. How about Tuesday at ten?"}]},
-  {"type":"task","block":"Jefe","boss":true,"prompt":"Presenta tu trabajo en un minuto","context":"Tienes un minuto con el director de una empresa que no te conoce.","task":"Explica qué haces y por qué importa, en 4 o 5 frases.","seconds":60,"rubric":"qué haces, para quién, resultado concreto","modelAnswer":"I help companies organize their work. I work with the team to find problems and fix them. As a result, they save time and make fewer mistakes."}
+ "title": "Lección de ejemplo",
+ "date": "2026-01-01",
+ "lang": "en-US",
+ "targetLanguage": "inglés",
+ "nativeLanguage": "español",
+ "profession": "profesional",
+ "student": "",
+ "stage": 2,
+ "focus": "Demostración de la plantilla con los tipos permitidos. El agente la reemplaza por la primera lección real.",
+ "exercises": [
+  {
+   "type": "cards",
+   "block": "Calentamiento",
+   "title": "Frases útiles",
+   "items": [
+    {
+     "en": "Could you repeat that, please?",
+     "es": "¿Podrías repetir eso, por favor?",
+     "example": "Sorry, could you repeat that, please?"
+    },
+    {
+     "en": "Let me check and get back to you.",
+     "es": "Déjame revisar y te respondo.",
+     "example": "Let me check and get back to you by Friday."
+    }
+   ]
+  },
+  {
+   "type": "choice",
+   "block": "Escucha",
+   "audio": "The meeting starts at three o'clock.",
+   "prompt": "¿A qué hora empieza la reunión?",
+   "options": [
+    "2:00",
+    "3:00",
+    "4:00"
+   ],
+   "answer": 1,
+   "hint": "Es un número entre dos y cuatro.",
+   "explanation": "«Three o'clock» = las 3."
+  },
+  {
+   "type": "minimal_pair",
+   "block": "Escucha",
+   "audio": "She wants to ship the order today.",
+   "options": [
+    "ship",
+    "sheep"
+   ],
+   "answer": 0,
+   "hint": "Habla de enviar un pedido.",
+   "explanation": "«Ship» = enviar; «sheep» = oveja."
+  },
+  {
+   "type": "listen_multi",
+   "block": "Escucha",
+   "audio": "Hi, this is Ana. The report is ready, but I still need the final numbers from sales. Can we meet on Thursday?",
+   "transcript": "Hi, this is Ana. The report is ready, but I still need the final numbers from sales. Can we meet on Thursday?",
+   "hint": "Piensa en qué falta y cuándo.",
+   "questions": [
+    {
+     "q": "¿Qué le falta a Ana?",
+     "options": [
+      "El informe",
+      "Los números finales de ventas",
+      "Una reunión"
+     ],
+     "answer": 1,
+     "explanation": "El informe ya está listo; faltan los números."
+    },
+    {
+     "q": "¿Cuándo propone reunirse?",
+     "options": [
+      "El martes",
+      "El jueves",
+      "El viernes"
+     ],
+     "answer": 1,
+     "explanation": "Dice «on Thursday»."
+    }
+   ]
+  },
+  {
+   "type": "fill_blank",
+   "block": "Gramática",
+   "sentence": "I ____ the report yesterday.",
+   "options": [
+    "send",
+    "sent",
+    "sending"
+   ],
+   "answer": "sent",
+   "es": "Envié el informe ayer.",
+   "explanation": "Con «yesterday» usamos pasado: sent."
+  },
+  {
+   "type": "true_false",
+   "block": "Escucha",
+   "audio": "We usually have the team meeting on Mondays.",
+   "prompt": "Verdadero o falso: el equipo se reúne normalmente los lunes.",
+   "answer": true,
+   "es": "Normalmente tenemos la reunión del equipo los lunes.",
+   "hint": "Escucha el día de la semana.",
+   "explanation": "Dice «on Mondays»."
+  },
+  {
+   "type": "word_order",
+   "block": "Gramática",
+   "prompt": "Arma la frase: «¿Podrías enviarme el informe?»",
+   "sentence": "Could you send me the report?",
+   "extra": [
+    "sent"
+   ],
+   "alts": [
+    "Can you send me the report?"
+   ],
+   "es": "¿Podrías enviarme el informe?"
+  },
+  {
+   "type": "match",
+   "block": "Vocabulario",
+   "prompt": "Une cada palabra con su significado",
+   "pairs": [
+    {
+     "a": "report",
+     "b": "informe"
+    },
+    {
+     "a": "deadline",
+     "b": "fecha límite"
+    },
+    {
+     "a": "meeting",
+     "b": "reunión"
+    },
+    {
+     "a": "budget",
+     "b": "presupuesto"
+    }
+   ],
+   "speak": "a"
+  },
+  {
+   "type": "find_error",
+   "block": "Gramática",
+   "sentence": "Yesterday I go to the office early.",
+   "wrong": [
+    "go"
+   ],
+   "correct": "Yesterday I went to the office early.",
+   "es": "Ayer fui temprano a la oficina.",
+   "explanation": "Con «yesterday» usamos el pasado: went."
+  },
+  {
+   "type": "chunks",
+   "block": "Escucha",
+   "audio": "I will send you the report after the meeting.",
+   "chunks": [
+    "I will send you",
+    "the report",
+    "after the meeting."
+   ],
+   "es": "Te enviaré el informe después de la reunión.",
+   "hint": "Primero lo que harás, luego qué, luego cuándo."
+  }
  ]
 }
 </script>
@@ -501,9 +636,8 @@ Estructura: {"title":"","date":"AAAA-MM-DD","lang":"en-US","targetLanguage":"ing
 Tipos de ejercicio (todos aceptan "block": etiqueta de sección):
 - {"type":"minimal_pair"|"choice","audio":"frase que se oye (opcional)","prompt":"pregunta","options":[...],"answer":índice,"explanation":"","hint":""}
 - {"type":"listen_multi","audio":"monólogo","transcript":"","hint":"","questions":[{"q":"","options":[...],"answer":0,"explanation":""}]}
-- {"type":"dictation","audio":"frase","es":"significado en español","hint":""}
 - {"type":"chunks","audio":"frase","chunks":["bloque 1","bloque 2","bloque 3"]}
-- NO uses shadow, speak, roleplay, scene ni task: la app los oculta (el habla se practica en la conversación por voz con Claude).
+- NO uses shadow, speak, roleplay, scene, task ni dictation: la app los oculta (el habla se practica en la conversación por voz con Claude).
 - {"type":"cards","title":"","items":[{"en":"","es":"","example":""}]}
 - {"type":"fill_blank","sentence":"I ____ it.","options":[],"answer":"texto exacto","es":"significado en español de la frase completa"} · {"type":"true_false","prompt":"","answer":true} · {"type":"word_order","prompt":"","sentence":"","extra":[]} · {"type":"find_error","sentence":"","wrong":[""],"correct":""} · {"type":"match","pairs":[{"a":"","b":""}]} · {"type":"task","prompt":"","task":"","seconds":30,"modelAnswer":""} · {"type":"scene","character":"","setting":"","turns":[{"say":"","task":"","modelAnswer":""}]}
 IMPORTANTE: todo ejercicio con una frase en inglés (fill_blank, word_order, find_error, true_false, choice con frase en inglés, chunks) lleva "es" con su significado en español; la app lo muestra al corregir, acierte o falle.
@@ -808,7 +942,7 @@ function levelOf(ex,st){
 }
 function canAnswer(ex,st){return !ex.audio||st.plays>=1||!!ex.retrying}
 /* Tipos de ejercicio ocultos por ahora: exigen hablar o escribir en libre y no se corrigen con IA. Quita un tipo de esta lista para volver a mostrarlo. */
-const HIDDEN_TYPES=["speak","roleplay","scene","task","shadow"];
+const HIDDEN_TYPES=["speak","roleplay","scene","task","shadow","dictation"];
 function expand(exs){
   const out=[];
   exs.filter(x=>!(x&&HIDDEN_TYPES.includes(x.type))).forEach((x,n)=>{
